@@ -1,21 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-# DO NOT CHECK IN
-# Using this newer version of absl breaks the build, see cl description, look
-# into it.
-#
-# Sept 2020
-#http_archive(
-#    name = "com_google_absl",
-#    sha256 = "b3744a4f7a249d5eaf2309daad597631ce77ea62e0fc6abffbab4b4c3dc0fc08",
-#    strip_prefix = "abseil-cpp-20200923",
-#    urls = [
-#        "https://mirror.bazel.build/github.com/abseil/abseil-cpp/archive/20200923.tar.gz",
-#        "https://github.com/abseil/abseil-cpp/archive/20200923.tar.gz",
-#    ],
-#)
-
 git_repository(
     name = "com_google_absl",
     commit = "c51510d",  # release 20200225.2
