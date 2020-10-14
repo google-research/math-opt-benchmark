@@ -33,8 +33,8 @@ cc_binary(
     srcs = ["example_main.cc"],
     deps = [
         ":example",
+        "@com_github_gflags_gflags//:gflags",
         "@com_github_glog_glog//:glog",
-        "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/random",
         "@com_google_ortools//ortools/linear_solver",
     ],

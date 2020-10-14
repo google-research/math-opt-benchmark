@@ -13,18 +13,38 @@
 // limitations under the License.
 
 #include <iostream>
+#include <string>
 
-#include "absl/flags/flag.h"
+#include "gflags/gflags.h"
 #include "absl/random/random.h"
 #include "math_opt_benchmark/example/example.h"
 #include "ortools/linear_solver/linear_solver.h"
 
-ABSL_FLAG(int, num_vars, 10, "How many variables are in the problem.");
-ABSL_FLAG(double, rhs, 4.0, "How many variables can be selected.");
-ABSL_FLAG(bool, use_integers, false, "If the variables should be integer.");
-ABSL_FLAG(operations_research::MPSolver::OptimizationProblemType, solver,
-          operations_research::MPSolver::GLOP_LINEAR_PROGRAMMING,
-          "The solver to use. Set to \"scip\" or \"glop\"");
+DEFINE_int32(
+          num_vars, 10, "How many variables are in the problem.");
+DEFINE_double(
+          rhs, 4.0, "How many variables can be selected.");
+DEFINE_bool(
+          use_integers, false, "If the variables should be integer.");
+DEFINE_string(solver, "glop", "The solver to use. Set to \"scip\" or \"glop\"");
+
+int num_vars_flag() {
+  return FLAGS_num_vars;
+}
+
+double rhs_flag() {
+  return FLAGS_rhs;
+}
+
+bool use_integers_flag() {
+  return FLAGS_use_integers;
+}
+operations_research::MPSolver::OptimizationProblemType solver_flag() {
+  if(FLAGS_solver == "scip") {
+    return operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING;
+  }
+  return operations_research::MPSolver::GLOP_LINEAR_PROGRAMMING;
+}
 
 namespace math_opt_benchmark {
 
@@ -36,16 +56,16 @@ void PrintSolution(const ExampleSolution& solution) {
 
 void RealMain() {
   ExampleProblem problem;
-  problem.rhs = absl::GetFlag(FLAGS_rhs);
-  problem.integer = absl::GetFlag(FLAGS_use_integers);
-  const int num_vars = absl::GetFlag(FLAGS_num_vars);
+  problem.rhs = rhs_flag();
+  problem.integer = use_integers_flag();
+  const int num_vars = num_vars_flag();
   absl::BitGen gen;
   for (int i = 0; i < num_vars; ++i) {
     problem.objective.push_back(absl::Uniform(gen, 0.0, 1.0));
   }
   std::cout << "Objective coefficeints: ["
             << absl::StrJoin(problem.objective, ",") << "]" << std::endl;
-  ExampleSolver solver(absl::GetFlag(FLAGS_solver), problem);
+  ExampleSolver solver(solver_flag(), problem);
   PrintSolution(solver.Solve());
   std::cout << "Zeroing objective for first half of variables" << std::endl;
   for (int i = 0; i < num_vars / 2; ++i) {
@@ -57,6 +77,7 @@ void RealMain() {
 }  // namespace math_opt_benchmark
 
 int main(int argc, char** argv) {
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
   math_opt_benchmark::RealMain();
   return 0;
 }
