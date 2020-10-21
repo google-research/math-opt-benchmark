@@ -1,2 +1,5 @@
 # Ignore all temporary directories created by Bazel.
 bazel-*
+# Ignore local configs
+.idea
+.DS_Store
