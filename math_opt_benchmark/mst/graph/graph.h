@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MATH_OPT_BENCHMARK_GRAPH_H
-#define MATH_OPT_BENCHMARK_GRAPH_H
+#ifndef MATH_OPT_BENCHMARK_MST_GRAPH_H
+#define MATH_OPT_BENCHMARK_MST_GRAPH_H
 
 #include <vector>
 
@@ -23,8 +23,8 @@ namespace math_opt_benchmark {
 
 class Graph {
  public:
-  Graph(const MSTProblem &problem, const MSTSolution &solution);
-  std::vector<std::vector<int>> invalid_components(const MSTSolution &solution);
+  Graph(const MSTProblem &problem, const MSTSolution& solution);
+  std::vector<std::vector<int>> invalid_components(const MSTSolution& solution);
 
  private:
   int n_;
@@ -33,4 +33,4 @@ class Graph {
 
 }  // namespace math_opt_benchmark
 
-#endif  // MATH_OPT_BENCHMARK_GRAPH_H
+#endif  // MATH_OPT_BENCHMARK_MST_GRAPH_H

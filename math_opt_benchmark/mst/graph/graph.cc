@@ -23,7 +23,7 @@ constexpr double kTolerance = 1e-5;
 namespace math_opt_benchmark {
 
 void debug_graph(std::vector<std::vector<int>> edges) {
-  for (auto &vector : edges) {
+  for (auto& vector : edges) {
     std::cout << "[D] Graph: " << absl::StrJoin(vector, ",") << std::endl;
   }
 }
@@ -34,13 +34,13 @@ void debug_graph(std::vector<std::vector<int>> edges) {
  * vertices
  * @param solution Solution values from LP solve routine
  */
-Graph::Graph(const MSTProblem &problem, const MSTSolution &solution) {
+Graph::Graph(const MSTProblem& problem, const MSTSolution& solution) {
   n_ = problem.n;
   for (int v1 = 0; v1 < n_; ++v1) {
     edges_.emplace_back(0);
   }
   for (int v1 = 0; v1 < n_; ++v1) {
-//    for (const int &v2 : problem.edges[v1]) {
+//    for (const int& v2 : problem.edges[v1]) {
     for (int v2 = 0; v2 < n_; ++v2) {
       if (std::abs(solution.x_values.get(v1, v2)) > kTolerance) {
         edges_[v1].push_back(v2);
@@ -56,7 +56,7 @@ Graph::Graph(const MSTProblem &problem, const MSTSolution &solution) {
  * @return Vector of cuts
  */
 std::vector<std::vector<int>> Graph::invalid_components(
-    const MSTSolution &solution) {
+    const MSTSolution& solution) {
   std::vector<bool> visited(n_, false);
   int num_visited = 0;
   std::vector<std::vector<int>> components;
@@ -78,7 +78,7 @@ std::vector<std::vector<int>> Graph::invalid_components(
       int head = stack.back();
       stack.pop_back();
       component.push_back(head);
-      for (const int &other : edges_[head]) {
+      for (const int& other : edges_[head]) {
         if (!visited[other]) {
           stack.push_back(other);
           visited[other] = true;
@@ -90,10 +90,10 @@ std::vector<std::vector<int>> Graph::invalid_components(
   }
 
   std::vector<std::vector<int>> invalid;
-  for (const std::vector<int> &component : components) {
+  for (const std::vector<int>& component : components) {
     double sum = 0;
-    for (const int &v1 : component) {
-      for (const int &v2 : edges_[v1]) {
+    for (const int& v1 : component) {
+      for (const int& v2 : edges_[v1]) {
         sum += solution.x_values.get(v1, v2);
       }
     }

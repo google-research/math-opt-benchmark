@@ -37,13 +37,10 @@ MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
   solver_.MutableObjective()->SetMinimization();
   x_vars_.init(problem.n);
   for (int i = 0; i < problem.n; ++i) {
-    for (int j = i; j < problem.n; ++j) {
-      if (i != j) {
-        MPVariable *var =
-            solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("x", i, j));
-        x_vars_.set(i, j, var);
-        UpdateObjective(i, j, problem.weights.get(i, j));
-      }
+    for (int j = i+1; j < problem.n; ++j) {
+      MPVariable *var = solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("x", i, j));
+      x_vars_.set(i, j, var);
+      UpdateObjective(i, j, problem.weights.get(i, j));
     }
   }
   MPConstraint *c_eq = solver_.MakeRowConstraint(problem.n - 1, problem.n - 1);
@@ -104,8 +101,8 @@ void MSTSolver::UpdateObjective(int v1, int v2, double value) {
  */
 void MSTSolver::AddConstraints(const MSTProblem &problem,
                                std::vector<std::vector<int>> invalid) {
-  static constexpr int max_new_constraints = 25;
-  for (int i = 0; i < invalid.size() && i < max_new_constraints; ++i) {
+  constexpr int kMaxNewConstraints = 25;
+  for (int i = 0; i < invalid.size() && i < kMaxNewConstraints; ++i) {
     MPConstraint *c = solver_.MakeRowConstraint(0, (double) invalid[i].size() - 1);
     for (const int j : invalid[i]) {
       c->SetCoefficient(x_vars_.get(i, j), 1);

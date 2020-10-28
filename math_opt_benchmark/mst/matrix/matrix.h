@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MATH_OPT_BENCHMARK_MATRIX_H
-#define MATH_OPT_BENCHMARK_MATRIX_H
+#ifndef MATH_OPT_BENCHMARK_MST_MATRIX_H
+#define MATH_OPT_BENCHMARK_MST_MATRIX_H
 
 #include <vector>
 #include "glog/logging.h"

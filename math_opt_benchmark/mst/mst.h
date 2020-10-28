@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MATH_OPT_BENCHMARK_MST_H
-#define MATH_OPT_BENCHMARK_MST_H
+#ifndef MATH_OPT_BENCHMARK_MST_MST_H
+#define MATH_OPT_BENCHMARK_MST_MST_H
 
 #include <vector>
 
@@ -52,4 +52,4 @@ class MSTSolver {
 
 }  // namespace math_opt_benchmark
 
-#endif  // MATH_OPT_BENCHMARK_MST_H
+#endif  // MATH_OPT_BENCHMARK_MST_MST_H
