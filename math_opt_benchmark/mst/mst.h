@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "ortools/linear_solver/linear_solver.h"
+#include "math_opt_benchmark/mst/matrix/matrix.h"
 
 // DEFINE_double(EPSILON, 0.0001, "Accuracy when comparing solver values");
 
@@ -25,14 +26,14 @@ namespace math_opt_benchmark {
 
 struct MSTProblem {
   int n;
-  std::vector<std::vector<double>> weights;
-  std::vector<std::vector<int>> edges;
+  Matrix<double> weights;
+  Matrix<int> edges;
   bool integer = false;
 };
 
 struct MSTSolution {
   double objective_value;
-  std::vector<std::vector<double>> x_values;
+  Matrix<double> x_values;
 };
 
 class MSTSolver {
@@ -46,7 +47,7 @@ class MSTSolver {
 
  private:
   operations_research::MPSolver solver_;
-  std::vector<std::vector<operations_research::MPVariable*>> x_vars_;
+  Matrix<operations_research::MPVariable*> x_vars_;
 };
 
 }  // namespace math_opt_benchmark

@@ -34,11 +34,12 @@ bool v_neq(std::vector<std::vector<int>> v1, std::vector<std::vector<int>> v2) {
 }
 
 void PrintSolution(const MSTSolution& solution) {
-  std::cout << "Solution objective: " << solution.objective_value << std::endl;
-  for (auto& x_vector : solution.x_values) {
-    std::cout << "Solution variable values: " << absl::StrJoin(x_vector, ",")
-              << std::endl;
-  }
+  std::cout << "Done" << std::endl;
+//  std::cout << "Solution objective: " << solution.objective_value << std::endl;
+//  for (auto& x_vector : solution.x_values) {
+//    std::cout << "Solution variable values: " << absl::StrJoin(x_vector, ",")
+//              << std::endl;
+//  }
 }
 
 void MSTMain() {
@@ -46,16 +47,15 @@ void MSTMain() {
   absl::BitGen gen;
   const int N = num_vars_flag();
   problem.n = N;
-  std::vector<std::vector<int>> edges(N, std::vector<int>(0));
+  problem.edges.init(N);
+  problem.weights.init(N);
   for (int i = 0; i < N; i++) {
-    std::vector<int> tmp_edges;
-    std::vector<double> tmp_weights;
     for (int j = 0; j < N; j++) {
-      tmp_edges.push_back(j);
-      tmp_weights.push_back(absl::Uniform(gen, 0.0, 1.0));
+      if (i != j) {
+        problem.edges.set(i, j, j);
+        problem.weights.set(i, j, absl::Uniform(gen, 0.0, 1.0));
+      }
     }
-    problem.edges.push_back(tmp_edges);
-    problem.weights.push_back(tmp_weights);
   }
   MSTSolver solver(
       operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
@@ -66,7 +66,6 @@ void MSTMain() {
   while (!invalid.empty() &&
          (invalid.size() != last.size() || v_neq(invalid, last))) {
     last = invalid;
-    printf("\n");
     solver.AddConstraints(problem, invalid);
     solution = solver.Solve();
     graph = Graph(problem, solution);

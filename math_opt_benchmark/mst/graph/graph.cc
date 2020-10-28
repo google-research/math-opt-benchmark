@@ -37,11 +37,12 @@ void debug_graph(std::vector<std::vector<int>> edges) {
 Graph::Graph(const MSTProblem &problem, const MSTSolution &solution) {
   n_ = problem.n;
   for (int v1 = 0; v1 < n_; ++v1) {
-    edges_.push_back(std::vector<int>(0));
+    edges_.emplace_back(0);
   }
   for (int v1 = 0; v1 < n_; ++v1) {
-    for (const int &v2 : problem.edges[v1]) {
-      if (std::abs(solution.x_values[v1][v2]) > kTolerance) {
+//    for (const int &v2 : problem.edges[v1]) {
+    for (int v2 = 0; v2 < n_; ++v2) {
+      if (std::abs(solution.x_values.get(v1, v2)) > kTolerance) {
         edges_[v1].push_back(v2);
         edges_[v2].push_back(v1);
       }
@@ -61,11 +62,11 @@ std::vector<std::vector<int>> Graph::invalid_components(
   std::vector<std::vector<int>> components;
   std::vector<int> stack;
   while (num_visited < n_) {
-    components.push_back(std::vector<int>(0));
+    components.emplace_back(0);
     std::vector<int> component;
     int index = n_;
     for (int i = 0; i < n_; ++i) {
-      if (visited[i] == false) {
+      if (!visited[i]) {
         index = i;
         break;
       }
@@ -93,7 +94,7 @@ std::vector<std::vector<int>> Graph::invalid_components(
     double sum = 0;
     for (const int &v1 : component) {
       for (const int &v2 : edges_[v1]) {
-        sum += solution.x_values[v1][v2];
+        sum += solution.x_values.get(v1, v2);
       }
     }
     // Edges are counted twice in the graph

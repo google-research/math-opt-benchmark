@@ -8,8 +8,8 @@ package(
 
 cc_library(
     name = "mst",
-    srcs = ["mst.cc", "graph/graph.cc"],
-    hdrs = ["mst.h", "graph/graph.h"],
+    srcs = ["mst.cc", "graph/graph.cc", "matrix/matrix.cc"],
+    hdrs = ["mst.h", "graph/graph.h", "matrix/matrix.h"],
     deps = [
         "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/strings",
