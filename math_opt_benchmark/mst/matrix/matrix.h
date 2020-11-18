@@ -15,43 +15,108 @@
 #ifndef MATH_OPT_BENCHMARK_MST_MATRIX_H
 #define MATH_OPT_BENCHMARK_MST_MATRIX_H
 
+#include <iostream>
 #include <vector>
+
 #include "glog/logging.h"
 
 namespace math_opt_benchmark {
-
 template <class T>
 class Matrix {
-public:
-  Matrix<T>() {};
+ public:
+  Matrix<T>() = default;
+  Matrix<T>(int n) { init(n); };
 
-  void init(int n) {
-    n_ = n;
-    for (int i = 0; i < n; ++i) {
-      elements_.push_back(std::vector<T>(n));
+  void init(int n);
+  T get(int i, int j) const;
+  void set(int i, int j, T value);
+  int size() const;
+  void print() const;
+  std::vector<std::vector<T>> as_vector_vector() const;
+  std::vector<T> as_vector(int row) const;
+
+ private:
+  int n_{};
+  std::vector<std::vector<T>> elements_;
+  std::vector<std::vector<bool>> set_;
+};
+
+/*
+ *
+ * TEMPLATE IMPLEMENTATION
+ *
+ */
+
+template <class T>
+void Matrix<T>::init(int n) {
+  n_ = n;
+  for (int i = 0; i < n; ++i) {
+    elements_.emplace_back(i + 1);
+    set_.emplace_back(i + 1, false);
+  }
+}
+
+template <class T>
+T Matrix<T>::get(int i, int j) const {
+  CHECK_GE(i, 0);
+  CHECK_GE(j, 0);
+  int r = i > j ? i : j;
+  int c = i > j ? j : i;
+  CHECK_LT(r, elements_.size());
+  CHECK_LT(c, elements_[r].size());
+  CHECK_EQ(set_[r][c], true);
+  return elements_[r][c];
+}
+
+template <class T>
+void Matrix<T>::set(int i, int j, T value) {
+  int r = i > j ? i : j;
+  int c = i > j ? j : i;
+  set_[r][c] = true;
+  elements_[r][c] = value;
+}
+
+template <class T>
+int Matrix<T>::size() const {
+  return n_;
+}
+
+template <class T>
+void Matrix<T>::print() const {
+  for (int i = 0; i < n_; i++) {
+    printf("SET: ");
+    for (int j = 0; j < i; j++) {
+      std::cout << set_[i][j] << ' ';
+    }
+    printf("\n");
+  }
+  printf("----------\n");
+  for (int i = 0; i < n_; i++) {
+    printf("GET: ");
+    for (int j = 0; j < i; j++) {
+      std::cout << elements_[i][j] << ' ';
+    }
+    printf("\n");
+  }
+  printf("----------\n");
+}
+
+template <class T>
+std::vector<std::vector<T>> Matrix<T>::as_vector_vector() const {
+  return elements_;
+}
+
+template <class T>
+std::vector<T> Matrix<T>::as_vector(int row) const {
+  std::vector<T> v;
+  for (int i = 0; i < elements_[row].size(); i++) {
+    if (set_[row][i]) {
+      v.push_back(elements_[row][i]);
     }
   }
-
-  T get(int i, int j) const {
-    CHECK_GE(i, 0);
-    CHECK_GE(j, 0);
-    CHECK_LT(i, elements_.size());
-    CHECK_LT(j, elements_[i].size());
-    return elements_[i][j];
-  }
-
-  void set(int i, int j, T value) {
-    elements_[i][j] = value;
-  }
-
-  int size() const {
-    return n_;
-  }
-private:
-  int n_;
-  std::vector<std::vector<T>> elements_;
-};
+  return v;
+}
 
 }  // namespace math_opt_benchmark
 
-#endif //MATH_OPT_BENCHMARK_MATRIX_H
+#endif  // MATH_OPT_BENCHMARK_MATRIX_H

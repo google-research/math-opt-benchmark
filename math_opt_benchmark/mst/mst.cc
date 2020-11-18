@@ -13,12 +13,11 @@
 // limitations under the License.
 
 #include "math_opt_benchmark/mst/mst.h"
-#include "math_opt_benchmark/mst/matrix/matrix.h"
-
-#include <limits>
 
 #include "absl/strings/str_cat.h"
 #include "glog/logging.h"
+
+constexpr double kInf = std::numeric_limits<double>::infinity();
 
 namespace math_opt_benchmark {
 
@@ -28,8 +27,7 @@ using ::operations_research::MPVariable;
 
 /**
  * @param problem_type MPSolver constant specifying which solver to use
- * @param problem Graph specification with edges, weights, and number of
- * vertices
+ * @param problem Graph specification with edges, weights, and number of vertices
  */
 MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
                      const MSTProblem &problem)
@@ -37,7 +35,7 @@ MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
   solver_.MutableObjective()->SetMinimization();
   x_vars_.init(problem.n);
   for (int i = 0; i < problem.n; ++i) {
-    for (int j = i+1; j < problem.n; ++j) {
+    for (int j = 0; j < i; ++j) {
       MPVariable *var = solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("x", i, j));
       x_vars_.set(i, j, var);
       UpdateObjective(i, j, problem.weights.get(i, j));
@@ -45,7 +43,7 @@ MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
   }
   MPConstraint *c_eq = solver_.MakeRowConstraint(problem.n - 1, problem.n - 1);
   for (int i = 0; i < problem.n; ++i) {
-    for (int j = i + 1; j < problem.n; ++j) {
+    for (int j = 0; j < i; ++j) {
       c_eq->SetCoefficient(x_vars_.get(i, j), 1);
     }
   }
@@ -54,7 +52,7 @@ MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
 void debug_solve(const MSTSolution &result) {
   for (int i = 0; i < result.x_values.size(); i++) {
     for (int j = 0; j < result.x_values.size(); j++) {
-      printf("[D] x[%i][%i] = %.7f\n", i, j, result.x_values.get(i ,j));
+      printf("[D] x[%i][%i] = %.7f\n", i, j, result.x_values.get(i, j));
     }
   }
 }
@@ -69,11 +67,9 @@ MSTSolution MSTSolver::Solve() {
   MSTSolution result;
   result.objective_value = solver_.Objective().Value();
   result.x_values.init(x_vars_.size());
-  for (int i = 0; i < x_vars_.size(); i++) {
-    for (int j = 0; j < x_vars_.size(); j++) {
-      if (i != j) {
-        result.x_values.set(i, j, x_vars_.get(i, j)->solution_value());
-      }
+  for (int i = 1; i < x_vars_.size(); i++) {
+    for (int j = 0; j < i; j++) {
+      result.x_values.set(i, j, x_vars_.get(i, j)->solution_value());
     }
   }
   return result;
@@ -93,19 +89,25 @@ void MSTSolver::UpdateObjective(int v1, int v2, double value) {
   solver_.MutableObjective()->SetCoefficient(x_vars_.get(v1, v2), value);
 }
 
+int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
+  return a.size() < b.size();
+}
+
 /**
- *
- * @param problem Graph specification with edges, weights, and number of
- * vertices
+ * Adds a subtour-elimination constraint for each list of constraint-violating vertices
+ * @param problem Graph specification with edges, weights, and number of vertices
  * @param invalid List of lists of vertices that violate the MST constraint
  */
 void MSTSolver::AddConstraints(const MSTProblem &problem,
                                std::vector<std::vector<int>> invalid) {
   constexpr int kMaxNewConstraints = 25;
+  std::sort(invalid.begin(), invalid.end(), sort_by_size);
   for (int i = 0; i < invalid.size() && i < kMaxNewConstraints; ++i) {
-    MPConstraint *c = solver_.MakeRowConstraint(0, (double) invalid[i].size() - 1);
+    MPConstraint *c = solver_.MakeRowConstraint(-kInf, (double)invalid[i].size() - 1);
     for (const int j : invalid[i]) {
-      c->SetCoefficient(x_vars_.get(i, j), 1);
+      if (i != j) {
+        c->SetCoefficient(x_vars_.get(i, j), 1);
+      }
     }
   }
 }

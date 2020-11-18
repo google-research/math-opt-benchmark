@@ -17,14 +17,16 @@
 
 #include <vector>
 
-#include "math_opt_benchmark/mst/mst.h"
+#include "math_opt_benchmark/mst/matrix/matrix.h"
 
 namespace math_opt_benchmark {
 
 class Graph {
  public:
-  Graph(const MSTProblem &problem, const MSTSolution& solution);
-  std::vector<std::vector<int>> invalid_components(const MSTSolution& solution);
+  // Should there be two const&'s?
+  Graph(std::vector<std::vector<int>>&& edges);
+  std::vector<std::vector<int>> invalid_components(
+      const Matrix<double>& x_values);
 
  private:
   int n_;

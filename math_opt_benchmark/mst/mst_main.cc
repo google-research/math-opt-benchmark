@@ -17,60 +17,79 @@
 #include "math_opt_benchmark/mst/graph/graph.h"
 #include "math_opt_benchmark/mst/mst.h"
 #include "ortools/linear_solver/linear_solver.h"
+#include "ortools/graph/max_flow.h"
 
 DEFINE_int32(num_vars, 10, "How many variables are in the problem.");
 
 int num_vars_flag() { return FLAGS_num_vars; }
 
+constexpr double kTolerance = 1e-5;
+
 namespace math_opt_benchmark {
 
-bool v_neq(std::vector<std::vector<int>> v1, std::vector<std::vector<int>> v2) {
-  for (int i = 0; i < v1.size(); i++) {
-    if (v1[i] != v2[i]) {
-      return true;
-    }
-  }
-  return false;
-}
-
 void PrintSolution(const MSTSolution& solution) {
-  std::cout << "Done" << std::endl;
-//  std::cout << "Solution objective: " << solution.objective_value << std::endl;
-//  for (auto& x_vector : solution.x_values) {
-//    std::cout << "Solution variable values: " << absl::StrJoin(x_vector, ",")
-//              << std::endl;
-//  }
+  std::cout << "Solution objective: " << solution.objective_value << std::endl;
+  for (auto& x_vector : solution.x_values.as_vector_vector()) {
+    std::cout << "Solution variable values: " << absl::StrJoin(x_vector, ",")
+              << std::endl;
+  }
 }
 
-void MSTMain() {
-  MSTProblem problem;
-  absl::BitGen gen;
-  const int N = num_vars_flag();
-  problem.n = N;
-  problem.edges.init(N);
-  problem.weights.init(N);
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
-      if (i != j) {
-        problem.edges.set(i, j, j);
-        problem.weights.set(i, j, absl::Uniform(gen, 0.0, 1.0));
+template <class T>
+void PrintVector(std::vector<T> vec) {
+  std::cout << "Vector: " << absl::StrJoin(vec, ",") << std::endl;
+}
+
+/**
+ * Construct graph from edges with non-zero solution values
+ * @param problem Graph specification with edges, weights, and number of
+ * vertices
+ * @param solution Solution values from LP solve routine
+ */
+Graph toGraph(const MSTProblem& problem, const MSTSolution& solution) {
+  std::vector<std::vector<int>> edges(problem.n);
+  for (int v1 = 0; v1 < problem.n; ++v1) {
+    for (const int& v2 : problem.edges.as_vector(v1)) {
+      if (std::abs(solution.x_values.get(v1, v2)) > kTolerance) {
+        edges[v1].push_back(v2);
+        edges[v2].push_back(v1);
       }
     }
   }
-  MSTSolver solver(
-      operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
+  Graph g(std::move(edges));
+  return g;
+}
+
+void MSTMain() {
+  const int N = num_vars_flag();
+  absl::BitGen gen;
+
+  MSTProblem problem;
+  problem.n = N;
+  problem.edges.init(N);
+  problem.weights.init(N);
+  // Complete graph with weights ~ Unif(0, 1)
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < i; j++) {
+      problem.edges.set(i, j, j);
+      problem.weights.set(i, j, absl::Uniform(gen, 0.0, 1.0));
+    }
+  }
+  MSTSolver solver(operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
   MSTSolution solution = solver.Solve();
-  Graph graph(problem, solution);
-  std::vector<std::vector<int>> invalid = graph.invalid_components(solution);
+
+  Graph graph = toGraph(problem, solution);
+  std::vector<std::vector<int>> invalid = graph.invalid_components(solution.x_values);
+
   std::vector<std::vector<int>> last;
-  while (!invalid.empty() &&
-         (invalid.size() != last.size() || v_neq(invalid, last))) {
+  while (!invalid.empty() && invalid != last) {
     last = invalid;
     solver.AddConstraints(problem, invalid);
     solution = solver.Solve();
-    graph = Graph(problem, solution);
-    invalid = graph.invalid_components(solution);
+    graph = toGraph(problem, solution);
+    invalid = graph.invalid_components(solution.x_values);
   }
+
   PrintSolution(solution);
 }
 

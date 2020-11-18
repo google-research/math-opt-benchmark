@@ -17,13 +17,16 @@
 
 #include <vector>
 
-#include "ortools/linear_solver/linear_solver.h"
 #include "math_opt_benchmark/mst/matrix/matrix.h"
-
-// DEFINE_double(EPSILON, 0.0001, "Accuracy when comparing solver values");
+#include "ortools/linear_solver/linear_solver.h"
 
 namespace math_opt_benchmark {
 
+/**
+ * n Number of vertices
+ * weights Edge-weights indexed by vertex pairs
+ * edges List of adjacent vertices for each vertex
+ */
 struct MSTProblem {
   int n;
   Matrix<double> weights;
@@ -31,6 +34,11 @@ struct MSTProblem {
   bool integer = false;
 };
 
+/**
+ * objective_value Objective value returned from the LP solve
+ * x_values Solution values corresponding to variable x_vars_[i][j] in a
+ * MSTSolver
+ */
 struct MSTSolution {
   double objective_value;
   Matrix<double> x_values;
@@ -42,8 +50,7 @@ class MSTSolver {
             const MSTProblem& problem);
   MSTSolution Solve();
   void UpdateObjective(int v1, int v2, double value);
-  void AddConstraints(const MSTProblem& problem,
-                      std::vector<std::vector<int>> invalid);
+  void AddConstraints(const MSTProblem& problem,                      std::vector<std::vector<int>> invalid);
 
  private:
   operations_research::MPSolver solver_;
