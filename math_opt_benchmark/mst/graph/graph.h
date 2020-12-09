@@ -27,6 +27,7 @@ class Graph {
   Graph(std::vector<std::vector<int>>&& edges);
   std::vector<std::vector<int>> invalid_components(
       const Matrix<double>& x_values);
+  std::vector<int> separation_oracle(const Matrix<double>& x_values);
 
  private:
   int n_;

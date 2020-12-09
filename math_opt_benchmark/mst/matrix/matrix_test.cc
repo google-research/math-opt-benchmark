@@ -69,7 +69,7 @@ TEST(MatrixTest, AsVector) {
       m.set(i, j, i + j);
     }
   }
-  EXPECT_EQ(m.as_vector(), expected);
+  EXPECT_EQ(m.as_vector_vector(), expected);
 }
 
 TEST(MatrixTest, TemplateTypes) {

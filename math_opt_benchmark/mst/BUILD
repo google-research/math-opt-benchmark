@@ -41,6 +41,5 @@ cc_binary(
         "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/random",
         "@com_google_ortools//ortools/linear_solver",
-        "@com_google_ortools//ortools/graph:max_flow",
     ],
 )

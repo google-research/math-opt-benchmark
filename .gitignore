@@ -3,3 +3,4 @@ bazel-*
 # Ignore local configs
 .idea
 .DS_Store
+.clwb

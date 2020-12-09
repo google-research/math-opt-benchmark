@@ -17,9 +17,8 @@
 #include "math_opt_benchmark/mst/graph/graph.h"
 #include "math_opt_benchmark/mst/mst.h"
 #include "ortools/linear_solver/linear_solver.h"
-#include "ortools/graph/max_flow.h"
 
-DEFINE_int32(num_vars, 10, "How many variables are in the problem.");
+DEFINE_int32(num_vars, 3, "How many variables are in the problem.");
 
 int num_vars_flag() { return FLAGS_num_vars; }
 
@@ -82,13 +81,21 @@ void MSTMain() {
   std::vector<std::vector<int>> invalid = graph.invalid_components(solution.x_values);
 
   std::vector<std::vector<int>> last;
-  while (!invalid.empty() && invalid != last) {
-    last = invalid;
-    solver.AddConstraints(problem, invalid);
-    solution = solver.Solve();
-    graph = toGraph(problem, solution);
-    invalid = graph.invalid_components(solution.x_values);
-  }
+  std::vector<std::vector<int>> separation_cut(1);
+  do {
+    while (!invalid.empty() && invalid != last) {
+      PrintVector(invalid[0]);
+      last = invalid;
+      solver.AddConstraints(problem, invalid);
+      solution = solver.Solve();
+      graph = toGraph(problem, solution);
+      invalid = graph.invalid_components(solution.x_values);
+    }
+    printf("Separating...\n");
+    separation_cut[0] = graph.separation_oracle(solution.x_values);
+    PrintVector(separation_cut[0]);
+    invalid = separation_cut;
+  } while (!separation_cut[0].empty());
 
   PrintSolution(solution);
 }

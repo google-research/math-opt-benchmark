@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "math_opt_benchmark/mst/graph/graph.h"
+#include "graph.h"
+#include "flow.h"
 
 #include <cmath>
 
 #include "absl/random/random.h"
 
-constexpr double kTolerance = 1e-5;
 
 namespace math_opt_benchmark {
 
-void debug_graph(std::vector<std::vector<int>> edges, int n) {
+void debug_graph(const std::vector<std::vector<int>>& edges, int n) {
   std::cout << "[D] " << n << std::endl;
   for (auto& vector : edges) {
     std::cout << "[D] Graph: " << absl::StrJoin(vector, ",") << std::endl;
@@ -88,6 +88,36 @@ std::vector<std::vector<int>> Graph::invalid_components(
     }
   }
   return invalid;
+}
+
+
+std::vector<int> Graph::separation_oracle(const Matrix<double> &x_values) {
+  int s = n_;
+  int t = n_ + 1;
+  std::vector<int> solution;
+  for (int i = 0; i < n_; i++) {
+    for (int j = i+1; j < n_; i++) {
+      FlowSolver flow;
+      for (int v1 = 0; v1 < edges_.size(); v1++) {
+        double sum = 0;
+        for (const int &v2 : edges_[v1]) {
+          double capacity = x_values.get(v1, v2) / 2;
+          flow.add(v1, v2, capacity);
+          sum += capacity;
+
+        }
+        double capacity = (v1 == i || v1 == j) ? kMaxCap : sum;
+        flow.add(s, v1, capacity);
+        flow.add(v1, t, 1);
+        flow.assertOpt();
+        if (flow.generate_solution(solution)) {
+          return solution;
+        }
+      }
+    }
+  }
+
+  return solution;
 }
 
 }  // namespace math_opt_benchmark
