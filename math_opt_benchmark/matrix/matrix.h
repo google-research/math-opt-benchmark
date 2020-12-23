@@ -15,6 +15,8 @@
 #ifndef MATH_OPT_BENCHMARK_MST_MATRIX_H
 #define MATH_OPT_BENCHMARK_MST_MATRIX_H
 
+// TODO differentiate between triangular and normal matrices
+
 #include <iostream>
 #include <vector>
 
@@ -27,16 +29,20 @@ class Matrix {
   Matrix<T>() = default;
   Matrix<T>(int n) { init(n); };
 
-  void init(int n);
-  T get(int i, int j) const;
-  void set(int i, int j, T value);
-  int size() const;
+  void init_triangular(int rows);
+  void init(int rows, int cols);
+  T get(int row, int col) const;
+  void set(int row, int col, T value);
+  std::pair<int, int> size() const;
+  int num_rows() const;
+  int num_cols() const;
   void print() const;
   std::vector<std::vector<T>> as_vector_vector() const;
   std::vector<T> as_vector(int row) const;
 
  private:
-  int n_{};
+  int num_rows_;
+  int num_cols_;
   std::vector<std::vector<T>> elements_;
   std::vector<std::vector<bool>> set_;
 };
@@ -48,20 +54,31 @@ class Matrix {
  */
 
 template <class T>
-void Matrix<T>::init(int n) {
-  n_ = n;
-  for (int i = 0; i < n; ++i) {
+void Matrix<T>::init_triangular(int rows) {
+  num_rows_ = rows;
+  for (int i = 0; i < rows; ++i) {
     elements_.emplace_back(i + 1);
     set_.emplace_back(i + 1, false);
   }
 }
 
+template<class T>
+void Matrix<T>::init(int rows, int cols) {
+  num_rows_ = rows;
+  num_cols_ = cols;
+  for (int i = 0; i < rows; i++) {
+    elements_.emplace_back(cols);
+    set_.emplace_back(cols, false);
+  }
+}
+
 template <class T>
-T Matrix<T>::get(int i, int j) const {
-  CHECK_GE(i, 0);
-  CHECK_GE(j, 0);
-  int r = i > j ? i : j;
-  int c = i > j ? j : i;
+T Matrix<T>::get(int row, int col) const {
+  CHECK_GE(row, 0);
+  CHECK_GE(col, 0);
+  // TODO remove
+  int r = row > col ? row : col;
+  int c = row > col ? col : row;
   CHECK_LT(r, elements_.size());
   CHECK_LT(c, elements_[r].size());
   CHECK_EQ(set_[r][c], true);
@@ -69,21 +86,32 @@ T Matrix<T>::get(int i, int j) const {
 }
 
 template <class T>
-void Matrix<T>::set(int i, int j, T value) {
-  int r = i > j ? i : j;
-  int c = i > j ? j : i;
+void Matrix<T>::set(int row, int col, T value) {
+  // TODO remove
+  int r = row > col ? row : col;
+  int c = row > col ? col : row;
   set_[r][c] = true;
   elements_[r][c] = value;
 }
 
 template <class T>
-int Matrix<T>::size() const {
-  return n_;
+std::pair<int, int> Matrix<T>::size() const {
+  return std::pair<int, int>(num_rows_, num_cols_);
+}
+
+template <class T>
+int Matrix<T>::num_rows() const {
+  return num_rows_;
+}
+
+template <class T>
+int Matrix<T>::num_cols() const {
+  return num_cols_;
 }
 
 template <class T>
 void Matrix<T>::print() const {
-  for (int i = 0; i < n_; i++) {
+  for (int i = 0; i < num_rows_; i++) {
     printf("SET: ");
     for (int j = 0; j < i; j++) {
       std::cout << set_[i][j] << ' ';
@@ -91,7 +119,7 @@ void Matrix<T>::print() const {
     printf("\n");
   }
   printf("----------\n");
-  for (int i = 0; i < n_; i++) {
+  for (int i = 0; i < num_rows_; i++) {
     printf("GET: ");
     for (int j = 0; j < i; j++) {
       std::cout << elements_[i][j] << ' ';

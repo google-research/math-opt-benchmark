@@ -20,17 +20,33 @@
 
 namespace math_opt_benchmark {
 
-class UFLSolver {
- public:
-  UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type,
-            const MSTProblem &problem);
-  UFLSolver Solve();
-  void UpdateObjective(int v1, int v2, double value);
-  void AddConstraints(const MSTProblem &problem, std::vector <std::vector<int>> invalid);
+struct UFLProblem {
+  bool integer;
+  int num_facilities;
+  int num_customers;
+  std::vector<double> open_costs;
+  Matrix<double> supply_costs;
+};
 
- private:
+struct UFLSolution {
+  Matrix<double> supply_values;
+  std::vector<double> open_values;
+  double objective_value;
+};
+
+class UFLSolver {
+public:
+  UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type,
+            const UFLProblem &problem);
+  UFLSolution Solve();
+  void UpdateObjective(int facility, int customer, double value);
+  void UpdateObjective(int facility, double value);
+  void AddConstraints(const UFLProblem &problem, std::vector <std::vector<int>> invalid);
+
+private:
   operations_research::MPSolver solver_;
-  Matrix<operations_research::MPVariable *> x_vars_;
+  Matrix<operations_research::MPVariable *> supply_vars_;
+  std::vector<operations_research::MPVariable *> open_vars_;
 };
 
 } // namespace math_opt_benchmark

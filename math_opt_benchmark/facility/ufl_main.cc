@@ -25,6 +25,6 @@ void UFLMain() {
 } // namespace math_opt_benchmark
 
 int main() {
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
+//  gflags::ParseCommandLineFlags(&argc, &argv, true);
   math_opt_benchmark::UFLMain();
 }

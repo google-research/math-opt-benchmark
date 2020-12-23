@@ -15,27 +15,21 @@
 #include "math_opt_benchmark/matrix/matrix.h"
 
 #include <vector>
-#include <cmath>
 
 constexpr double kTolerance = 1e-5;
 
 namespace math_opt_benchmark {
 
 // Assume costs are column-wise increasing and ys accordingly
-std::vector<std::vector<double>> knapsack(const Matrix<double>& costs, const std::vector<double>& ys) {
-  std::vector<std::vector<double>> solution(costs.size());
-  // For every customer
-  for (int i = 0; i < costs.size(); i++) {
-    double sum = 0;
-    int k;
-    for (k = 0; k < ys.size() && sum < 1; k++) {
-      sum += ys[k];
-    }
-    for (int j = 0; j < k-1; j++) {
-      solution[i].push_back(ys[j]);
-    }
-    solution[i].push_back(1 - sum - ys[k]);
+std::vector<double> knapsack(const std::vector<double>& costs, const std::vector<double>& ys) {
+  std::vector<double> solution;
+  double sum = 0;
+  int k;
+  for (k = 0; k < ys.size() && sum < 1; k++) {
+    sum += ys[k];
+    solution.push_back(ys[k]);
   }
+  solution.push_back(1 - sum - ys[k-1]);
 
   return solution;
 }
