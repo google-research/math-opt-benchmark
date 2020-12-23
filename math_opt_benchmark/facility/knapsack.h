@@ -15,4 +15,6 @@
 #ifndef MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_
 #define MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_
 
+std::vector<double> knapsack(const std::vector<double>& costs, const std::vector<double>& ys);
+
 #endif //MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_

@@ -20,7 +20,7 @@ constexpr double kTolerance = 1e-5;
 
 namespace math_opt_benchmark {
 
-// Assume costs are column-wise increasing and ys accordingly
+// Assume costs and ys are sorted together so costs[i] < costs[i+1]
 std::vector<double> knapsack(const std::vector<double>& costs, const std::vector<double>& ys) {
   std::vector<double> solution;
   double sum = 0;

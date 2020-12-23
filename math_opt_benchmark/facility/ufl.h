@@ -25,11 +25,11 @@ struct UFLProblem {
   int num_facilities;
   int num_customers;
   std::vector<double> open_costs;
-  Matrix<double> supply_costs;
+  std::vector<std::vector<double>> supply_costs;
 };
 
 struct UFLSolution {
-  Matrix<double> supply_values;
+  std::vector<std::vector<double>> supply_values;
   std::vector<double> open_values;
   double objective_value;
 };
@@ -39,14 +39,15 @@ public:
   UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type,
             const UFLProblem &problem);
   UFLSolution Solve();
-  void UpdateObjective(int facility, int customer, double value);
-  void UpdateObjective(int facility, double value);
-  void AddConstraints(const UFLProblem &problem, std::vector <std::vector<int>> invalid);
+  void UpdateObjective(operations_research::MPVariable *var, double value);
+  void AddBenderCut(double sum, const std::vector<double> &y_coefficients);
+  void EnforceInteger();
 
 private:
   operations_research::MPSolver solver_;
-  Matrix<operations_research::MPVariable *> supply_vars_;
+  std::vector<std::vector<operations_research::MPVariable *>> supply_vars_;
   std::vector<operations_research::MPVariable *> open_vars_;
+  operations_research::MPVariable *bender_var_;
 };
 
 } // namespace math_opt_benchmark
