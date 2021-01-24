@@ -39,10 +39,12 @@ UFLSolver::UFLSolver(operations_research::MPSolver::OptimizationProblemType prob
       supply_vars_[i][j] = var;
     }
   }
+
   open_vars_.reserve(problem.num_facilities);
   for (int i = 0; i < problem.num_facilities; ++i) {
     MPVariable *var = solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("y", i));
     open_vars_.push_back(var);
+    printf("%.4f\t", problem.open_costs[i]);
     UpdateObjective(var, problem.open_costs[i]);
   }
   // Feasibility constraint: at least one facility open
@@ -92,9 +94,8 @@ UFLSolution UFLSolver::Solve() {
 
 /**
  * Verifies input and updates the coefficient for a variable
- * @param facility Facility index
- * @param customer Customer index
- * @param value Variable coefficient
+ * @param var MPVariable in the solver
+ * @param value New variable coefficient
  */
 void UFLSolver::UpdateObjective(operations_research::MPVariable *var, double value) {
   solver_.MutableObjective()->SetCoefficient(var, value);
@@ -106,8 +107,8 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
 
 /**
  * Adds a Benders cut for each
- * @param problem
- * @param invalid
+ * @param sum
+ * @param y_coefficients
  */
 void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficients) {
   // bender_var_ >= sum - \sum(y * y_coefficients)

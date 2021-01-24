@@ -8,8 +8,8 @@ package(
 
 cc_library(
     name = "ufl",
-    srcs = ["ufl.cc", "knapsack.cc"],
-    hdrs = ["ufl.h", "knapsack.h"],
+    srcs = ["ufl.cc"],
+    hdrs = ["ufl.h"],
     deps = [
         "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/strings",
