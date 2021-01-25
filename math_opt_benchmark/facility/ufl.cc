@@ -42,9 +42,8 @@ UFLSolver::UFLSolver(operations_research::MPSolver::OptimizationProblemType prob
 
   open_vars_.reserve(problem.num_facilities);
   for (int i = 0; i < problem.num_facilities; ++i) {
-    MPVariable *var = solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("y", i));
+    MPVariable *var = solver_.MakeVar(0.0, 1.0, false, absl::StrCat("y", i));
     open_vars_.push_back(var);
-    printf("%.4f\t", problem.open_costs[i]);
     UpdateObjective(var, problem.open_costs[i]);
   }
   // Feasibility constraint: at least one facility open
@@ -77,14 +76,6 @@ UFLSolution UFLSolver::Solve() {
   CHECK_EQ(status, MPSolver::OPTIMAL);
   UFLSolution result;
   result.objective_value = solver_.Objective().Value();
-  int num_customers = supply_vars_.size();
-  int num_facilities = supply_vars_[0].size();
-  result.supply_values = std::vector<std::vector<double>>(num_customers, std::vector<double>(num_facilities));
-  for (int i = 0; i < num_customers; i++) {
-    for (int j = 0; j < num_facilities; j++) {
-      result.supply_values[i][j] =  supply_vars_[i][j]->solution_value();
-    }
-  }
   result.open_values.reserve(open_vars_.size());
   for (const MPVariable *v : open_vars_) {
     result.open_values.push_back(v->solution_value());

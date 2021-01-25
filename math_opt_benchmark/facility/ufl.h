@@ -21,7 +21,6 @@
 namespace math_opt_benchmark {
 
 struct UFLProblem {
-  bool integer;
   int num_facilities;
   int num_customers;
   std::vector<double> open_costs;
@@ -29,9 +28,9 @@ struct UFLProblem {
 };
 
 struct UFLSolution {
-  std::vector<std::vector<double>> supply_values;
-  std::vector<double> open_values;
   double objective_value;
+  std::vector<double> open_values;
+  std::vector<int> supply_values;
 };
 
 class UFLSolver {
