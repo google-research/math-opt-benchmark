@@ -29,13 +29,14 @@ using ::operations_research::MPVariable;
  * @param problem_type MPSolver constant specifying which solver to use
  * @param problem Facility location specification with costs and sizes
  */
-UFLSolver::UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type, const UFLProblem &problem)
+UFLSolver::UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type, const UFLProblem &problem, bool iterative=true)
     : solver_("UFL_solver", problem_type) {
   solver_.MutableObjective()->SetMinimization();
   supply_vars_ = std::vector(problem.num_customers, std::vector<MPVariable *>(problem.num_facilities));
+  bool integer = !iterative;
   for (int i = 0; i < problem.num_customers; ++i) {
     for (int j = 0; j < problem.num_facilities; ++j) {
-      MPVariable *var = solver_.MakeVar(0.0, 1.0, false, absl::StrCat("x", i, j));
+      MPVariable *var = solver_.MakeVar(0.0, 1.0, integer, absl::StrCat("x", i, j));
       supply_vars_[i][j] = var;
     }
   }
@@ -54,6 +55,33 @@ UFLSolver::UFLSolver(operations_research::MPSolver::OptimizationProblemType prob
 
   bender_var_ = solver_.MakeVar(0.0, kInf, false, "w");
   UpdateObjective(bender_var_, 1);
+
+  // Regular problem formulation
+  if (!iterative) {
+    // Minimize customer costs
+    for (int i = 0; i < problem.num_customers; ++i) {
+      for (int j = 0; j < problem.num_facilities; ++j) {
+        UpdateObjective(supply_vars_[i][j], problem.supply_costs[i][j])
+      }
+    }
+
+    for (int i = 0; i < problem.num_facilities; ++i) {
+      operations_research::MPConstraint *c = solver_.MakeRowConstraint(0, 1);
+      c->SetCoefficient(open_vars_[i], 1);
+    }
+
+    for (int i = 0; i < problem.num_customers; ++i) {
+      // Each customer is fulfilled
+      operations_research::MPConstraint *full = solver_.MakeRowConstraint(1, 1);
+      for (int j = 0; j < problem.num_facilities; ++j) {
+        full->SetCoefficient(supply_vars_[i][j], 1);
+        // Only supplied by open facilities
+        operations_research::MPConstraint *open = solver_.MakeRowConstraint(-kInf, 0);
+        open->SetCoefficient(supply_vars_[i][j], 1);
+        open->SetCoefficient(open_vars_[j], -1);
+      }
+    }
+  }
 }
 
 

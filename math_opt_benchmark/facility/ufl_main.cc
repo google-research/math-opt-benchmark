@@ -14,7 +14,6 @@
 
 
 #include "ufl.h"
-//#include "knapsack.h"
 
 #include "absl/random/random.h"
 #include "gflags/gflags.h"
@@ -23,8 +22,10 @@
 #include <fstream>
 
 DEFINE_string(filename, "ORLIB/ORLIB-uncap/70/cap71.txt", "Path to ORLIB problem specification.");
+DEFINE_bool(iterative, true);
 
 std::string filename_flag() { return FLAGS_filename; }
+bool iterative_flag() { return FLAGS_iterative; }
 
 namespace math_opt_benchmark {
 
@@ -131,27 +132,6 @@ UFLSolution benders(UFLSolver& solver, std::vector<std::vector<double>>& supply_
 }
 
 void UFLMain() {
-//  const int N = num_vars_flag();
-//  absl::BitGen gen;
-//
-//  UFLProblem problem;
-//  problem.num_facilities = 3;
-//  problem.num_customers = 3;
-//  problem.open_costs.reserve(N);
-//  problem.supply_costs = std::vector<std::vector<double>>(problem.num_customers, std::vector<double>(problem.num_facilities));
-//  for (int i = 0; i < N; i++) {
-//    problem.open_costs.push_back(i);
-//    for (int j = 0; j < N; j++) {
-//      problem.supply_costs[i][j] = absl::Uniform(gen, 0.0, 1.0);
-//    }
-//  }
-//  printf("Open\n");
-//  PrintVector(problem.open_costs);
-//  printf("Supply\n");
-//  for (auto& v : problem.supply_costs) {
-//    PrintVector(v);
-//  }
-//  printf("Indices\n");
   UFLProblem problem = ParseProblem(filename_flag());
   std::vector<std::vector<int>> sorted_cost_indices(problem.num_customers, std::vector<int>(problem.num_facilities));
   for (int i = 0; i < problem.num_customers; i++) {
@@ -160,21 +140,17 @@ void UFLMain() {
     std::iota(indices.begin(), indices.end(), 0);
     std::sort(indices.begin(), indices.end(), [&, costs](int i, int j) { return costs[i] < costs[j]; });
     std::sort(costs.begin(), costs.end(), [](double i, double j) { return i < j; });
-//    PrintVector(indices);
   }
   UFLSolver solver(operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
   UFLSolution solution = benders(solver, problem.supply_costs, sorted_cost_indices, problem.num_customers, problem.num_facilities);
   solver.EnforceInteger();
   solution = benders(solver, problem.supply_costs, sorted_cost_indices, problem.num_customers, problem.num_facilities);
   solution.supply_values.reserve(problem.num_customers);
-//  PrintVector(solution.open_values, "Open");
   for (int i = 0; i < problem.num_customers; i++) {
-//    PrintVector(sorted_cost_indices[i], std::to_string(i));
     int j;
     for (j = 0; j < problem.num_facilities && !solution.open_values[sorted_cost_indices[i][j]]; j++);
     solution.supply_values.push_back(sorted_cost_indices[i][j]);
   }
-//  PrintSolution(solution);
   PrintORLIB(solution);
 }
 

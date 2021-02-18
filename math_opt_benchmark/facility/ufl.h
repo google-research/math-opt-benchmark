@@ -36,7 +36,7 @@ struct UFLSolution {
 class UFLSolver {
 public:
   UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type,
-            const UFLProblem &problem);
+            const UFLProblem &problem, bool iterative);
   UFLSolution Solve();
   void UpdateObjective(operations_research::MPVariable *var, double value);
   void AddBenderCut(double sum, const std::vector<double> &y_coefficients);
