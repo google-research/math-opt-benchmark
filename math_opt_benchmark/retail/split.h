@@ -27,14 +27,14 @@ struct RetailProblem {
 
 struct RetailSolution {
   double objective_value;
-  std::vector<int> in_assortment;
-  std::vector<int> must_split;
+  std::vector<double> in_assortment;
+  std::vector<double> must_split;
 };
 
 class RetailSolver {
 public:
-  RetailSolver(operations_research::MPSolver::OptimizationProblemType problem_type,
-            const RetailProblem &problem);
+  RetailSolver(operations_research::MPSolver::OptimizationProblemType problem_type, const RetailProblem &problem,
+                             bool iterative=true);
   RetailSolution Solve();
   void UpdateObjective(operations_research::MPVariable *var, double value);
   void AddBenderCut(const std::vector<int>& y_indices);
@@ -42,7 +42,9 @@ public:
 private:
   operations_research::MPSolver solver_;
   std::vector<operations_research::MPVariable *> assortment_vars_;
+  std::vector<operations_research::MPVariable *> supply_vars_;
   operations_research::MPVariable *bender_var_;
+  bool iterative_;
 };
 
 } // namespace math_opt_benchmark

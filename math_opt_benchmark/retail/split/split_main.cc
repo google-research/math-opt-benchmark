@@ -13,16 +13,17 @@
 // limitations under the License.
 
 
-#include "retail.h"
+#include "split.h"
 
 #include "absl/random/random.h"
-#include "gflags/gflags.h"
+#include "absl/flags/flag.h"
 #include "ortools/linear_solver/linear_solver.h"
+#include "absl/strings/str_join.h"
 
 
-//DEFINE_string(filename, "ORLIB/ORLIB-uncap/70/cap71.txt", "Path to ORLIB problem specification.");
+//DEFINE_bool(iterative, true);
 
-//std::string filename_flag() { return FLAGS_filename; }
+//bool iteratve_flag() { return FLAGS_iterative; }
 
 namespace math_opt_benchmark {
 
@@ -31,14 +32,14 @@ void PrintVector(std::vector<T> vec, const std::string& name="Vector") {
   std::cout << name << ": " << absl::StrJoin(vec, ",") << std::endl;
 }
 
-void PrintSolution(const RetailSolution& solution) {
+void PrintSolution(const SplitAndSubSolution& solution) {
   std::cout << "Solution objective: " << solution.objective_value << std::endl;
   PrintVector(solution.in_assortment, "Solution in assortment");
   PrintVector(solution.must_split, "Solution must split");
 }
 
 // Returns vector of indices indicating which y(i,j) is nonzero for each customer
-std::vector<int> solve_dual(const RetailSolution& solution, const RetailProblem& problem) {
+std::vector<int> solve_dual(const SplitAndSubSolution& solution, const SplitAndSubProblem& problem) {
   std::vector<int> ys(problem.customer_orders.size(), -1);
 //  #pragma omp parallel for schedule(dynamic, 5)
   for (int i = 0; i < problem.customer_orders.size(); i++) {
@@ -53,8 +54,8 @@ std::vector<int> solve_dual(const RetailSolution& solution, const RetailProblem&
   return ys;
 }
 
-std::vector<int> solve_primal(const RetailSolution& solution, const RetailProblem& problem) {
-  std::vector<int> ss(problem.customer_orders.size(), 0);
+std::vector<double> solve_primal(const SplitAndSubSolution& solution, const SplitAndSubProblem& problem) {
+  std::vector<double> ss(problem.customer_orders.size(), 0);
 //  #pragma omp parallel for schedule(dynamic, 5)
   for (int i = 0; i < problem.customer_orders.size(); i++) {
     const std::vector<int>& order = problem.customer_orders[i];
@@ -68,8 +69,8 @@ std::vector<int> solve_primal(const RetailSolution& solution, const RetailProble
   return ss;
 }
 
-RetailSolution benders(RetailSolver& solver, const RetailProblem& problem) {
-  RetailSolution solution = solver.Solve();
+SplitAndSubSolution benders(SplitAndSubSolver& solver, const SplitAndSubProblem& problem) {
+  SplitAndSubSolution solution = solver.Solve();
   double prev_obj = -1.0;
   while (prev_obj != solution.objective_value)
   {
@@ -82,8 +83,8 @@ RetailSolution benders(RetailSolver& solver, const RetailProblem& problem) {
   return solution;
 }
 
-void RetailMain() {
-  RetailProblem problem;
+void SplitMain() {
+  SplitAndSubProblem problem;
   for (int i = 0; i < 3; i++) {
     problem.weights.push_back(i);
   }
@@ -91,15 +92,19 @@ void RetailMain() {
   problem.customer_orders.push_back(std::vector<int>({1, 2}));
   problem.capacity = 2;
 
-  RetailSolver solver(operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
-  RetailSolution solution = benders(solver, problem);
+  SplitAndSubSolver solver(operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
+  SplitAndSubSolution solution = benders(solver, problem);
   PrintSolution(solution);
+
+  SplitAndSubSolver direct_solver(operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem, false);
+  SplitAndSubSolution direct_solution = direct_solver.Solve();
+  PrintSolution(direct_solution);
 }
 
 } // namespace math_opt_benchmark
 
 int main(int argc, char *argv[]) {
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
+//  absl::ParseCommandLineFlags(&argc, &argv, true);
 //  std::cerr << filename_flag() << std::endl;
-  math_opt_benchmark::RetailMain();
+  math_opt_benchmark::SplitMain();
 }
