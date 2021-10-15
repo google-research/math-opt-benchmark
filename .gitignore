@@ -4,3 +4,13 @@ bazel-*
 .idea
 .DS_Store
 .clwb
+instacart/*.json
+instacart/*.csv
+instacart/instacart-market-basket-analysis/
+instacart/dataset/
+__pycache__
+math_opt
+logs/
+init.sh
+*pb.*
+*pb2.*

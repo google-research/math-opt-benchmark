@@ -7,21 +7,21 @@ package(
 )
 
 cc_library(
-    name = "example",
-    srcs = ["example.cc"],
-    hdrs = ["example.h"],
+    name = "split",
+    srcs = ["split.cc"],
+    hdrs = ["split.h"],
     deps = [
-        "@com_github_glog_glog//:glog",
+#        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/strings",
         "@com_google_ortools//ortools/linear_solver",
     ],
 )
 
 cc_test(
-    name = "example_test",
-    srcs = ["example_test.cc"],
+    name = "split_test",
+    srcs = [],
     deps = [
-        ":example",
+        ":split",
         "@com_google_googletest//:gtest",
         "@com_google_googletest//:gtest_main",
         "@com_google_ortools//ortools/linear_solver",
@@ -29,12 +29,12 @@ cc_test(
 )
 
 cc_binary(
-    name = "example_main",
-    srcs = ["example_main.cc"],
+    name = "split_main",
+    srcs = ["split_main.cc"],
     deps = [
-        ":example",
-        "@com_github_gflags_gflags//:gflags",
-        "@com_github_glog_glog//:glog",
+        ":split",
+#        "@com_github_gflags_gflags//:gflags",
+#        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/random",
         "@com_google_ortools//ortools/linear_solver",
     ],

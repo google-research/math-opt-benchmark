@@ -1,4 +1,5 @@
 build --copt=-Wno-parentheses --copt=-Wno-sign-compare \
   --copt=-Wno-misleading-indentation --copt=-Wno-narrowing \
   --copt=-fno-exceptions \
-  --strict_proto_deps=off --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+  --strict_proto_deps=off --cxxopt=-std=c++17 --host_cxxopt=-std=c++17 \
+  --check_visibility=false
