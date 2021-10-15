@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO bender cuts are upper bound, master is lower bound
-
 #include "split_and_sub.h"
 
 #include "absl/strings/str_cat.h"
 #include "absl/random/random.h"
 #include "absl/strings/str_join.h"
+#include "ortools/math_opt/indexed_model.h"
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
 
@@ -29,37 +28,46 @@ void PrintVector(std::vector<T> vec, const std::string& name="Vector") {
 
 namespace math_opt_benchmark {
 
-using ::operations_research::MPConstraint;
-using ::operations_research::MPSolver;
-using ::operations_research::MPVariable;
+namespace math_opt = operations_research::math_opt;
+
+using ::operations_research::math_opt::LinearConstraint;
+using ::operations_research::math_opt::MathOpt;
+using ::operations_research::math_opt::Objective;
+using ::operations_research::math_opt::Result;
+using ::operations_research::math_opt::SolveParametersProto;
+using ::operations_research::math_opt::SolveResultProto;
+using ::operations_research::math_opt::Variable;
+using ::operations_research::math_opt::IndexedModel;
+using ::operations_research::math_opt::VariableId;
 
 /**
  * @param problem_type MPSolver constant specifying which solver to use
  * @param problem Facility location specification with costs and sizes
  */
-SplitAndSubSolver::SplitAndSubSolver(operations_research::MPSolver::OptimizationProblemType problem_type, const SplitAndSubProblem &problem,
-                                     bool iterative)
-    : solver_("Retail_solver", problem_type), iterative_(iterative) {
-  solver_.MutableObjective()->SetMinimization();
-  bender_var_ = solver_.MakeVar(0.0, kInf, false, "z");
+SplitAndSubSolver::SplitAndSubSolver(operations_research::math_opt::SolverType problem_type, const SplitAndSubProblem &problem,
+                                     bool iterative, bool is_integral)
+    : optimizer_(problem_type, "Retail_solver"),
+    bender_var_(optimizer_.AddContinuousVariable(0.0, kInf, "z")),
+    iterative_(iterative) {
+  optimizer_.objective().set_minimize();
   UpdateObjective(bender_var_, 1);
 
   assortment_vars_.reserve(problem.weights.size());
   for (int i = 0; i < problem.weights.size(); i++) {
-    MPVariable *var = solver_.MakeVar(0.0, 1.0, true, absl::StrCat("x", i));
+    const Variable var = optimizer_.AddVariable(0.0, 1.0, is_integral, absl::StrCat("x", i));
     assortment_vars_.push_back(var);
   }
 
   // Sum of weights less than capacity
-  MPConstraint *weight_limit = solver_.MakeRowConstraint(0, problem.capacity);
+  const LinearConstraint weight_limit = optimizer_.AddLinearConstraint(0, problem.capacity);
   for (int i = 0; i < problem.weights.size(); i++) {
-    weight_limit->SetCoefficient(assortment_vars_[i], problem.weights[i]);
+    weight_limit.set_coefficient(assortment_vars_[i], problem.weights[i]);
   }
 
   if (!iterative) {
     supply_vars_.reserve(problem.customer_orders.size());
     for (int i = 0; i < problem.customer_orders.size(); i++) {
-      MPVariable *var = solver_.MakeVar(0.0, 1.0, false, absl::StrCat("s", i));
+      const Variable var = optimizer_.AddContinuousVariable(0.0, 1.0, absl::StrCat("s", i));
       supply_vars_.push_back(var);
       UpdateObjective(supply_vars_[i], 1);
     }
@@ -67,18 +75,18 @@ SplitAndSubSolver::SplitAndSubSolver(operations_research::MPSolver::Optimization
     std::vector<int> item_coefficients(problem.weights.size(), 0);
     for (int i = 0; i < problem.customer_orders.size(); i++) {
       for (int j = 0; j < problem.customer_orders[i].size(); j++) {
-        MPConstraint *split_constraint = solver_.MakeRowConstraint(1, kInf);
-        split_constraint->SetCoefficient(supply_vars_[i], 1);
+        const LinearConstraint split_constraint = optimizer_.AddLinearConstraint(1, kInf);
+        split_constraint.set_coefficient(supply_vars_[i], 1);
         int item = problem.customer_orders[i][j];
         if (problem.substitutions[i].count(item)) {
           std::vector<int> subs = problem.substitutions[i].find(item)->second;
-          for (int k = 0; k < subs.size(); k++) {
-            item_coefficients[subs[k]]++;
+          for (int sub : subs) {
+            item_coefficients[sub]++;
           }
         }
         item_coefficients[item]++;
         for (int k = 0; k < item_coefficients.size(); k++) {
-          split_constraint->SetCoefficient(assortment_vars_[k], item_coefficients[k]);
+          split_constraint.set_coefficient(assortment_vars_[k], item_coefficients[k]);
         }
         std::fill(item_coefficients.begin(), item_coefficients.end(), 0);
       }
@@ -86,38 +94,29 @@ SplitAndSubSolver::SplitAndSubSolver(operations_research::MPSolver::Optimization
   }
 }
 
-
-/*
-void debug_solve(const SplitAndSubSolution &result) {
-  for (int i = 0; i < result.x_values.size(); i++) {
-    for (int j = 0; j < result.x_values.size(); j++) {
-      printf("[D] x[%i][%i] = %.7f\n", i, j, result.x_values.get(i, j));
-    }
-  }
-}
-*/
-
 /**
  * Calls the MPSolver solve routine and stores the result in a solution object
  * @return Solution containing objective value and variable values
  */
 SplitAndSubSolution SplitAndSubSolver::Solve() {
-  MPSolver::ResultStatus status = solver_.Solve();
-  CHECK_EQ(status, MPSolver::OPTIMAL);
-  SplitAndSubSolution result;
-  result.objective_value = solver_.Objective().Value();
-  result.in_assortment.reserve(assortment_vars_.size());
-  for (int i = 0; i < assortment_vars_.size(); i++) {
-    result.in_assortment.push_back(assortment_vars_[i]->solution_value());
+  math_opt::SolveParametersProto solve_parameters;
+  absl::StatusOr<math_opt::Result> result = optimizer_.Solve(solve_parameters);
+  CHECK_EQ(result.value().termination_reason, SolveResultProto::OPTIMAL) << result.value().termination_detail;
+  SplitAndSubSolution solution;
+  solution.solve_time = result->solve_time();
+  solution.objective_value = result.value().objective_value();
+  solution.in_assortment.reserve(assortment_vars_.size());
+  for (auto assortment_var : assortment_vars_) {
+    solution.in_assortment.push_back(result.value().variable_values().at(assortment_var));
   }
   if (!iterative_) {
-    result.must_split.reserve(supply_vars_.size());
-    for (int i = 0; i < supply_vars_.size(); i++) {
-      result.must_split.push_back(supply_vars_[i]->solution_value());
+    solution.must_split.reserve(supply_vars_.size());
+    for (auto supply_var : supply_vars_) {
+      solution.must_split.push_back(result.value().variable_values().at(supply_var));
     }
   }
 
-  return result;
+  return solution;
 }
 
 /**
@@ -125,8 +124,8 @@ SplitAndSubSolution SplitAndSubSolver::Solve() {
  * @param var MPVariable in the solver
  * @param value New variable coefficient
  */
-void SplitAndSubSolver::UpdateObjective(operations_research::MPVariable *var, double value) {
-  solver_.MutableObjective()->SetCoefficient(var, value);
+void SplitAndSubSolver::UpdateObjective(const Variable var, double value) {
+  optimizer_.objective().set_linear_coefficient(var, value);
 }
 
 int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
@@ -138,24 +137,37 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
  * @param sum
  * @param y_coefficients
  */
-void SplitAndSubSolver::AddBenderCut(const std::vector<int>& y_indices, const SplitAndSubProblem& problem) {
+void SplitAndSubSolver::AddBenderCut(std::vector<int> &y_indices, const SplitAndSubProblem& problem) {
   int num_no_solutions = std::count(y_indices.begin(), y_indices.end(), -1);
+  std::replace(y_indices.begin(), y_indices.end(), -1, 0);
   size_t num_solutions = y_indices.size() - num_no_solutions;
-//  printf("%zu\n", num_solutions);
-  MPConstraint *cut = solver_.MakeRowConstraint(num_solutions, kInf);
-  cut->SetCoefficient(bender_var_, 1);
+  const LinearConstraint cut = optimizer_.AddLinearConstraint(num_solutions, kInf);
+  cut.set_coefficient(bender_var_, 1);
   for (int i = 0; i < y_indices.size(); i++) {
     int index = y_indices[i];
     if (index >= 0) {
-      cut->SetCoefficient(assortment_vars_[index], cut->GetCoefficient(assortment_vars_[index]) + 1);
+      CHECK_LT(index, assortment_vars_.size());
+      cut.set_coefficient(assortment_vars_[index], cut.coefficient(assortment_vars_[index]) + 1);
       if (problem.substitutions[i].count(index)) {
         for (int sub_index : problem.substitutions[i].find(index)->second) {
-          cut->SetCoefficient(assortment_vars_[sub_index], cut->GetCoefficient(assortment_vars_[sub_index]) + 1);
+          cut.set_coefficient(assortment_vars_[sub_index], cut.coefficient(assortment_vars_[sub_index]) + 1);
         }
       }
     }
   }
-//  printf("\n");
+}
+math_opt::ModelProto SplitAndSubSolver::GetModelProto() {
+  return optimizer_.ExportModel();
+}
+
+math_opt::ModelUpdateProto SplitAndSubSolver::GetUpdateProto() {
+  return optimizer_.ExportModelUpdate();
+}
+
+void SplitAndSubSolver::MakeIntegral() {
+  for (const math_opt::Variable& x: assortment_vars_) {
+    x.set_integer();
+  }
 }
 
 } // namespace math_opt_benchmark

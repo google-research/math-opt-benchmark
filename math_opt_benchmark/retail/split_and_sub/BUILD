@@ -11,10 +11,13 @@ cc_library(
     srcs = ["split_and_sub.cc"],
     hdrs = ["split_and_sub.h"],
     deps = [
-#        "@com_github_glog_glog//:glog",
+        "//math_opt_benchmark/proto:model_cc_proto",
+        "//math_opt_benchmark/proto:dataset_cc_proto",
         "@com_google_absl//absl/strings",
-        "@com_google_ortools//ortools/linear_solver",
-        "@com_google_ortools//ortools/math_opt",
+        "@com_google_ortools//ortools/math_opt/cpp:math_opt",
+        "@com_google_ortools//ortools/math_opt/solvers:gscip_solver",
+        "@com_google_ortools//ortools/math_opt/solvers:gurobi_solver",
+        "@com_google_ortools//ortools/math_opt/solvers:glop_solver",
     ],
 )
 
@@ -25,8 +28,6 @@ cc_test(
         ":split_and_sub",
         "@com_google_googletest//:gtest",
         "@com_google_googletest//:gtest_main",
-        "@com_google_ortools//ortools/linear_solver",
-        "@com_google_ortools//ortools/math_opt",
     ],
 )
 
@@ -36,6 +37,5 @@ cc_binary(
     deps = [
         ":split_and_sub",
         "@com_google_absl//absl/random",
-        "@com_google_ortools//ortools/linear_solver",
     ],
 )

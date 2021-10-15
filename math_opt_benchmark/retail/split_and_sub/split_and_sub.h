@@ -15,7 +15,9 @@
 #ifndef MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_RETAIL_H_
 #define MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_RETAIL_H_
 
-#include "ortools/linear_solver/linear_solver.h"
+#include "ortools/math_opt/cpp/math_opt.h"
+#include "math_opt_benchmark/proto/model.pb.h"
+
 #include "unordered_map"
 
 namespace math_opt_benchmark {
@@ -28,24 +30,28 @@ struct SplitAndSubProblem {
 };
 
 struct SplitAndSubSolution {
+  absl::Duration solve_time;
   double objective_value;
   std::vector<double> in_assortment;
-  std::vector<double> must_split;
+  std::vector<int> must_split;
 };
 
 class SplitAndSubSolver {
 public:
-  SplitAndSubSolver(operations_research::MPSolver::OptimizationProblemType problem_type, const SplitAndSubProblem &problem,
-                    bool iterative=true);
+  SplitAndSubSolver(operations_research::math_opt::SolverType problem_type, const SplitAndSubProblem &problem,
+                    bool iterative, bool is_integral);
   SplitAndSubSolution Solve();
-  void UpdateObjective(operations_research::MPVariable *var, double value);
-  void AddBenderCut(const std::vector<int>& y_indices, const SplitAndSubProblem &problem);
+  void UpdateObjective(operations_research::math_opt::Variable var, double value);
+  void AddBenderCut(std::vector<int> &y_indices, const SplitAndSubProblem& problem);
+  operations_research::math_opt::ModelProto GetModelProto();
+  operations_research::math_opt::ModelUpdateProto GetUpdateProto();
+  void MakeIntegral();
 
 private:
-  operations_research::MPSolver solver_;
-  std::vector<operations_research::MPVariable *> assortment_vars_;
-  std::vector<operations_research::MPVariable *> supply_vars_;
-  operations_research::MPVariable *bender_var_;
+  operations_research::math_opt::MathOpt optimizer_;
+  std::vector<operations_research::math_opt::Variable> assortment_vars_;
+  std::vector<operations_research::math_opt::Variable> supply_vars_;
+  operations_research::math_opt::Variable bender_var_;
   bool iterative_;
 };
 
