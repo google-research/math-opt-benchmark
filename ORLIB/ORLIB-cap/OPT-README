@@ -1,0 +1,4 @@
+Do not confuse these optimal solution with the ones reported in the
+ORLIB. The .opt-files for the ORLIB-cap benchmarks are optimal solutions 
+for the corresponding uncapacitated problems. For their calculation 
+capacities were ignored.

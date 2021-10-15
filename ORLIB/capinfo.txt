@@ -1,0 +1,67 @@
+There are currently 40 data files.
+
+These data files are the test problem sets IV to XIII and A
+to C in Table 1 of J.E.Beasley "An algorithm for solving  
+large capacitated warehouse location problems" European 
+Journal of Operational Research 33 (1988) 314-325.
+
+These test problems essentially (but see Appendix in the  
+above paper) include the standard Akinc and Khumawala test
+problems for the capacitated warehouse location problem.
+
+The following table gives the relationship between test 
+problem set and the appropriate files:
+
+Problem set        Files
+IV                 cap41, ..., cap44
+V                  cap51
+VI                 cap61, ..., cap64
+VII                cap71, ..., cap74
+VIII               cap81, ..., cap84
+IX                 cap91, ..., cap94
+X                  cap101, ..., cap104
+XI                 cap111, ..., cap114
+XII                cap121, ..., cap124
+XIII               cap131, ..., cap134
+A                  capa
+B                  capb
+C                  capc
+
+The format of these data files is:
+number of potential warehouse locations (m), number of
+customers (n)
+for each potential warehouse location i (i=1,...,m): 
+capacity, fixed cost
+for each customer j (j=1,...,n): demand, cost of allocating
+all of the demand of j to warehouse i (i=1,...,m)
+
+For files capa, capb and capc (which are large files) in
+order to save file space a single data file is used to 
+represent four test problems. The word 'capacity' in these
+files should be replaced by the appropriate numeric value 
+from Table 1 of the above paper in order to generate each 
+of the four problems in problem sets A, B and C.
+
+The value of the optimal solution for each of these data 
+files is given in the file capopt.
+
+The largest file is capc of size 1300Kb (approximately).
+The entire set of files is of size 5000Kb (approximately).
+
+
+
+A full listing of the problem areas covered by OR-library can
+be found in the file info
+
+ftp access available at mscmga.ms.ic.ac.uk
+WWW access available at http://mscmga.ms.ic.ac.uk/
+
+
+//---
+
+I added the optimal solutions to this package. For each problem
+we have an optimal solution in the corresponding .opt-file as 
+follows: For each city (in order of appearance in the problem file)
+we denoted the facility it is connected to in the optimal solution.
+
+Martin Hoefer, 2002 
