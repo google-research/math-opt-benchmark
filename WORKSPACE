@@ -1,44 +1,22 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
 
 git_repository(
     name = "com_google_absl",
-    commit = "997aaf3", # release 20210324.0
+    commit = "278e0a0", # release 20210324.2
     remote = "https://github.com/abseil/abseil-cpp.git",
 )
 
-http_archive(
+git_repository(
     name = "com_google_googletest",
-    sha256 = "774f5499dee0f9d2b583ce7fff62e575acce432b67a8396e86f3a87c90d2987e",
-    strip_prefix = "googletest-604ba376c3a407c6a40e39fbd0d5055c545f9898",
-    urls = [
-        "https://mirror.bazel.build/github.com/google/googletest/archive/604ba376c3a407c6a40e39fbd0d5055c545f9898.tar.gz",
-        "https://github.com/google/googletest/archive/604ba376c3a407c6a40e39fbd0d5055c545f9898.tar.gz",
-    ],
+    commit = "703bd9c", # release-1.10.0
+    remote = "https://github.com/google/googletest.git",
 )
-
-#http_archive(
-#    name = "com_github_glog_glog",
-#    sha256 = "62efeb57ff70db9ea2129a16d0f908941e355d09d6d83c9f7b18557c0a7ab59e",
-#    strip_prefix = "glog-d516278b1cd33cd148e8989aec488b6049a4ca0b",
-#    urls = ["https://github.com/google/glog/archive/d516278b1cd33cd148e8989aec488b6049a4ca0b.zip"],
-#)
-
-# August 2020
-#http_archive(
-#    name = "com_google_ortools",  # Apache 2.0
-#    sha256 = "beb9fe379977033151045d0815d26c628ad99d74d68b9f3b707578492723731e",
-#    strip_prefix = "or-tools-8.1",
-#    urls = [
-#        "https://mirror.bazel.build/github.com/google/or-tools/archive/v8.1.tar.gz",
-#        "https://github.com/google/or-tools/archive/v8.1.tar.gz",
-#    ],
-#)
 
 # Math Opt
 http_archive(
     name = "com_google_ortools",  # Apache 2.0
-    sha256 = "89f80f54307e97aea9e6089e0d19fe75462fb28159b425dbd6183427583fce25",
+    sha256 = "826e4d2a6d8c8b662b77a3d2b3c2422a57861e4c5987b6450d86d748262bed5d",
     strip_prefix = "or-tools-master",
     urls = [
         "https://github.com/google/or-tools/archive/refs/heads/master.zip",
@@ -77,7 +55,7 @@ http_archive(
 # Protobuf
 git_repository(
     name = "com_google_protobuf",
-    commit = "878be35",  # release v3.15.7
+    commit = "89b14b1",  # release v3.18.0
     remote = "https://github.com/protocolbuffers/protobuf.git",
 )
 
@@ -107,15 +85,16 @@ http_archive(
     build_file = "@com_google_ortools//bazel:bliss.BUILD",
     patches = ["@com_google_ortools//bazel:bliss-0.73.patch"],
     sha256 = "f57bf32804140cad58b1240b804e0dbd68f7e6bf67eba8e0c0fa3a62fd7f0f84",
-    url = "http://www.tcs.hut.fi/Software/bliss/bliss-0.73.zip",
+    url = "https://github.com/google/or-tools/releases/download/v9.0/bliss-0.73.zip",
+    #url = "http://www.tcs.hut.fi/Software/bliss/bliss-0.73.zip",
 )
 
-http_archive(
+new_git_repository(
     name = "scip",
     build_file = "@com_google_ortools//bazel:scip.BUILD",
     patches = ["@com_google_ortools//bazel:scip.patch"],
-    sha256 = "033bf240298d3a1c92e8ddb7b452190e0af15df2dad7d24d0572f10ae8eec5aa",
-    url = "https://github.com/google/or-tools/releases/download/v7.7/scip-7.0.1.tgz",
+    commit = "6acb7222e1b871041445bee75fc05bd1bcaed089", # master from Jul 19, 2021
+    remote = "https://github.com/scipopt/scip.git",
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
