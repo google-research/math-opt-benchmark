@@ -23,15 +23,16 @@ namespace math_opt_benchmark {
 
 class Graph {
  public:
-  // Should there be two const&'s?
   Graph(std::vector<std::vector<int>>&& edges);
   std::vector<std::vector<int>> invalid_components(
       const Matrix<double>& x_values);
   std::vector<int> separation_oracle(const Matrix<double>& x_values);
+  bool verify_mst(const Matrix<double>& weights, Matrix<int>& incidence);
 
  private:
   int n_;
   std::vector<std::vector<int>> edges_;
+  std::vector<int> find_path(int v1, int v2, std::vector<std::vector<int>> incidence);
 };
 
 }  // namespace math_opt_benchmark

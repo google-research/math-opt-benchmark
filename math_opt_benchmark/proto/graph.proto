@@ -1,0 +1,10 @@
+syntax = "proto3";
+package math_opt_benchmark;
+
+message AdjacencyList {
+  repeated int32 indices;
+}
+
+message AdjacencyMatrix {
+  repeated AdjacencyList;
+}

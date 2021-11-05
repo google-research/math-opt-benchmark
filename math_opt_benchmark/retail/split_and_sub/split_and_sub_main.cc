@@ -12,8 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO ADD SUBSTITUTIONS BASED ON FREQUENCIES
+// TODO CLEANUP DEAD CODE
+// WRITE DOWN A DESCRIPTION OF EACH PROBLEM (AND ALGORITHMS USED TO SOLVE THEM)
+// GET DATA FOR SOLVES
+// HOW DOES GLOP COMPARE TO GUROBI?
 // NORMALIZE TO MAKE LARGEST COEFFICIENT 1
+// MST CAN BE RANDOM GRAPHS (RANDOM SUBSET OR PROXIMITY)
+// FIXED DEGREE, OR EVERY EDGE IS PRESENT OR ABSENT WITH FIXED PROBABILITY (2 log n/n)
+// EUCLIDIAN GRAPH (WEIGHT IS DISTANCE AND VERTICES ARE RANDOM POINTS)
 // 10-6 removed conservatively (make constraint looser by plugging in {0,1} for variable
 
 // --alsologtostderr
@@ -44,7 +50,6 @@ ABSL_FLAG(std::string, solver_type, "scip", "Name of the solver to use");
 ABSL_FLAG(bool, test_environment, false, "Only solve one instance");
 
 // TODO flag struct
-
 
 
 bool print_debug_flag() { return absl::GetFlag(FLAGS_print_debug); }
@@ -139,14 +144,14 @@ std::vector<int> solve_worker(const SplitAndSubSolution& solution, const SplitAn
     int value = is_primal ? 1 : max_index;
     ys[i] = value;
   }
-  PrintVector(ys, "Ys");
+//  PrintVector(ys, "Ys");
   return ys;
 }
 
 
 SplitAndSubSolution benders(SplitAndSubSolver& solver, const SplitAndSubProblem& problem, BenchmarkInstance& model) {
   SplitAndSubSolution solution = solver.Solve();
-  model.set_init_objective(solution.objective_value);
+  model.add_objectives(solution.objective_value);
   double ub = kInf;
   double lb = 0.0;
 
@@ -173,7 +178,7 @@ SplitAndSubSolution benders(SplitAndSubSolver& solver, const SplitAndSubProblem&
     phase_one_total += phase_one_time;
     LOG_IF(INFO, print_debug_flag()) << "Phase 1 completed in " << phase_one_time << " (total: " << phase_one_total << ")";
 
-    model.add_update_objectives(solution.objective_value);
+    model.add_objectives(solution.objective_value);
     lb = solution.objective_value;
 
     LOG_IF(INFO, print_debug_flag()) << lb << " <= opt <= " << ub;
@@ -271,8 +276,19 @@ int main(int argc, char *argv[]) {
   math_opt::SolverType solver;
   if (solver_type == "gurobi") {
     solver = math_opt::SOLVER_TYPE_GUROBI;
+  } else if (solver_type == "glpk") {
+    solver = math_opt::SOLVER_TYPE_GLPK;
   } else {
     solver = math_opt::SOLVER_TYPE_GSCIP;
   }
+
+  math_opt_benchmark::Flags flags;
+  flags.solver_type = solver;
+  flags.solve_directly = absl::GetFlag(FLAGS_solve_directly);
+  flags.data_dir = absl::GetFlag(FLAGS_data_dir);
+  flags.print_debug = absl::GetFlag(FLAGS_print_debug);
+  flags.start_continuous = absl::GetFlag(FLAGS_start_continuous);
+  flags.test_environment = absl::GetFlag(FLAGS_test_environment);
+
   math_opt_benchmark::SplitAndSubMain(solver);
 }

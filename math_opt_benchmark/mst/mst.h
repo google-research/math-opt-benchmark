@@ -50,7 +50,8 @@ class MSTSolver {
             const MSTProblem& problem);
   MSTSolution Solve();
   void UpdateObjective(int v1, int v2, double value);
-  void AddConstraints(const MSTProblem& problem,                      std::vector<std::vector<int>> invalid);
+  void AddConstraints(const MSTProblem& problem, std::vector<std::vector<int>> invalid);
+  void EnforceInteger();
 
  private:
   operations_research::MPSolver solver_;

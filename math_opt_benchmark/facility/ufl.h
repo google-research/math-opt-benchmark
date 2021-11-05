@@ -15,8 +15,11 @@
 #ifndef MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 #define MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 
-#include "math_opt_benchmark/matrix/matrix.h"
-#include "ortools/linear_solver/linear_solver.h"
+#include "math_opt_benchmark/mst/matrix/matrix.h"
+#include "ortools/math_opt/cpp/math_opt.h"
+#include "math_opt_benchmark/proto/model.pb.h"
+
+namespace math_opt = operations_research::math_opt;
 
 namespace math_opt_benchmark {
 
@@ -35,18 +38,20 @@ struct UFLSolution {
 
 class UFLSolver {
 public:
-  UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type,
+  UFLSolver(math_opt::SolverType problem_type,
             const UFLProblem &problem, bool iterative);
   UFLSolution Solve();
-  void UpdateObjective(operations_research::MPVariable *var, double value);
+  void UpdateObjective(math_opt::Variable var, double value);
   void AddBenderCut(double sum, const std::vector<double> &y_coefficients);
   void EnforceInteger();
+  BenchmarkInstance GetModel();
 
 private:
-  operations_research::MPSolver solver_;
-  std::vector<std::vector<operations_research::MPVariable *>> supply_vars_;
-  std::vector<operations_research::MPVariable *> open_vars_;
-  operations_research::MPVariable *bender_var_;
+  math_opt::MathOpt optimizer_;
+  std::vector<std::vector<math_opt::Variable>> supply_vars_;
+  std::vector<math_opt::Variable> open_vars_;
+  math_opt::Variable bender_var_;
+  BenchmarkInstance model_;
 };
 
 } // namespace math_opt_benchmark

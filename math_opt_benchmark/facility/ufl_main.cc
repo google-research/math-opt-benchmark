@@ -16,16 +16,14 @@
 #include "ufl.h"
 
 #include "absl/random/random.h"
-#include "gflags/gflags.h"
-#include "ortools/linear_solver/linear_solver.h"
+#include "absl/flags/flag.h"
+#include "absl/strings/str_join.h"
 
 #include <fstream>
 
-DEFINE_string(filename, "ORLIB/ORLIB-uncap/70/cap71.txt", "Path to ORLIB problem specification.");
-DEFINE_bool(iterative, true);
-
-std::string filename_flag() { return FLAGS_filename; }
-bool iterative_flag() { return FLAGS_iterative; }
+ABSL_FLAG(std::string, filename, "", "Path to ORLIB problem specification.");
+ABSL_FLAG(std::string, out_dir, "./", "Directory to save protos.");
+ABSL_FLAG(bool, iterative, true, "Solve iteratively");
 
 namespace math_opt_benchmark {
 
@@ -104,7 +102,6 @@ std::vector<double> knapsack(const std::vector<double>& costs, const std::vector
 UFLSolution benders(UFLSolver& solver, std::vector<std::vector<double>>& supply_costs,
                     std::vector<std::vector<int>>& cost_indices, int num_customers, int num_facilities) {
   UFLSolution solution = solver.Solve();
-//  PrintSolution(solution);
   double prev_objective = -1.0;
   while (solution.objective_value != prev_objective) {
     prev_objective = solution.objective_value;
@@ -118,8 +115,7 @@ UFLSolution benders(UFLSolver& solver, std::vector<std::vector<double>>& supply_
         y_solution[j] = solution.open_values[indices[j]];
       }
       // Don't actually need to solve the knapsack, just need the length
-      std::vector<double> knapsack_solution = knapsack(costs, y_solution);
-      int k = knapsack_solution.size();
+      int k = knapsack(costs, y_solution).size();
       sum += costs[k - 1];
       for (int j = 0; j < k - 1; j++) {
         y_coefficients[indices[j]] += costs[k - 1] - costs[j];
@@ -131,8 +127,8 @@ UFLSolution benders(UFLSolver& solver, std::vector<std::vector<double>>& supply_
   return solution;
 }
 
-void UFLMain() {
-  UFLProblem problem = ParseProblem(filename_flag());
+void UFLMain(const std::string& filename, const std::string& out_dir, bool iterative) {
+  UFLProblem problem = ParseProblem(filename);
   std::vector<std::vector<int>> sorted_cost_indices(problem.num_customers, std::vector<int>(problem.num_facilities));
   for (int i = 0; i < problem.num_customers; i++) {
     std::vector<double>& costs = problem.supply_costs[i];
@@ -141,7 +137,7 @@ void UFLMain() {
     std::sort(indices.begin(), indices.end(), [&, costs](int i, int j) { return costs[i] < costs[j]; });
     std::sort(costs.begin(), costs.end(), [](double i, double j) { return i < j; });
   }
-  UFLSolver solver(operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
+  UFLSolver solver(math_opt::SOLVER_TYPE_GUROBI, problem, iterative);
   UFLSolution solution = benders(solver, problem.supply_costs, sorted_cost_indices, problem.num_customers, problem.num_facilities);
   solver.EnforceInteger();
   solution = benders(solver, problem.supply_costs, sorted_cost_indices, problem.num_customers, problem.num_facilities);
@@ -151,13 +147,23 @@ void UFLMain() {
     for (j = 0; j < problem.num_facilities && !solution.open_values[sorted_cost_indices[i][j]]; j++);
     solution.supply_values.push_back(sorted_cost_indices[i][j]);
   }
+
+  std::ofstream f(out_dir + filename.substr(filename.find_last_of('/')));
+  f << solver.GetModel().DebugString();
+  f.close();
+
   PrintORLIB(solution);
+
 }
 
 } // namespace math_opt_benchmark
 
 int main(int argc, char *argv[]) {
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
-  std::cerr << filename_flag() << std::endl;
-  math_opt_benchmark::UFLMain();
+  google::InitGoogleLogging(argv[0]);
+  absl::ParseCommandLine(argc, argv);
+  std::string filename = absl::GetFlag(FLAGS_filename);
+  std::string out_dir = absl::GetFlag(FLAGS_out_dir);
+  std::cerr << filename << std::endl;
+  bool iterative = absl::GetFlag(FLAGS_iterative);
+  math_opt_benchmark::UFLMain(filename, out_dir, iterative);
 }

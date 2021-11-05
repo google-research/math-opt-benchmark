@@ -15,45 +15,44 @@
 #include "ufl.h"
 
 #include "absl/strings/str_cat.h"
-#include "glog/logging.h"
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
 
 namespace math_opt_benchmark {
 
-using ::operations_research::MPConstraint;
-using ::operations_research::MPSolver;
-using ::operations_research::MPVariable;
+namespace math_opt = operations_research::math_opt;
 
 /**
  * @param problem_type MPSolver constant specifying which solver to use
  * @param problem Facility location specification with costs and sizes
  */
-UFLSolver::UFLSolver(operations_research::MPSolver::OptimizationProblemType problem_type, const UFLProblem &problem, bool iterative=true)
-    : solver_("UFL_solver", problem_type) {
-  solver_.MutableObjective()->SetMinimization();
-  supply_vars_ = std::vector(problem.num_customers, std::vector<MPVariable *>(problem.num_facilities));
+UFLSolver::UFLSolver(math_opt::SolverType problem_type, const UFLProblem &problem, bool iterative=true)
+    : optimizer_(problem_type, "UFL Solver"),
+    bender_var_(optimizer_.AddContinuousVariable(0.0, kInf, "w")) {
+  optimizer_.objective().set_minimize();
+  supply_vars_.reserve(problem.num_customers);
   bool integer = !iterative;
   for (int i = 0; i < problem.num_customers; ++i) {
+    supply_vars_.emplace_back();
+    supply_vars_[i].reserve(problem.num_facilities);
     for (int j = 0; j < problem.num_facilities; ++j) {
-      MPVariable *var = solver_.MakeVar(0.0, 1.0, integer, absl::StrCat("x", i, j));
-      supply_vars_[i][j] = var;
+      math_opt::Variable var = optimizer_.AddContinuousVariable(0.0, 1.0, absl::StrCat("x", i, ",", j));
+      supply_vars_[i].push_back(var);
     }
   }
 
   open_vars_.reserve(problem.num_facilities);
   for (int i = 0; i < problem.num_facilities; ++i) {
-    MPVariable *var = solver_.MakeVar(0.0, 1.0, false, absl::StrCat("y", i));
+    math_opt::Variable var = optimizer_.AddVariable(0.0, 1.0, false, absl::StrCat("y", i));
     open_vars_.push_back(var);
     UpdateObjective(var, problem.open_costs[i]);
   }
   // Feasibility constraint: at least one facility open
-  MPConstraint *feasible = solver_.MakeRowConstraint(1, kInf);
+  const math_opt::LinearConstraint feasible = optimizer_.AddLinearConstraint(1, kInf);
   for (int i = 0; i < problem.num_facilities; ++i) {
-    feasible->SetCoefficient(open_vars_[i], 1);
+    feasible.set_coefficient(open_vars_[i], 1);
   }
 
-  bender_var_ = solver_.MakeVar(0.0, kInf, false, "w");
   UpdateObjective(bender_var_, 1);
 
   // Regular problem formulation
@@ -61,27 +60,29 @@ UFLSolver::UFLSolver(operations_research::MPSolver::OptimizationProblemType prob
     // Minimize customer costs
     for (int i = 0; i < problem.num_customers; ++i) {
       for (int j = 0; j < problem.num_facilities; ++j) {
-        UpdateObjective(supply_vars_[i][j], problem.supply_costs[i][j])
+        UpdateObjective(supply_vars_[i][j], problem.supply_costs[i][j]);
       }
     }
 
     for (int i = 0; i < problem.num_facilities; ++i) {
-      operations_research::MPConstraint *c = solver_.MakeRowConstraint(0, 1);
-      c->SetCoefficient(open_vars_[i], 1);
+      math_opt::LinearConstraint c = optimizer_.AddLinearConstraint(0, 1);
+      c.set_coefficient(open_vars_[i], 1);
     }
 
     for (int i = 0; i < problem.num_customers; ++i) {
       // Each customer is fulfilled
-      operations_research::MPConstraint *full = solver_.MakeRowConstraint(1, 1);
+      math_opt::LinearConstraint full = optimizer_.AddLinearConstraint(1, 1);
       for (int j = 0; j < problem.num_facilities; ++j) {
-        full->SetCoefficient(supply_vars_[i][j], 1);
+        full.set_coefficient(supply_vars_[i][j], 1);
         // Only supplied by open facilities
-        operations_research::MPConstraint *open = solver_.MakeRowConstraint(-kInf, 0);
-        open->SetCoefficient(supply_vars_[i][j], 1);
-        open->SetCoefficient(open_vars_[j], -1);
+        math_opt::LinearConstraint open = optimizer_.AddLinearConstraint(-kInf, 0);
+        open.set_coefficient(supply_vars_[i][j], 1);
+        open.set_coefficient(open_vars_[j], -1);
       }
     }
   }
+
+   *(model_.mutable_initial_model()) = optimizer_.ExportModel();
 }
 
 
@@ -100,15 +101,20 @@ void debug_solve(const UFLSolution &result) {
  * @return Solution containing objective value and variable values
  */
 UFLSolution UFLSolver::Solve() {
-  MPSolver::ResultStatus status = solver_.Solve();
-  CHECK_EQ(status, MPSolver::OPTIMAL);
-  UFLSolution result;
-  result.objective_value = solver_.Objective().Value();
-  result.open_values.reserve(open_vars_.size());
-  for (const MPVariable *v : open_vars_) {
-    result.open_values.push_back(v->solution_value());
+  math_opt::SolveParametersProto solve_parameters;
+  solve_parameters.mutable_common_parameters()->set_enable_output(false);
+  absl::StatusOr<math_opt::Result> result = optimizer_.Solve(solve_parameters);
+  CHECK_EQ(result.value().termination_reason, math_opt::SolveResultProto::OPTIMAL) << result.value().termination_detail;
+
+  UFLSolution solution;
+  solution.objective_value = result.value().objective_value();
+  solution.open_values.reserve(open_vars_.size());
+  for (math_opt::Variable v : open_vars_) {
+    solution.open_values.push_back(result.value().variable_values().at(v));
   }
-  return result;
+
+  model_.mutable_objectives()->Add(solution.objective_value);
+  return solution;
 }
 
 /**
@@ -116,8 +122,8 @@ UFLSolution UFLSolver::Solve() {
  * @param var MPVariable in the solver
  * @param value New variable coefficient
  */
-void UFLSolver::UpdateObjective(operations_research::MPVariable *var, double value) {
-  solver_.MutableObjective()->SetCoefficient(var, value);
+void UFLSolver::UpdateObjective(math_opt::Variable var, double value) {
+  optimizer_.objective().set_linear_coefficient(var, value);
 }
 
 int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
@@ -131,16 +137,21 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
  */
 void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficients) {
   // bender_var_ >= sum - \sum(y * y_coefficients)
-  MPConstraint *cut = solver_.MakeRowConstraint(sum, kInf);
-  cut->SetCoefficient(bender_var_, 1);
+  math_opt::LinearConstraint cut = optimizer_.AddLinearConstraint(sum, kInf);
+  cut.set_coefficient(bender_var_, 1);
   for (int i = 0; i < open_vars_.size(); i++) {
-    cut->SetCoefficient(open_vars_[i], y_coefficients[i]);
+    cut.set_coefficient(open_vars_[i], y_coefficients[i]);
   }
+
+  *(model_.add_model_updates()) = optimizer_.ExportModelUpdate();
 }
 void UFLSolver::EnforceInteger() {
-  for (MPVariable *v : open_vars_) {
-    v->SetInteger(true);
+  for (math_opt::Variable v : open_vars_) {
+    v.set_is_integer(true);
   }
+}
+BenchmarkInstance UFLSolver::GetModel() {
+  return model_;
 }
 
 } // namespace math_opt_benchmark

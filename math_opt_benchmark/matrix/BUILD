@@ -22,6 +22,5 @@ cc_test(
         ":matrix",
         "@com_google_googletest//:gtest",
         "@com_google_googletest//:gtest_main",
-        "@com_google_ortools//ortools/linear_solver",
     ],
 )

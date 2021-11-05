@@ -13,9 +13,13 @@ cc_library(
     deps = [
         "//math_opt_benchmark/mst/graph",
         "//math_opt_benchmark/mst/matrix",
-        "@com_github_glog_glog//:glog",
+        "//math_opt_benchmark/proto:model_cc_proto",
+        "//math_opt_benchmark/proto:graph_cc_proto",
         "@com_google_absl//absl/strings",
-        "@com_google_ortools//ortools/linear_solver",
+        "@com_google_ortools//ortools/math_opt/cpp:math_opt",
+        "@com_google_ortools//ortools/math_opt/solvers:gscip_solver",
+        "@com_google_ortools//ortools/math_opt/solvers:gurobi_solver",
+        "@com_google_ortools//ortools/math_opt/solvers:glop_solver",
     ],
 )
 
@@ -35,10 +39,6 @@ cc_binary(
     srcs = ["mst_main.cc"],
     deps = [
         ":mst",
-        "//math_opt_benchmark/mst/graph",
-        "//math_opt_benchmark/mst/matrix",
-        "@com_github_gflags_gflags//:gflags",
-        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/random",
         "@com_google_ortools//ortools/linear_solver",
     ],

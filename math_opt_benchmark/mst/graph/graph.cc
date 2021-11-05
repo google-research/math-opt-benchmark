@@ -14,11 +14,11 @@
 
 #include "graph.h"
 #include "flow.h"
+#include "absl/strings/str_join.h"
 
 #include <cmath>
 
 #include "absl/random/random.h"
-
 
 namespace math_opt_benchmark {
 
@@ -73,6 +73,7 @@ std::vector<std::vector<int>> Graph::invalid_components(
     components.push_back(component);
   }
 
+  // First component seems to always be empty but that doesn't matter
   std::vector<std::vector<int>> invalid;
   for (const std::vector<int>& component : components) {
     // Check if connected component violates constraint (i.e. sum of edges > |component|-1)
@@ -83,6 +84,7 @@ std::vector<std::vector<int>> Graph::invalid_components(
       }
     }
     // Edges are counted twice in the graph
+    // Component.size - 1 -> inf when component is empty (underflow)
     if (sum / 2 > component.size() - 1 + kTolerance) {
       invalid.push_back(component);
     }
@@ -96,7 +98,7 @@ std::vector<int> Graph::separation_oracle(const Matrix<double> &x_values) {
   int t = n_ + 1;
   std::vector<int> solution;
   for (int i = 0; i < n_; i++) {
-    for (int j = i+1; j < n_; i++) {
+    for (int j = i+1; j < n_; j++) {
       FlowSolver flow;
       for (int v1 = 0; v1 < edges_.size(); v1++) {
         double sum = 0;
@@ -120,4 +122,74 @@ std::vector<int> Graph::separation_oracle(const Matrix<double> &x_values) {
   return solution;
 }
 
+// Assumes there is a path from v1 to v2
+std::vector<int> Graph::find_path(int v1, int v2, std::vector<std::vector<int>> incidence) {
+  std::vector<int> stack = {v1};
+  std::vector<int> depths = {0};
+  std::vector<int> path = {};
+  int v = v1;
+  int depth = 0;
+  while (v != v2) {
+    v = stack.back();
+    depth = depths.back();
+    stack.pop_back();
+    depths.pop_back();
+    for (int i = path.size() - 1; i >= depth; i--) {
+      path.pop_back();
+    }
+    path.push_back(v);
+    for (int j = 0; j < incidence.size(); j++) {
+      if (incidence[v][j]) {
+        if (j == v2) {
+          v = v2;
+          break;
+        }
+        stack.push_back(j);
+        depths.push_back(depth + 1);
+        incidence[v][j] = incidence[j][v] = 0;
+      }
+    }
+  }
+//  PrintVector(path);
+  path.push_back(v2);
+  return path;
+}
+
+// Clobbers the incidence matrix and assumes graph is connected
+bool Graph::verify_mst(const Matrix<double>& weights, Matrix<int>& incidence) {
+//  printf("\n-----IN------\n");
+  int num_edges = 0;
+  std::vector<std::vector<int>> mst_incidence(incidence.size(), std::vector<int>(incidence.size(), 0));
+  for (int v1 = 0; v1 < edges_.size(); v1++) {
+    const std::vector<int>& edge = edges_[v1];
+    for (int j = 0; j < edge.size(); j++) {
+      num_edges++;
+      int v2 = edge[j];
+      incidence.set(v1, v2, 0);
+      mst_incidence[v1][v2] = 1;
+    }
+  }
+  CHECK_EQ(num_edges, 2*(n_ - 1));
+
+  // Only iterate through the edges not in the graph
+  for (int i = 0; i < incidence.size(); i++) {
+    for (int j = 0; j <= i; j++) {
+      if (incidence.is_set(i, j) && incidence.get(i, j)) {
+        std::vector<int> path = find_path(i, j, mst_incidence);
+        double weight = weights.get(i, j);
+        for (int k = 0; k < path.size() - 1; k++) {
+          int v1 = path[k];
+          int v2 = path[k+1];
+          if (weights.get(v1, v2) > weight) {
+            return false;
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
+
 }  // namespace math_opt_benchmark
+

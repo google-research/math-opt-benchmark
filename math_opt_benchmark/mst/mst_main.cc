@@ -12,26 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <fstream>
 #include "absl/random/random.h"
-#include "gflags/gflags.h"
+#include "absl/flags/flag.h"
+#include "absl/strings/str_join.h"
 #include "math_opt_benchmark/mst/graph/graph.h"
 #include "math_opt_benchmark/mst/mst.h"
 #include "ortools/linear_solver/linear_solver.h"
 
-DEFINE_int32(num_vars, 3, "How many variables are in the problem.");
+#include "math_opt_benchmark/proto/graph.pb.h"
 
-int num_vars_flag() { return FLAGS_num_vars; }
+ABSL_FLAG(std::string, data_dir, "", "Full path to the directory containing the graph protobufs");
 
 constexpr double kTolerance = 1e-5;
+
+namespace math_opt = operations_research::math_opt;
 
 namespace math_opt_benchmark {
 
 void PrintSolution(const MSTSolution& solution) {
   std::cout << "Solution objective: " << solution.objective_value << std::endl;
-  for (auto& x_vector : solution.x_values.as_vector_vector()) {
-    std::cout << "Solution variable values: " << absl::StrJoin(x_vector, ",")
-              << std::endl;
-  }
+  solution.x_values.print();
 }
 
 template <class T>
@@ -47,9 +48,9 @@ void PrintVector(std::vector<T> vec) {
  */
 Graph toGraph(const MSTProblem& problem, const MSTSolution& solution) {
   std::vector<std::vector<int>> edges(problem.n);
-  for (int v1 = 0; v1 < problem.n; ++v1) {
-    for (const int& v2 : problem.edges.as_vector(v1)) {
-      if (std::abs(solution.x_values.get(v1, v2)) > kTolerance) {
+  for (int v1 = 0; v1 < problem.n; v1++) {
+    for (int v2 = 0; v2 <= v1; v2++) {
+      if (problem.edges.is_set(v1, v2) && std::abs(solution.x_values.get(v1, v2)) > kTolerance) {
         edges[v1].push_back(v2);
         edges[v2].push_back(v1);
       }
@@ -59,22 +60,8 @@ Graph toGraph(const MSTProblem& problem, const MSTSolution& solution) {
   return g;
 }
 
-void MSTMain() {
-  const int N = num_vars_flag();
-  absl::BitGen gen;
 
-  MSTProblem problem;
-  problem.n = N;
-  problem.edges.init(N);
-  problem.weights.init(N);
-  // Complete graph with weights ~ Unif(0, 1)
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < i; j++) {
-      problem.edges.set(i, j, j);
-      problem.weights.set(i, j, absl::Uniform(gen, 0.0, 1.0));
-    }
-  }
-  MSTSolver solver(operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING, problem);
+MSTSolution iterate_solves(const MSTProblem& problem, MSTSolver& solver) {
   MSTSolution solution = solver.Solve();
 
   Graph graph = toGraph(problem, solution);
@@ -84,26 +71,68 @@ void MSTMain() {
   std::vector<std::vector<int>> separation_cut(1);
   do {
     while (!invalid.empty() && invalid != last) {
-      PrintVector(invalid[0]);
       last = invalid;
       solver.AddConstraints(problem, invalid);
       solution = solver.Solve();
       graph = toGraph(problem, solution);
       invalid = graph.invalid_components(solution.x_values);
     }
-    printf("Separating...\n");
     separation_cut[0] = graph.separation_oracle(solution.x_values);
-    PrintVector(separation_cut[0]);
     invalid = separation_cut;
   } while (!separation_cut[0].empty());
 
-  PrintSolution(solution);
+  return solution;
+}
+
+
+void MSTMain(std::string graph_dir) {
+  for (int _ = 0; _ < 100; _++) {
+    std::string file_name = graph_dir + std::to_string(_) + ".pb";
+    std::cout << file_name << std::endl;
+    std::ifstream order_stream(file_name);
+    std::stringstream buffer;
+    buffer << order_stream.rdbuf();
+
+    AdjacencyMatrix matrix;
+    matrix.ParseFromString(buffer.str());
+
+    MSTProblem problem;
+    int n = matrix.vertices_size();
+    problem.n = n;
+    problem.weights.init(n);
+    problem.edges.init(n);
+    problem.integer = false;
+    for (int i = 0; i < n; i++) {
+      for (int j = i; j < n; j++) {
+        float weight = matrix.vertices(i).indices(j);
+        problem.weights.set(i, j, weight);
+        problem.weights.set(j, i, weight);
+        if (weight > kTolerance) {
+          problem.edges.set(i, j, 1);
+          problem.edges.set(j, i, 1);
+        }
+      }
+    }
+
+
+    MSTSolver solver(operations_research::MPSolver::GUROBI_MIXED_INTEGER_PROGRAMMING, problem);
+    MSTSolution solution = iterate_solves(problem, solver);
+    solver.EnforceInteger();
+    solution = iterate_solves(problem, solver);
+
+    Graph graph = toGraph(problem, solution);
+    CHECK_EQ(graph.verify_mst(problem.weights, problem.edges), true);
+
+  }
 }
 
 }  // namespace math_opt_benchmark
 
+
 int main(int argc, char** argv) {
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
-  math_opt_benchmark::MSTMain();
+  google::InitGoogleLogging(argv[0]);
+  absl::ParseCommandLine(argc, argv);
+  std::string graph_dir = absl::GetFlag(FLAGS_data_dir);
+  math_opt_benchmark::MSTMain(graph_dir);
   return 0;
 }

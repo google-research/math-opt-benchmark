@@ -15,7 +15,6 @@
 #include "math_opt_benchmark/mst/mst.h"
 
 #include "absl/strings/str_cat.h"
-#include "glog/logging.h"
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
 
@@ -34,17 +33,15 @@ MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
     : solver_("MST_solver", problem_type) {
   solver_.MutableObjective()->SetMinimization();
   x_vars_.init(problem.n);
-  for (int i = 0; i < problem.n; ++i) {
-    for (int j = 0; j < i; ++j) {
-      MPVariable *var = solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("x", i, j));
-      x_vars_.set(i, j, var);
-      UpdateObjective(i, j, problem.weights.get(i, j));
-    }
-  }
   MPConstraint *c_eq = solver_.MakeRowConstraint(problem.n - 1, problem.n - 1);
   for (int i = 0; i < problem.n; ++i) {
     for (int j = 0; j < i; ++j) {
-      c_eq->SetCoefficient(x_vars_.get(i, j), 1);
+      if (problem.edges.is_set(i, j)) {
+        MPVariable *var = solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("x", i, ",", j));
+        x_vars_.set(i, j, var);
+        UpdateObjective(i, j, problem.weights.get(i, j));
+        c_eq->SetCoefficient(x_vars_.get(i, j), 1);
+      }
     }
   }
 }
@@ -52,7 +49,9 @@ MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
 void debug_solve(const MSTSolution &result) {
   for (int i = 0; i < result.x_values.size(); i++) {
     for (int j = 0; j < result.x_values.size(); j++) {
-      printf("[D] x[%i][%i] = %.7f\n", i, j, result.x_values.get(i, j));
+      if (result.x_values.is_set(i, j)) {
+        printf("[D] x[%i][%i] = %.7f\n", i, j, result.x_values.get(i, j));
+      }
     }
   }
 }
@@ -67,11 +66,15 @@ MSTSolution MSTSolver::Solve() {
   MSTSolution result;
   result.objective_value = solver_.Objective().Value();
   result.x_values.init(x_vars_.size());
-  for (int i = 1; i < x_vars_.size(); i++) {
+  for (int i = 0; i < x_vars_.size(); i++) {
     for (int j = 0; j < i; j++) {
-      result.x_values.set(i, j, x_vars_.get(i, j)->solution_value());
+      if (x_vars_.is_set(i, j)) {
+        result.x_values.set(i, j, x_vars_.get(i, j)->solution_value());
+        result.x_values.set(j, i, x_vars_.get(i, j)->solution_value());
+      }
     }
   }
+
   return result;
 }
 
@@ -100,13 +103,28 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
  */
 void MSTSolver::AddConstraints(const MSTProblem &problem,
                                std::vector<std::vector<int>> invalid) {
-  constexpr int kMaxNewConstraints = 25;
+  constexpr int kMaxConstraintVars = 100;
   std::sort(invalid.begin(), invalid.end(), sort_by_size);
-  for (int i = 0; i < invalid.size() && i < kMaxNewConstraints; ++i) {
-    MPConstraint *c = solver_.MakeRowConstraint(-kInf, (double)invalid[i].size() - 1);
-    for (const int j : invalid[i]) {
-      if (i != j) {
-        c->SetCoefficient(x_vars_.get(i, j), 1);
+  for (int i = 0; i < invalid.size() && i < kMaxConstraintVars; ++i) {
+    MPConstraint *c = solver_.MakeRowConstraint(-kInf, (double) invalid[i].size() - 1);
+    for (int j = 0; j < invalid[i].size(); j++) {
+      for (int k = 0; k < invalid[i].size(); k++) {
+//        printf("%i, %i: ", j, k);
+        int v1 = invalid[i][j], v2 = invalid[i][k];
+//        printf("%i, %i\n", v1, v2);
+        if (x_vars_.is_set(v1, v2)) {
+          c->SetCoefficient(x_vars_.get(v1, v2), 1);
+        }
+      }
+    }
+  }
+}
+
+void MSTSolver::EnforceInteger() {
+  for (int i = 0; i < x_vars_.size(); i++) {
+    for (int j = 0; j < i; j++) {
+      if (x_vars_.is_set(i, j)) {
+        x_vars_.get(i, j)->SetInteger(true);
       }
     }
   }

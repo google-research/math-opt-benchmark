@@ -22,6 +22,15 @@
 
 namespace math_opt_benchmark {
 
+struct Flags {
+  bool print_debug;
+  bool start_continuous;
+  bool solve_directly;
+  std::string data_dir;
+  operations_research::math_opt::SolverType solver_type;
+  bool test_environment;
+};
+
 struct SplitAndSubProblem {
   int capacity;
   std::vector<double> weights;

@@ -18,7 +18,13 @@
 #include <iostream>
 #include <vector>
 
-#include "glog/logging.h"
+#include "ortools/math_opt/cpp/math_opt.h"
+#include "absl/strings/str_join.h"
+
+template <class T>
+void PrintVector(std::vector<T> vec) {
+  std::cout << "Vector: " << absl::StrJoin(vec, ",") << std::endl;
+}
 
 namespace math_opt_benchmark {
 template <class T>
@@ -34,10 +40,12 @@ class Matrix {
   void print() const;
   std::vector<std::vector<T>> as_vector_vector() const;
   std::vector<T> as_vector(int row) const;
+  std::vector<int> set_vector(int row) const;
+  bool is_set(int i, int j) const;
 
+  std::vector<std::vector<T>> elements_;
  private:
   int n_{};
-  std::vector<std::vector<T>> elements_;
   std::vector<std::vector<bool>> set_;
 };
 
@@ -51,8 +59,11 @@ template <class T>
 void Matrix<T>::init(int n) {
   n_ = n;
   for (int i = 0; i < n; ++i) {
-    elements_.emplace_back(i + 1);
+    elements_.emplace_back(i + 1, T{});
+    CHECK_EQ(i+1, elements_[i].size());
     set_.emplace_back(i + 1, false);
+//    elements_.emplace_back(n);
+//    set_.emplace_back(n, false);
   }
 }
 
@@ -62,9 +73,12 @@ T Matrix<T>::get(int i, int j) const {
   CHECK_GE(j, 0);
   int r = i > j ? i : j;
   int c = i > j ? j : i;
+//  printf("%i, %i : %i, %i\n", r, c, elements_[r].size(), elements_[c].size());
   CHECK_LT(r, elements_.size());
-  CHECK_LT(c, elements_[r].size());
+  CHECK_LE(c, elements_[r].size());
+//  printf("%i, %i\n", r, c);
   CHECK_EQ(set_[r][c], true);
+//  return elements_[r][c];
   return elements_[r][c];
 }
 
@@ -85,15 +99,15 @@ template <class T>
 void Matrix<T>::print() const {
   for (int i = 0; i < n_; i++) {
     printf("SET: ");
-    for (int j = 0; j < i; j++) {
+    for (int j = 0; j <= i; j++) {
       std::cout << set_[i][j] << ' ';
     }
     printf("\n");
   }
   printf("----------\n");
   for (int i = 0; i < n_; i++) {
-    printf("GET: ");
-    for (int j = 0; j < i; j++) {
+    printf("GET: (%-2d) ", i);
+    for (int j = 0; j <= i; j++) {
       std::cout << elements_[i][j] << ' ';
     }
     printf("\n");
@@ -103,7 +117,15 @@ void Matrix<T>::print() const {
 
 template <class T>
 std::vector<std::vector<T>> Matrix<T>::as_vector_vector() const {
-  return elements_;
+  std::vector<std::vector<T>> elements(n_, std::vector(n_, T{}));
+  for (int i = 0; i < n_; i++) {
+    for (int j = 0; j <= i; i++) {
+      if (set_[i][j]) {
+        elements[i][j] = elements[j][i] = elements_[i][j];
+      }
+    }
+  }
+  return elements;
 }
 
 template <class T>
@@ -115,6 +137,29 @@ std::vector<T> Matrix<T>::as_vector(int row) const {
     }
   }
   return v;
+}
+
+template <class T>
+std::vector<int> Matrix<T>::set_vector(int row) const {
+  std::vector<int> indices;
+  for (int i = 0; i <= row; i++) {
+    if (set_[row][i]) {
+      indices.push_back(i);
+    }
+  }
+  for (int j = row + 1; j < n_; j++) {
+    if (set_[j][row]) {
+      indices.push_back(j);
+    }
+  }
+  return indices;
+}
+
+template <class T>
+bool Matrix<T>::is_set(int i, int j) const {
+  int r = i > j ? i : j;
+  int c = i > j ? j : i;
+  return set_[r][c];
 }
 
 }  // namespace math_opt_benchmark

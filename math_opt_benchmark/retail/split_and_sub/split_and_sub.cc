@@ -17,7 +17,7 @@
 #include "absl/strings/str_cat.h"
 #include "absl/random/random.h"
 #include "absl/strings/str_join.h"
-#include "ortools/math_opt/indexed_model.h"
+//#include "ortools/math_opt/indexed_model.h"
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
 
@@ -100,6 +100,7 @@ SplitAndSubSolver::SplitAndSubSolver(operations_research::math_opt::SolverType p
  */
 SplitAndSubSolution SplitAndSubSolver::Solve() {
   math_opt::SolveParametersProto solve_parameters;
+  solve_parameters.mutable_common_parameters()->set_enable_output(false);
   absl::StatusOr<math_opt::Result> result = optimizer_.Solve(solve_parameters);
   CHECK_EQ(result.value().termination_reason, SolveResultProto::OPTIMAL) << result.value().termination_detail;
   SplitAndSubSolution solution;

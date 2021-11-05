@@ -11,7 +11,7 @@ cc_library(
     srcs = [],
     hdrs = ["matrix.h"],
     deps = [
-        "@com_github_glog_glog//:glog",
+        "@com_google_ortools//ortools/math_opt/cpp:math_opt",
     ],
 )
 
