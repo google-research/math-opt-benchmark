@@ -25,7 +25,7 @@ Gurobi needs to be installed manually. The instructions [from their website](htt
 should cover everything.
 
 ## Creating Random Instances
-Skip this section if you plan to use the included protos. The retail data is generated
+<strong> Skip this section if you plan to use the included protos. </strong> The retail data is generated
 from the Instacart dataset available [here](https://www.kaggle.com/c/instacart-market-basket-analysis)
 and requires a Kaggle account to download.
 
@@ -88,7 +88,7 @@ directories:
 1. [math_opt_benchmark/facility](math_opt_benchmark/facility) contains the files to solve UFL
     * [knapsack.cc](math_opt_benchmark/facility/knapsack.cc) solves the worker dual
 2. [math_opt_benchmark/mst](math_opt_benchmark/mst) contains the files to solve MST
-    * [graph](math_opt_benchmark/facility/graph) contains the max-flow separation oracle and
+    * [graph](math_opt_benchmark/mst/graph) contains the max-flow separation oracle and
     various graph algorithms for verifying the correctness of the MST.
 3. [math_opt_benchmark/retail](math_opt_benchmark/retail) contains the shipment models
     * Not updated yet: [split](math_opt_benchmark/retail/split) minimizes split shipments
