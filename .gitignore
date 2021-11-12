@@ -4,9 +4,9 @@ bazel-*
 .idea
 .DS_Store
 .clwb
-instacart/*.json
-instacart/*.csv
-instacart/instacart-market-basket-analysis/
+*.json
+*.csv
+instacart-market-basket-analysis/
 __pycache__
 math_opt
 logs/
