@@ -93,3 +93,5 @@ directories:
 3. [math_opt_benchmark/retail](math_opt_benchmark/retail) contains the shipment models
     * Not updated yet: [split](math_opt_benchmark/retail/split) minimizes split shipments
     * [split_and_sub](math_opt_benchmark/retail/split_and_sub) minimizes split shipments with personalized substitutions
+4. [math_opt_benchmark/proto](math_opt_benchmark/proto) contains the protos used to store 
+[graphs](math_opt_benchmark/proto/graph.proto), [Instacart orders](math_opt_benchmark/proto/dataset.proto), and the [BenchmarkInstance](math_opt_benchmark/proto/model.proto)
