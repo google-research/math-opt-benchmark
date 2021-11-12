@@ -41,12 +41,6 @@ for item in items:
     else:
         aisle_freqs[item.aisle].append(item.freq + aisle_freqs[item.aisle][-1])
 
-# subs = [None]
-# for i in range(1, len(frqs)):
-#     sub = dataset_pb2.Substitution()
-#     sub.index = i
-#     sub.sub_idxs.extend(aisles[items_[i].aisle][:3])
-#     subs.append(sub)
 
 with open('orders.json', 'r') as f:
     orders_ = json.load(f)
@@ -54,7 +48,6 @@ with open('orders.json', 'r') as f:
     for i in range(len(orders)):
         orders[i] = list(map(int, orders[i]))
     random.shuffle(orders)
-    # orders.sort(key=lambda x: len(x))
 
 small_orders = []
 medium_orders = []

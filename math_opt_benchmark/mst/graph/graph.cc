@@ -150,14 +150,12 @@ std::vector<int> Graph::find_path(int v1, int v2, std::vector<std::vector<int>> 
       }
     }
   }
-//  PrintVector(path);
   path.push_back(v2);
   return path;
 }
 
 // Clobbers the incidence matrix and assumes graph is connected
 bool Graph::verify_mst(const Matrix<double>& weights, Matrix<int>& incidence) {
-//  printf("\n-----IN------\n");
   int num_edges = 0;
   std::vector<std::vector<int>> mst_incidence(incidence.size(), std::vector<int>(incidence.size(), 0));
   for (int v1 = 0; v1 < edges_.size(); v1++) {

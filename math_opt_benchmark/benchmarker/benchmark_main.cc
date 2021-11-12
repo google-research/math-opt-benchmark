@@ -23,6 +23,7 @@
 #define OUT
 ABSL_FLAG(std::string, instance_dir, "", "Path to directory containing model protos");
 ABSL_FLAG(bool, is_mip, true, "Path to directory containing model protos");
+ABSL_FLAG(bool, is_single_file, false, "Whether instance_dir points to a directory or a single file");
 
 namespace math_opt = operations_research::math_opt;
 
@@ -127,9 +128,12 @@ int main(int argc, char *argv[]) {
   absl::ParseCommandLine(argc, argv);
   std::string dir = absl::GetFlag(FLAGS_instance_dir);
   std::vector<std::string> proto_filenames;
-  for (const auto& entry : std::filesystem::directory_iterator(dir)) {
-    proto_filenames.push_back(entry.path());
-    break;
+  if (absl::GetFlag(FLAGS_is_single_file)) {
+    proto_filenames.push_back(dir);
+  } else {
+    for (const auto &entry : std::filesystem::directory_iterator(dir)) {
+      proto_filenames.push_back(entry.path());
+    }
   }
 
   bool is_mip = absl::GetFlag(FLAGS_is_mip);
