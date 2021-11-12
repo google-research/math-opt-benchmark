@@ -2,6 +2,7 @@ import json
 import dataset_pb2
 import random
 from collections import defaultdict
+import os
 
 random.seed(4224)
 
@@ -17,10 +18,12 @@ with open('aisles.json', 'r') as f:
     for key in aisles_:
         aisles[int(key)] = list(map(int, aisles_[key]))
 
+
 def get_aisle(idx):
     for aisle, aisle_items in aisles.items():
         if idx in aisle_items:
             return aisle
+
 
 items_ = [None]
 for i in range(1, len(frqs)):
@@ -41,7 +44,6 @@ for item in items:
     else:
         aisle_freqs[item.aisle].append(item.freq + aisle_freqs[item.aisle][-1])
 
-
 with open('orders.json', 'r') as f:
     orders_ = json.load(f)
     orders = list(orders_.values())
@@ -56,11 +58,11 @@ large_orders = []
 order_set = [small_orders, medium_orders, large_orders]
 order_sizes = [10, 25, 50]
 
-sub_probability = 1/3
+sub_probability = 1 / 3
 dataset_size = 10
 num_substitutions = 3
 for i in range(dataset_size):
-    print('|' + ('*'*i).ljust(10, '-') + '|', end='\r')
+    print('|' + ('*' * i).ljust(10, '-') + '|', end='\r')
     for j, order_size in enumerate(order_sizes):
         cart_orders = orders[:order_size]
         order_dataset = dataset_pb2.OrderDataset()
@@ -95,10 +97,14 @@ for i in range(dataset_size):
 
         # Normalize indices
         ctr = -1
+
+
         def increment():
             global ctr
             ctr += 1
             return ctr
+
+
         new_idxs = defaultdict(increment)
         for order in order_dataset.orders:
             for k, item in enumerate(order.items):
@@ -111,8 +117,13 @@ for i in range(dataset_size):
         order_set[j].append(order_dataset)
     random.shuffle(orders)
 
+try:
+    os.mkdir('dataset')
+except FileExistsError:
+    pass
+
 for i, order_dataset in enumerate(order_set):
     for j, order_proto in enumerate(order_dataset):
-        with open(f'dataset/orders{10*i+j}.data', 'wb') as f:
+        with open(f'dataset/orders{10 * i + j}.data', 'wb') as f:
             # f.write(str(order_proto))
             f.write(order_proto.SerializeToString())

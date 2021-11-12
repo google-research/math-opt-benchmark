@@ -7,10 +7,7 @@ import numpy as np
 random.seed(12345)
 
 SAVE_DIR = 'graph_protos/'
-try:
-    os.makedirs(SAVE_DIR)
-except FileExistsError:
-    pass
+os.makedirs(SAVE_DIR, exist_ok=True)
 
 MAX_DIST = 1
 
