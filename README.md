@@ -35,7 +35,7 @@ and requires a Kaggle account to download.
     python3 ./generate_graphs.py
     cd ../..
     ```
-2. Instacart orders: the Instacart dataset must be in 
+2. Instacart orders: the Instacart dataset must be in `./tools/retails/` and have its default name.
     ```shell script
     cd ./tools/retails/
     python3 ./extract_orders.py
