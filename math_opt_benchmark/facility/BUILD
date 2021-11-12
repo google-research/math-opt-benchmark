@@ -16,21 +16,10 @@ cc_library(
         "@com_google_ortools//ortools/math_opt/solvers:gscip_solver",
         "@com_google_ortools//ortools/math_opt/solvers:gurobi_solver",
         "@com_google_ortools//ortools/math_opt/solvers:glop_solver",
-        "//math_opt_benchmark/mst/matrix",
         "//math_opt_benchmark/proto:model_cc_proto",
     ],
 )
 
-cc_test(
-    name = "ufl_test",
-    srcs = [],
-    deps = [
-        ":ufl",
-        "@com_google_googletest//:gtest",
-        "@com_google_googletest//:gtest_main",
-        "@com_google_ortools//ortools/linear_solver",
-    ],
-)
 
 cc_binary(
     name = "ufl_main",

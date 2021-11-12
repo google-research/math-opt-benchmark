@@ -18,7 +18,10 @@
 #include <vector>
 
 #include "math_opt_benchmark/mst/matrix/matrix.h"
-#include "ortools/linear_solver/linear_solver.h"
+#include "ortools/math_opt/cpp/math_opt.h"
+#include "math_opt_benchmark/proto/model.pb.h"
+
+namespace math_opt = operations_research::math_opt;
 
 namespace math_opt_benchmark {
 
@@ -45,17 +48,19 @@ struct MSTSolution {
 };
 
 class MSTSolver {
- public:
-  MSTSolver(operations_research::MPSolver::OptimizationProblemType problem_type,
+public:
+  MSTSolver(math_opt::SolverType problem_type,
             const MSTProblem& problem);
   MSTSolution Solve();
   void UpdateObjective(int v1, int v2, double value);
   void AddConstraints(const MSTProblem& problem, std::vector<std::vector<int>> invalid);
   void EnforceInteger();
+  BenchmarkInstance GetModel();
 
- private:
-  operations_research::MPSolver solver_;
-  Matrix<operations_research::MPVariable*> x_vars_;
+private:
+  math_opt::MathOpt optimizer_;
+  Matrix<math_opt::Variable> x_vars_;
+  BenchmarkInstance model_;
 };
 
 }  // namespace math_opt_benchmark

@@ -20,30 +20,29 @@ constexpr double kInf = std::numeric_limits<double>::infinity();
 
 namespace math_opt_benchmark {
 
-using ::operations_research::MPConstraint;
-using ::operations_research::MPSolver;
-using ::operations_research::MPVariable;
 
 /**
  * @param problem_type MPSolver constant specifying which solver to use
  * @param problem Graph specification with edges, weights, and number of vertices
  */
-MSTSolver::MSTSolver(const MPSolver::OptimizationProblemType problem_type,
+MSTSolver::MSTSolver(const math_opt::SolverType problem_type,
                      const MSTProblem &problem)
-    : solver_("MST_solver", problem_type) {
-  solver_.MutableObjective()->SetMinimization();
+    : optimizer_(problem_type, "MST_solver") {
+  optimizer_.objective().set_minimize();
   x_vars_.init(problem.n);
-  MPConstraint *c_eq = solver_.MakeRowConstraint(problem.n - 1, problem.n - 1);
-  for (int i = 0; i < problem.n; ++i) {
-    for (int j = 0; j < i; ++j) {
-      if (problem.edges.is_set(i, j)) {
-        MPVariable *var = solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("x", i, ",", j));
+  math_opt::LinearConstraint c_eq = optimizer_.AddLinearConstraint(problem.n - 1, problem.n - 1);
+  for (int i = 0; i < problem.n; i++) {
+    for (int j = 0; j < i; j++) {
+      if (problem.edges.is_set(i, j) && problem.edges.get(i, j)) {
+        math_opt::Variable var = optimizer_.AddVariable(0.0, 1.0, problem.integer, absl::StrCat("x", i, ",", j));
         x_vars_.set(i, j, var);
         UpdateObjective(i, j, problem.weights.get(i, j));
-        c_eq->SetCoefficient(x_vars_.get(i, j), 1);
+        c_eq.set_coefficient(var, 1);
       }
     }
   }
+
+  *(model_.mutable_initial_model()) = optimizer_.ExportModel();
 }
 
 void debug_solve(const MSTSolution &result) {
@@ -61,21 +60,25 @@ void debug_solve(const MSTSolution &result) {
  * @return Solution containing objective value and variable values
  */
 MSTSolution MSTSolver::Solve() {
-  MPSolver::ResultStatus status = solver_.Solve();
-  CHECK_EQ(status, MPSolver::OPTIMAL);
-  MSTSolution result;
-  result.objective_value = solver_.Objective().Value();
-  result.x_values.init(x_vars_.size());
+  math_opt::SolveParametersProto solve_parameters;
+  solve_parameters.mutable_common_parameters()->set_enable_output(false);
+  absl::StatusOr<math_opt::Result> result = optimizer_.Solve(solve_parameters);
+  CHECK_EQ(result.value().termination_reason, math_opt::SolveResultProto::OPTIMAL) << result.value().termination_detail;
+
+  MSTSolution solution;
+  solution.objective_value = result.value().objective_value();
+  solution.x_values.init(x_vars_.size());
   for (int i = 0; i < x_vars_.size(); i++) {
     for (int j = 0; j < i; j++) {
       if (x_vars_.is_set(i, j)) {
-        result.x_values.set(i, j, x_vars_.get(i, j)->solution_value());
-        result.x_values.set(j, i, x_vars_.get(i, j)->solution_value());
+        solution.x_values.set(i, j, result.value().variable_values().at(x_vars_.get(i, j)));
       }
     }
   }
 
-  return result;
+  model_.mutable_objectives()->Add(solution.objective_value);
+
+  return solution;
 }
 
 /**
@@ -89,7 +92,7 @@ void MSTSolver::UpdateObjective(int v1, int v2, double value) {
   CHECK_GE(v2, 0);
   CHECK_LT(v1, x_vars_.size());
   CHECK_LT(v2, x_vars_.size());
-  solver_.MutableObjective()->SetCoefficient(x_vars_.get(v1, v2), value);
+  optimizer_.objective().set_linear_coefficient(x_vars_.get(v1, v2), value);
 }
 
 int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
@@ -106,17 +109,16 @@ void MSTSolver::AddConstraints(const MSTProblem &problem,
   constexpr int kMaxConstraintVars = 100;
   std::sort(invalid.begin(), invalid.end(), sort_by_size);
   for (int i = 0; i < invalid.size() && i < kMaxConstraintVars; ++i) {
-    MPConstraint *c = solver_.MakeRowConstraint(-kInf, (double) invalid[i].size() - 1);
+    math_opt::LinearConstraint c = optimizer_.AddLinearConstraint(-kInf, ((double) invalid[i].size()) - 1);
     for (int j = 0; j < invalid[i].size(); j++) {
       for (int k = 0; k < invalid[i].size(); k++) {
-//        printf("%i, %i: ", j, k);
         int v1 = invalid[i][j], v2 = invalid[i][k];
-//        printf("%i, %i\n", v1, v2);
         if (x_vars_.is_set(v1, v2)) {
-          c->SetCoefficient(x_vars_.get(v1, v2), 1);
+          c.set_coefficient(x_vars_.get(v1, v2), 1);
         }
       }
     }
+    *(model_.add_model_updates()) = optimizer_.ExportModelUpdate();
   }
 }
 
@@ -124,10 +126,14 @@ void MSTSolver::EnforceInteger() {
   for (int i = 0; i < x_vars_.size(); i++) {
     for (int j = 0; j < i; j++) {
       if (x_vars_.is_set(i, j)) {
-        x_vars_.get(i, j)->SetInteger(true);
+        x_vars_.get(i, j).set_is_integer(true);
       }
     }
   }
+}
+
+BenchmarkInstance MSTSolver::GetModel() {
+  return model_;
 }
 
 }  // namespace math_opt_benchmark

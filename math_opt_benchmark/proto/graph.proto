@@ -2,9 +2,9 @@ syntax = "proto3";
 package math_opt_benchmark;
 
 message AdjacencyList {
-  repeated int32 indices;
+  repeated float indices = 1;
 }
 
 message AdjacencyMatrix {
-  repeated AdjacencyList;
+  repeated AdjacencyList vertices = 1;
 }

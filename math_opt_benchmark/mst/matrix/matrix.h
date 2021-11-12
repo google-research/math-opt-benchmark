@@ -33,7 +33,7 @@ class Matrix {
   Matrix<T>() = default;
   Matrix<T>(int n) { init(n); };
 
-  void init(int n);
+  void init(int n, void *default_value=nullptr);
   T get(int i, int j) const;
   void set(int i, int j, T value);
   int size() const;
@@ -56,14 +56,13 @@ class Matrix {
  */
 
 template <class T>
-void Matrix<T>::init(int n) {
+void Matrix<T>::init(int n, void *default_value /* = nullptr */) {
+  default_value = default_value ? default_value : std::malloc(sizeof(T));
   n_ = n;
   for (int i = 0; i < n; ++i) {
-    elements_.emplace_back(i + 1, T{});
+    elements_.emplace_back(i + 1, *((T *) default_value));
     CHECK_EQ(i+1, elements_[i].size());
     set_.emplace_back(i + 1, false);
-//    elements_.emplace_back(n);
-//    set_.emplace_back(n, false);
   }
 }
 
@@ -73,12 +72,9 @@ T Matrix<T>::get(int i, int j) const {
   CHECK_GE(j, 0);
   int r = i > j ? i : j;
   int c = i > j ? j : i;
-//  printf("%i, %i : %i, %i\n", r, c, elements_[r].size(), elements_[c].size());
   CHECK_LT(r, elements_.size());
   CHECK_LE(c, elements_[r].size());
-//  printf("%i, %i\n", r, c);
   CHECK_EQ(set_[r][c], true);
-//  return elements_[r][c];
   return elements_[r][c];
 }
 

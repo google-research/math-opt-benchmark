@@ -22,6 +22,12 @@ proto_library(
     deps = [],
 )
 
+proto_library(
+    name = "graph_proto",
+    srcs = ["graph.proto"],
+    deps = [],
+)
+
 cc_proto_library(
     name = "model_cc_proto",
     deps = [
@@ -36,12 +42,20 @@ cc_proto_library(
     ],
 )
 
+cc_proto_library(
+    name = "graph_cc_proto",
+    deps = [
+        ":graph_proto",
+    ],
+)
+
 cc_binary(
     name = "test_main",
     srcs = ["test.cc"],
     deps = [
         ":model_cc_proto",
         ":dataset_cc_proto",
+        ":graph_cc_proto",
         "@com_google_absl//absl/random",
     ],
 )

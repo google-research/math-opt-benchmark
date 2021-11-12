@@ -18,11 +18,10 @@
 #include "absl/strings/str_join.h"
 #include "math_opt_benchmark/mst/graph/graph.h"
 #include "math_opt_benchmark/mst/mst.h"
-#include "ortools/linear_solver/linear_solver.h"
-
 #include "math_opt_benchmark/proto/graph.pb.h"
 
-ABSL_FLAG(std::string, data_dir, "", "Full path to the directory containing the graph protobufs");
+ABSL_FLAG(std::string, out_dir, "math-opt-benchmark/math_opt_benchmark/mst/protos/", "Directory to save MST protos to");
+ABSL_FLAG(std::string, graph_dir, "graphs/graph_protos/", "Path to the directory containing the graph protobufs");
 
 constexpr double kTolerance = 1e-5;
 
@@ -85,7 +84,7 @@ MSTSolution iterate_solves(const MSTProblem& problem, MSTSolver& solver) {
 }
 
 
-void MSTMain(std::string graph_dir) {
+void MSTMain(std::string graph_dir, std::string out_dir) {
   for (int _ = 0; _ < 100; _++) {
     std::string file_name = graph_dir + std::to_string(_) + ".pb";
     std::cout << file_name << std::endl;
@@ -115,13 +114,17 @@ void MSTMain(std::string graph_dir) {
     }
 
 
-    MSTSolver solver(operations_research::MPSolver::GUROBI_MIXED_INTEGER_PROGRAMMING, problem);
+    MSTSolver solver(math_opt::SOLVER_TYPE_GUROBI, problem);
     MSTSolution solution = iterate_solves(problem, solver);
     solver.EnforceInteger();
     solution = iterate_solves(problem, solver);
 
     Graph graph = toGraph(problem, solution);
     CHECK_EQ(graph.verify_mst(problem.weights, problem.edges), true);
+
+    std::ofstream f(out_dir + std::to_string(_) + ".txt");
+    f << solver.GetModel().DebugString();
+    f.close();
 
   }
 }
@@ -132,7 +135,8 @@ void MSTMain(std::string graph_dir) {
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
   absl::ParseCommandLine(argc, argv);
-  std::string graph_dir = absl::GetFlag(FLAGS_data_dir);
-  math_opt_benchmark::MSTMain(graph_dir);
+  std::string graph_dir = absl::GetFlag(FLAGS_graph_dir);
+  std::string out_dir = absl::GetFlag(FLAGS_out_dir);
+  math_opt_benchmark::MSTMain(graph_dir, out_dir);
   return 0;
 }

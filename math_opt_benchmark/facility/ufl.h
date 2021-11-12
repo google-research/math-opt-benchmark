@@ -15,7 +15,6 @@
 #ifndef MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 #define MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 
-#include "math_opt_benchmark/mst/matrix/matrix.h"
 #include "ortools/math_opt/cpp/math_opt.h"
 #include "math_opt_benchmark/proto/model.pb.h"
 

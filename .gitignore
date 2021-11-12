@@ -7,7 +7,6 @@ bazel-*
 instacart/*.json
 instacart/*.csv
 instacart/instacart-market-basket-analysis/
-instacart/dataset/
 __pycache__
 math_opt
 logs/

@@ -43,7 +43,7 @@ UFLSolver::UFLSolver(math_opt::SolverType problem_type, const UFLProblem &proble
 
   open_vars_.reserve(problem.num_facilities);
   for (int i = 0; i < problem.num_facilities; ++i) {
-    math_opt::Variable var = optimizer_.AddVariable(0.0, 1.0, false, absl::StrCat("y", i));
+    math_opt::Variable var = optimizer_.AddVariable(0.0, 1.0, integer, absl::StrCat("y", i));
     open_vars_.push_back(var);
     UpdateObjective(var, problem.open_costs[i]);
   }
@@ -85,16 +85,6 @@ UFLSolver::UFLSolver(math_opt::SolverType problem_type, const UFLProblem &proble
    *(model_.mutable_initial_model()) = optimizer_.ExportModel();
 }
 
-
-/*
-void debug_solve(const UFLSolution &result) {
-  for (int i = 0; i < result.x_values.size(); i++) {
-    for (int j = 0; j < result.x_values.size(); j++) {
-      printf("[D] x[%i][%i] = %.7f\n", i, j, result.x_values.get(i, j));
-    }
-  }
-}
-*/
 
 /**
  * Calls the MPSolver solve routine and stores the result in a solution object
