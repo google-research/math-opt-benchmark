@@ -11,13 +11,13 @@ cc_library(
     srcs = [],
     hdrs = ["matrix.h"],
     deps = [
-        "@com_github_glog_glog//:glog",
+        "@com_google_ortools//ortools/base",
     ],
 )
 
 cc_test(
     name = "matrix_test",
-    srcs = ["matrix_test.cc"],
+    srcs = [],
     deps = [
         ":matrix",
         "@com_google_googletest//:gtest",

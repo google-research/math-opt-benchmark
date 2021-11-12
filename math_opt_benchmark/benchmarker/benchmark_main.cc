@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
 #include <fstream>
 
 #include "absl/flags/flag.h"
@@ -23,7 +21,7 @@
 #include "google/protobuf/text_format.h"
 
 #define OUT
-ABSL_FLAG(std::string, filename, "", "Path to directory containing model protos");
+ABSL_FLAG(std::string, instance_dir, "", "Path to directory containing model protos");
 ABSL_FLAG(bool, is_mip, true, "Path to directory containing model protos");
 
 namespace math_opt = operations_research::math_opt;
@@ -114,9 +112,11 @@ void BenchmarkMain(const std::vector<std::string>& proto_filenames, const std::v
     }
   }
 
-  for (int i = 0; i < lp_solvers.size(); i++) {
-    std::cout << max_t(solve_times[i]) << std::endl;
+  for (int i = 0; i < solvers.size(); i++) {
+    std::string print = std::to_string(solvers[i]) + ": " + absl::FormatDuration(max_t(solve_times[i]));
+    std::cout << std::left << std::setw(20) << print;
   }
+  std::cout << std::endl;
 
 }
 
@@ -125,10 +125,11 @@ void BenchmarkMain(const std::vector<std::string>& proto_filenames, const std::v
 int main(int argc, char *argv[]) {
   google::InitGoogleLogging(argv[0]);
   absl::ParseCommandLine(argc, argv);
-  std::string dir = absl::GetFlag(FLAGS_filename);
+  std::string dir = absl::GetFlag(FLAGS_instance_dir);
   std::vector<std::string> proto_filenames;
   for (const auto& entry : std::filesystem::directory_iterator(dir)) {
     proto_filenames.push_back(entry.path());
+    break;
   }
 
   bool is_mip = absl::GetFlag(FLAGS_is_mip);

@@ -139,24 +139,20 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
  * @param y_coefficients
  */
 void SplitAndSubSolver::AddBenderCut(std::vector<int> &y_indices, const SplitAndSubProblem& problem) {
-  int num_no_solutions = std::count(y_indices.begin(), y_indices.end(), -1);
-  std::replace(y_indices.begin(), y_indices.end(), -1, 0);
-  size_t num_solutions = y_indices.size() - num_no_solutions;
-  const LinearConstraint cut = optimizer_.AddLinearConstraint(num_solutions, kInf);
+  const LinearConstraint cut = optimizer_.AddLinearConstraint(y_indices.size(), kInf);
   cut.set_coefficient(bender_var_, 1);
   for (int i = 0; i < y_indices.size(); i++) {
     int index = y_indices[i];
-    if (index >= 0) {
-      CHECK_LT(index, assortment_vars_.size());
-      cut.set_coefficient(assortment_vars_[index], cut.coefficient(assortment_vars_[index]) + 1);
-      if (problem.substitutions[i].count(index)) {
-        for (int sub_index : problem.substitutions[i].find(index)->second) {
-          cut.set_coefficient(assortment_vars_[sub_index], cut.coefficient(assortment_vars_[sub_index]) + 1);
-        }
+    CHECK_LT(index, assortment_vars_.size());
+    cut.set_coefficient(assortment_vars_[index], cut.coefficient(assortment_vars_[index]) + 1);
+    if (problem.substitutions[i].count(index)) {
+      for (int sub_index : problem.substitutions[i].find(index)->second) {
+        cut.set_coefficient(assortment_vars_[sub_index], cut.coefficient(assortment_vars_[sub_index]) + 1);
       }
     }
   }
 }
+
 math_opt::ModelProto SplitAndSubSolver::GetModelProto() {
   return optimizer_.ExportModel();
 }

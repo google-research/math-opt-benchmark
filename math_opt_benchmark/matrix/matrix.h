@@ -20,7 +20,7 @@
 #include <iostream>
 #include <vector>
 
-#include "glog/logging.h"
+#include "ortools/base/logging.h"
 
 namespace math_opt_benchmark {
 template <class T>

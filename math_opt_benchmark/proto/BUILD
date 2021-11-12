@@ -48,14 +48,3 @@ cc_proto_library(
         ":graph_proto",
     ],
 )
-
-cc_binary(
-    name = "test_main",
-    srcs = ["test.cc"],
-    deps = [
-        ":model_cc_proto",
-        ":dataset_cc_proto",
-        ":graph_cc_proto",
-        "@com_google_absl//absl/random",
-    ],
-)

@@ -12,18 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO CLEANUP DEAD CODE
-// WRITE DOWN A DESCRIPTION OF EACH PROBLEM (AND ALGORITHMS USED TO SOLVE THEM)
-// GET DATA FOR SOLVES
-// HOW DOES GLOP COMPARE TO GUROBI?
-// NORMALIZE TO MAKE LARGEST COEFFICIENT 1
-// MST CAN BE RANDOM GRAPHS (RANDOM SUBSET OR PROXIMITY)
-// FIXED DEGREE, OR EVERY EDGE IS PRESENT OR ABSENT WITH FIXED PROBABILITY (2 log n/n)
-// EUCLIDIAN GRAPH (WEIGHT IS DISTANCE AND VERTICES ARE RANDOM POINTS)
-// 10-6 removed conservatively (make constraint looser by plugging in {0,1} for variable
-
-// --alsologtostderr
-
 #include <cstdlib>
 #include <fstream>
 #include "split_and_sub.h"
@@ -44,12 +32,13 @@
 ABSL_FLAG(bool, print_debug, false, "Print debug messages every iteration");
 ABSL_FLAG(bool, start_continuous, false, "Only run the continuous relaxation");
 ABSL_FLAG(bool, solve_directly, false, "Compare the optimal value to the direct formulation");
-ABSL_FLAG(std::string, data_dir, "", "Full path to the directory containing the Instacart protobufs");
+ABSL_FLAG(std::string, data_dir, "./tools/retail/dataset/", "Full path to the directory containing the Instacart protobufs");
+ABSL_FLAG(std::string, out_dir, "./protos/subs/", "Full path to the directory containing the Instacart protobufs");
 ABSL_FLAG(std::string, solver_type, "scip", "Name of the solver to use");
 
 ABSL_FLAG(bool, test_environment, false, "Only solve one instance");
 
-// TODO flag struct
+#define OUT
 
 
 bool print_debug_flag() { return absl::GetFlag(FLAGS_print_debug); }
@@ -77,23 +66,6 @@ void PrintSolution(const SplitAndSubSolution& solution) {
   PrintVector(solution.must_split, "Orders which split");
 }
 
-// Returns true if all the xs[i] and subs(xs[i]) are 0 in the solution
-bool integer_worker_helper(const SplitAndSubSolution& solution, const SplitAndSubProblem& problem, const int customer, const int item) {
-  if (solution.in_assortment[item] < 0.0001) {
-    // Check if any substitutions are nonzero
-    if (problem.substitutions[customer].count(item)) {
-      const std::vector<int> &subs = problem.substitutions[customer].find(item)->second;
-      for (int sub : subs) {
-        if (solution.in_assortment[sub] > 0.5) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-  return false;
-}
-
 // Returns the coefficient of the y[i] in the dual
 double continuous_worker_helper(const SplitAndSubSolution& solution, const SplitAndSubProblem& problem, const int customer, const int item) {
   double coefficient = solution.in_assortment[item];
@@ -107,20 +79,18 @@ double continuous_worker_helper(const SplitAndSubSolution& solution, const Split
   return 1 - coefficient;
 }
 
-// Returns vector of indices indicating which y(i,j) is nonzero for each customer (-1 ==> y_i* = 0)
+// Returns vector of indices indicating which y(i,j) is nonzero for each customer
 // The runtime of this function is negligible
-std::vector<int> solve_worker(const SplitAndSubSolution& solution, const SplitAndSubProblem& problem, bool is_primal=false) {
+std::vector<int> solve_worker(const SplitAndSubSolution& solution, const SplitAndSubProblem& problem, OUT double *objective, bool is_primal=false) {
   // Changes for solving the continuous dual
-  std::vector<int> ys(problem.customer_orders.size(), -1);
-  PrintVector(solution.in_assortment, "xs");
+  std::vector<int> ys(problem.customer_orders.size(), 0);
   for (int i = 0; i < problem.customer_orders.size(); i++) {
     const std::vector<int>& order = problem.customer_orders[i];
     double max_coefficient = -kInf;
-    int max_index;
+    int max_index = 0;
     for (int j : order) {
       // Relaxation: coefficient of ys[i] is largest so far ==> set ys[i] == 1
       double coefficient = continuous_worker_helper(solution, problem, i, j);
-//      LOG(INFO) << i << ' ' << j << ' ' << coefficient;
       if (coefficient > max_coefficient) {
         max_coefficient = coefficient;
         max_index = j;
@@ -131,20 +101,11 @@ std::vector<int> solve_worker(const SplitAndSubSolution& solution, const SplitAn
         break;
       }
 
-      /* Outdated variant of continuous_worker_helper - might try this again if phase two is slow
-        bool all_zero = integer_worker_helper(solution, problem, i, j);
-        if (all_zero) {
-          int value = is_primal ? 1 : j;
-          ys[i] = value;
-          break;
-        }
-      */
-
     }
     int value = is_primal ? 1 : max_index;
     ys[i] = value;
+    *objective += max_coefficient;
   }
-//  PrintVector(ys, "Ys");
   return ys;
 }
 
@@ -158,16 +119,19 @@ SplitAndSubSolution benders(SplitAndSubSolver& solver, const SplitAndSubProblem&
   absl::Duration phase_one_total = absl::ZeroDuration();
   absl::Duration phase_two_total = absl::ZeroDuration();
 
+  int iterations = 0;
   while (ub - lb > 0.0001) {
+    iterations++;
     // Could make this into a function if I really use this a lot:
     // time_func(add_to_duration, print_args, function_ptr, function_args)
     absl::Time phase_two_start = absl::Now();
-    std::vector<int> ys = solve_worker(solution, problem);
+    double objective = 0.0;
+    std::vector<int> ys = solve_worker(solution, problem, &objective);
     absl::Duration phase_two_time = absl::Now() - phase_two_start;
     phase_two_total += phase_two_time;
     LOG_IF(INFO, print_debug_flag()) << "Phase 2 completed in " << phase_two_time << " (total: " << phase_two_total << ")";
 
-    ub = ys.size() - std::count(ys.begin(), ys.end(), -1);
+    ub = objective;
     solver.AddBenderCut(ys, problem);
     math_opt::ModelUpdateProto update = solver.GetUpdateProto();
     *(model.add_model_updates()) = update;
@@ -182,9 +146,11 @@ SplitAndSubSolution benders(SplitAndSubSolver& solver, const SplitAndSubProblem&
     lb = solution.objective_value;
 
     LOG_IF(INFO, print_debug_flag()) << lb << " <= opt <= " << ub;
+    if (iterations % 200 == 0) {
+      std::cout << lb << " <= opt <= " << ub << std::endl;
+    }
 
   }
-  solution.must_split = solve_worker(solution, problem, true);
   return solution;
 }
 
@@ -194,15 +160,15 @@ void SplitAndSubMain(math_opt::SolverType solver_type) {
   std::cout << data_dir << std::endl;
 
   const int max_iterations = 30;
-  int num_iteartions = test_environment_flag() ? 1 : max_iterations;
-  for (int _ = 0; _ < num_iteartions; _++) {
+  int num_itertions = test_environment_flag() ? 1 : max_iterations;
+  for (int _ = 0; _ < num_itertions; _++) {
     std::string file_no = "orders" + std::to_string(_) + ".data";
     std::string file_name = data_dir + file_no;
     std::ifstream order_stream(file_name);
     std::stringstream buffer;
     buffer << order_stream.rdbuf();
 
-    std::cout << "***********   " << _ << "/30" << "   ***********" << std::endl;
+    std::cout << "***********   " << std::left << std::setw(7) << std::to_string(_) +  "/30" << "***********" << std::endl;
 
     OrderDataset orders;
     orders.ParseFromString(buffer.str());
@@ -237,29 +203,32 @@ void SplitAndSubMain(math_opt::SolverType solver_type) {
     if (solve_directly_flag()) {
       direct_solver = new SplitAndSubSolver(solver_type, problem, false, true);
       direct_solution = direct_solver->Solve();
-      std::cout << direct_solution.solve_time << std::endl;
 
       if (print_debug_flag()) {
-        direct_solution.must_split = solve_worker(direct_solution, problem, true);
+        double tmp = 0.0;
+        direct_solution.must_split = solve_worker(direct_solution, problem, &tmp, true);
         PrintSolution(direct_solution);
       }
     }
 
     LOG_IF(INFO, print_debug_flag()) << "Iterative: ";
 
-    SplitAndSubSolver solver(solver_type, problem, true, true);
+    SplitAndSubSolver solver(solver_type, problem, true, false);
     BenchmarkInstance model;
     *(model.mutable_initial_model()) = solver.GetModelProto();
     SplitAndSubSolution solution = benders(solver, problem, model);
+    solver.MakeIntegral();
+    solution = benders(solver, problem, model);
     if (solve_directly_flag()) {
       CHECK_NEAR(direct_solution.objective_value, solution.objective_value, 0.0001);
     }
 
     if (print_debug_flag()) {
-      solution.must_split = solve_worker(solution, problem, true);
+      double tmp = 0.0;
+      solution.must_split = solve_worker(solution, problem, &tmp, true);
       PrintSolution(solution);
     }
-    std::ofstream f("./cart_tests/" + std::to_string(_) + ".txt");
+    std::ofstream f(absl::GetFlag(FLAGS_out_dir) + std::to_string(_) + ".txt");
     f << model.DebugString();
     f.close();
 

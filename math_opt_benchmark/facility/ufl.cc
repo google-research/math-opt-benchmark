@@ -120,11 +120,7 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
   return a.size() < b.size();
 }
 
-/**
- * Adds a Benders cut for each
- * @param sum
- * @param y_coefficients
- */
+
 void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficients) {
   // bender_var_ >= sum - \sum(y * y_coefficients)
   math_opt::LinearConstraint cut = optimizer_.AddLinearConstraint(sum, kInf);
@@ -135,11 +131,13 @@ void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficien
 
   *(model_.add_model_updates()) = optimizer_.ExportModelUpdate();
 }
+
 void UFLSolver::EnforceInteger() {
   for (math_opt::Variable v : open_vars_) {
     v.set_is_integer(true);
   }
 }
+
 BenchmarkInstance UFLSolver::GetModel() {
   return model_;
 }

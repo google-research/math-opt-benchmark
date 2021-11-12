@@ -20,8 +20,9 @@
 #include "math_opt_benchmark/mst/mst.h"
 #include "math_opt_benchmark/proto/graph.pb.h"
 
-ABSL_FLAG(std::string, out_dir, "math-opt-benchmark/math_opt_benchmark/mst/protos/", "Directory to save MST protos to");
-ABSL_FLAG(std::string, graph_dir, "graphs/graph_protos/", "Path to the directory containing the graph protobufs");
+ABSL_FLAG(std::string, graph_dir, "./graphs/graph_protos/", "Path to the directory containing the graph protobufs");
+ABSL_FLAG(std::string, out_dir, "./protos/mst/", "Directory to save MST protos to");
+ABSL_FLAG(int, n, 100, "Number of graphs");
 
 constexpr double kTolerance = 1e-5;
 
@@ -84,10 +85,11 @@ MSTSolution iterate_solves(const MSTProblem& problem, MSTSolver& solver) {
 }
 
 
-void MSTMain(std::string graph_dir, std::string out_dir) {
-  for (int _ = 0; _ < 100; _++) {
+void MSTMain(const std::string& graph_dir, const std::string& out_dir) {
+  for (int _ = 0; _ < absl::GetFlag(FLAGS_n); _++) {
     std::string file_name = graph_dir + std::to_string(_) + ".pb";
-    std::cout << file_name << std::endl;
+    std::cout << file_name << "\r";
+    std::flush(std::cout);
     std::ifstream order_stream(file_name);
     std::stringstream buffer;
     buffer << order_stream.rdbuf();
@@ -125,7 +127,6 @@ void MSTMain(std::string graph_dir, std::string out_dir) {
     std::ofstream f(out_dir + std::to_string(_) + ".txt");
     f << solver.GetModel().DebugString();
     f.close();
-
   }
 }
 

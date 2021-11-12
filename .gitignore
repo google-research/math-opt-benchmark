@@ -13,3 +13,4 @@ logs/
 init.sh
 *pb.*
 *pb2.*
+gurobi.log
