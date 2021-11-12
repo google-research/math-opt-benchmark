@@ -103,7 +103,7 @@ UFLSolution UFLSolver::Solve() {
     solution.open_values.push_back(result.value().variable_values().at(v));
   }
 
-  model_.mutable_objectives()->Add(solution.objective_value);
+  model_.add_objectives(solution.objective_value);
   return solution;
 }
 

@@ -76,7 +76,7 @@ MSTSolution MSTSolver::Solve() {
     }
   }
 
-  model_.mutable_objectives()->Add(solution.objective_value);
+  model_.add_objectives(solution.objective_value);
 
   return solution;
 }
