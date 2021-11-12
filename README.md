@@ -14,6 +14,10 @@ Required changes to MathOpt: math_opt.h
     return *(update_tracker_->ExportModelUpdate());
   }
 ```
+For me, the file is located in
+```shell script
+/private/var/tmp/_bazel_jeremyweiss/4b8ef44886ebc6aef2f85c5cac367848/external/com_google_ortools/ortools/math_opt/cpp/math_opt.h
+```
 
 ## Installation
 Bazel will download all the C++ dependencies at build-time (see [WORKSPACE](WORKSPACE) for the full list). Everything was tested using v3.2.0.
@@ -78,7 +82,7 @@ be text protos of [BenchmarkInstance](math_opt_benchmark/proto/model.proto).
 
 To benchmark individual models, add the `--is_single_file` flag
 ```shell script
-./bazel-bin/math_opt_benchmark/benchmarker/benchmark_main --instance_dir=./protos/subs/11.txt --is_mip --is_single_file
+./bazel-bin/math_opt_benchmark/benchmarker/benchmark_main --instance_dir=./protos/mst/0.txt --is_mip --is_single_file
 ```
 
 ### Directories
