@@ -16,7 +16,7 @@ git_repository(
 # Math Opt
 http_archive(
     name = "com_google_ortools",  # Apache 2.0
-    sha256 = "826e4d2a6d8c8b662b77a3d2b3c2422a57861e4c5987b6450d86d748262bed5d",
+    sha256 = "827dcb70d48ed2b1c940d305e3954f14c22b77bbe4d7d22ab10d2416ad3730e7",
     strip_prefix = "or-tools-master",
     urls = [
         "https://github.com/google/or-tools/archive/refs/heads/master.zip",
@@ -55,29 +55,45 @@ http_archive(
 # Protobuf
 git_repository(
     name = "com_google_protobuf",
-    commit = "89b14b1",  # release v3.18.0
+    commit = "7c40b2d",  # release v3.19.1
     remote = "https://github.com/protocolbuffers/protobuf.git",
 )
-
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
-
 # Load common dependencies.
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 protobuf_deps()
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+git_repository(
+    name = "com_google_absl",
+    commit = "2151058", # release 20211102.0
+    remote = "https://github.com/abseil/abseil-cpp.git",
+)
 
+# Bazel platform rules.
 http_archive(
-    name = "gtest",
-    build_file = "@com_google_ortools//bazel:gtest.BUILD",
-    strip_prefix = "googletest-release-1.8.0/googletest",
-    url = "https://github.com/google/googletest/archive/release-1.8.0.zip",
+    name = "platforms",
+    sha256 = "b601beaf841244de5c5a50d2b2eddd34839788000fa1be4260ce6603ca0d8eb7",
+    strip_prefix = "platforms-98939346da932eef0b54cf808622f5bb0928f00b",
+    urls = ["https://github.com/bazelbuild/platforms/archive/98939346da932eef0b54cf808622f5bb0928f00b.zip"],
+)
+
+git_repository(
+    name = "com_google_re2",
+    patches = ["@com_google_ortools//bazel:re2.patch"],
+    commit = "0dade9f", # release 2021-11-01
+    remote = "https://github.com/google/re2.git",
+)
+
+git_repository(
+    name = "com_google_googletest",
+    commit = "e2239ee", # release-1.11.0
+    remote = "https://github.com/google/googletest.git",
 )
 
 http_archive(
     name = "glpk",
     build_file = "@com_google_ortools//bazel:glpk.BUILD",
-    sha256 = "4281e29b628864dfe48d393a7bedd781e5b475387c20d8b0158f329994721a10",
-    url = "http://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz",
+    sha256 = "4a1013eebb50f728fc601bdd833b0b2870333c3b3e5a816eeba921d95bec6f15",
+    url = "http://ftp.gnu.org/gnu/glpk/glpk-5.0.tar.gz",
 )
 
 http_archive(

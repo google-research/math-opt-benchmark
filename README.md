@@ -41,7 +41,7 @@ and requires a Kaggle account to download.
     ```
 2. Instacart orders: the Instacart dataset must be in `./tools/retails/` and have its default name.
     ```shell script
-    cd ./tools/retails/
+    cd ./tools/retail/
     python3 ./extract_orders.py
     python3 ./format_data.py
     cd ../..

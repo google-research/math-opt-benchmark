@@ -1,0 +1,86 @@
+initial_model {
+  name: "Retail_solver"
+  variables {
+    ids: 0
+    lower_bounds: 0
+    upper_bounds: inf
+    integers: false
+    names: "z"
+  }
+  objective {
+    linear_coefficients {
+      ids: 0
+      values: 1
+    }
+  }
+  linear_constraints {
+    ids: 0
+    lower_bounds: 0
+    upper_bounds: 0
+    names: ""
+  }
+  linear_constraint_matrix {
+  }
+}
+objectives: 0
+objectives: 0
+objectives: 0
+objectives: 0
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 1
+    lower_bounds: 0
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 1
+    column_ids: 0
+    coefficients: 1
+  }
+}
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 2
+    lower_bounds: 0
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 2
+    column_ids: 0
+    coefficients: 1
+  }
+}

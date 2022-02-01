@@ -103,6 +103,7 @@ UFLSolution benders(UFLSolver& solver, std::vector<std::vector<double>>& supply_
                     std::vector<std::vector<int>>& cost_indices, int num_customers, int num_facilities) {
   UFLSolution solution = solver.Solve();
   double prev_objective = -1.0;
+  // I don't remember enough about this problem to know if this was actually correct, or if I should use a ub >= lb
   while (solution.objective_value != prev_objective) {
     prev_objective = solution.objective_value;
     std::vector<double> y_coefficients(num_facilities, 0.0);
@@ -114,7 +115,7 @@ UFLSolution benders(UFLSolver& solver, std::vector<std::vector<double>>& supply_
       for (int j = 0; j < num_facilities; j++) {
         y_solution[j] = solution.open_values[indices[j]];
       }
-      // Don't actually need to solve the knapsack, just need the length
+      // Don't actually need the knapsack solution, just need the length
       int k = knapsack(costs, y_solution).size();
       sum += costs[k - 1];
       for (int j = 0; j < k - 1; j++) {
@@ -137,7 +138,7 @@ void UFLMain(const std::string& filename, const std::string& out_dir, bool itera
     std::sort(indices.begin(), indices.end(), [&, costs](int i, int j) { return costs[i] < costs[j]; });
     std::sort(costs.begin(), costs.end(), [](double i, double j) { return i < j; });
   }
-  UFLSolver solver(math_opt::SOLVER_TYPE_GUROBI, problem, iterative);
+  UFLSolver solver(math_opt::SolverType::kGurobi, problem, iterative);
   UFLSolution solution = benders(solver, problem.supply_costs, sorted_cost_indices, problem.num_customers, problem.num_facilities);
   solver.EnforceInteger();
   solution = benders(solver, problem.supply_costs, sorted_cost_indices, problem.num_customers, problem.num_facilities);

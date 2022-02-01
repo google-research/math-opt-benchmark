@@ -116,7 +116,7 @@ void MSTMain(const std::string& graph_dir, const std::string& out_dir) {
     }
 
 
-    MSTSolver solver(math_opt::SOLVER_TYPE_GUROBI, problem);
+    MSTSolver solver(math_opt::SolverType::kGurobi, problem);
     MSTSolution solution = iterate_solves(problem, solver);
     solver.EnforceInteger();
     solution = iterate_solves(problem, solver);

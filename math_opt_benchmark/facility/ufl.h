@@ -40,17 +40,18 @@ public:
   UFLSolver(math_opt::SolverType problem_type,
             const UFLProblem &problem, bool iterative);
   UFLSolution Solve();
-  void UpdateObjective(math_opt::Variable var, double value);
   void AddBenderCut(double sum, const std::vector<double> &y_coefficients);
   void EnforceInteger();
   BenchmarkInstance GetModel();
 
 private:
-  math_opt::MathOpt optimizer_;
+  math_opt::Model model_;
+  std::unique_ptr<math_opt::IncrementalSolver> solver_;
+  std::unique_ptr<math_opt::UpdateTracker> update_tracker_;
   std::vector<std::vector<math_opt::Variable>> supply_vars_;
   std::vector<math_opt::Variable> open_vars_;
   math_opt::Variable bender_var_;
-  BenchmarkInstance model_;
+  BenchmarkInstance instance_;
 };
 
 } // namespace math_opt_benchmark

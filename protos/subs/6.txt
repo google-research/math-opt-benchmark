@@ -69,60 +69,6 @@ initial_model {
     ids: 65
     ids: 66
     ids: 67
-    ids: 68
-    ids: 69
-    ids: 70
-    ids: 71
-    ids: 72
-    ids: 73
-    ids: 74
-    ids: 75
-    ids: 76
-    ids: 77
-    ids: 78
-    ids: 79
-    ids: 80
-    ids: 81
-    ids: 82
-    ids: 83
-    ids: 84
-    ids: 85
-    ids: 86
-    ids: 87
-    ids: 88
-    ids: 89
-    ids: 90
-    ids: 91
-    ids: 92
-    ids: 93
-    ids: 94
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
-    lower_bounds: 0
     lower_bounds: 0
     lower_bounds: 0
     lower_bounds: 0
@@ -259,60 +205,6 @@ initial_model {
     upper_bounds: 1
     upper_bounds: 1
     upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    upper_bounds: 1
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
-    integers: false
     integers: false
     integers: false
     integers: false
@@ -449,33 +341,6 @@ initial_model {
     names: "x64"
     names: "x65"
     names: "x66"
-    names: "x67"
-    names: "x68"
-    names: "x69"
-    names: "x70"
-    names: "x71"
-    names: "x72"
-    names: "x73"
-    names: "x74"
-    names: "x75"
-    names: "x76"
-    names: "x77"
-    names: "x78"
-    names: "x79"
-    names: "x80"
-    names: "x81"
-    names: "x82"
-    names: "x83"
-    names: "x84"
-    names: "x85"
-    names: "x86"
-    names: "x87"
-    names: "x88"
-    names: "x89"
-    names: "x90"
-    names: "x91"
-    names: "x92"
-    names: "x93"
   }
   objective {
     linear_coefficients {
@@ -486,37 +351,10 @@ initial_model {
   linear_constraints {
     ids: 0
     lower_bounds: 0
-    upper_bounds: 59
+    upper_bounds: 6
     names: ""
   }
   linear_constraint_matrix {
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
-    row_ids: 0
     row_ids: 0
     row_ids: 0
     row_ids: 0
@@ -651,60 +489,6 @@ initial_model {
     column_ids: 65
     column_ids: 66
     column_ids: 67
-    column_ids: 68
-    column_ids: 69
-    column_ids: 70
-    column_ids: 71
-    column_ids: 72
-    column_ids: 73
-    column_ids: 74
-    column_ids: 75
-    column_ids: 76
-    column_ids: 77
-    column_ids: 78
-    column_ids: 79
-    column_ids: 80
-    column_ids: 81
-    column_ids: 82
-    column_ids: 83
-    column_ids: 84
-    column_ids: 85
-    column_ids: 86
-    column_ids: 87
-    column_ids: 88
-    column_ids: 89
-    column_ids: 90
-    column_ids: 91
-    column_ids: 92
-    column_ids: 93
-    column_ids: 94
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -775,59 +559,72 @@ initial_model {
   }
 }
 objectives: 0
-objectives: 0
-objectives: 0
-objectives: 0
-objectives: 0
-objectives: 0
-objectives: 0
-objectives: 0.28571428571428575
 objectives: 1
-objectives: 1.2222222222222223
-objectives: 1.2222222222222223
-objectives: 1.2999999999999998
-objectives: 1.3
-objectives: 1.40625
-objectives: 1.40625
-objectives: 1.4186046511627908
-objectives: 1.4523809523809523
-objectives: 1.5000000000000002
-objectives: 1.5054347826086958
-objectives: 1.5476190476190477
-objectives: 1.5999999999999999
-objectives: 1.7209302325581395
-objectives: 1.7441860465116279
-objectives: 1.7818181818181817
-objectives: 1.8035714285714286
-objectives: 1.847457627118644
-objectives: 1.8912386706948638
-objectives: 1.9326923076923079
-objectives: 1.9574603174603173
-objectives: 1.983098591549296
-objectives: 1.9950124688279298
-objectives: 2.0185185185185186
-objectives: 2.0286532951289398
-objectives: 2.0583311761152823
-objectives: 2.0732526609737345
-objectives: 2.0884327269189615
-objectives: 2.0955684760834519
-objectives: 2.107073138920545
-objectives: 2.1247242140099285
-objectives: 2.1437219114005317
-objectives: 2.1670463791700576
-objectives: 2.1761636688177939
-objectives: 2.1803180423821447
-objectives: 2.1818181818181817
-objectives: 2.1908329660643462
-objectives: 2.1989405532666275
-objectives: 2.2056130235713076
-objectives: 2.2194435833849964
-objectives: 2.2270634077222811
-objectives: 2.2401315789473677
-objectives: 2.2500000000000009
-objectives: 2.2500000000000004
-objectives: 3
-objectives: 3
+objectives: 4
+objectives: 5.333333333333333
+objectives: 5.333333333333333
+objectives: 4.4
+objectives: 5.6666666666666661
+objectives: 5.75
+objectives: 4.8
+objectives: 6
+objectives: 6
+objectives: 6
+objectives: 6.0555555555555554
+objectives: 6.1818181818181817
+objectives: 6.2727272727272725
+objectives: 6.3913043478260869
+objectives: 6.1875
+objectives: 6.3978494623655919
+objectives: 6.2272727272727275
+objectives: 6.3232323232323235
+objectives: 6.479166666666667
+objectives: 6.5
+objectives: 6.1428571428571432
+objectives: 6.5
+objectives: 6.1428571428571432
+objectives: 6.5000000000000009
+objectives: 6.5151515151515156
+objectives: 6.5
+objectives: 6.5151515151515156
+objectives: 6.625
+objectives: 6.6579365079365065
+objectives: 6.5494071146245068
+objectives: 6.7140340575455086
+objectives: 6.6875
+objectives: 6.77327935222672
+objectives: 6.7845303867403315
+objectives: 6.8048780487804885
+objectives: 6.7777777777777777
+objectives: 6.7555555555555555
+objectives: 6.8000000000000007
+objectives: 6.8000000000000007
+objectives: 6.8348909657320878
+objectives: 6.7070707070707067
+objectives: 6.774193548387097
+objectives: 6.8131868131868121
+objectives: 6.840958605664488
+objectives: 6.8549618320610683
+objectives: 6.77531914893617
+objectives: 6.8549618320610683
+objectives: 6.76147816349384
+objectives: 6.8571428571428577
+objectives: 6.875
+objectives: 6.8103448275862073
+objectives: 6.8395201448619281
+objectives: 6.8627189642041113
+objectives: 6.8141122913505319
+objectives: 6.8999999999999986
+objectives: 6.9126074498567336
+objectives: 6.8771112405358181
+objectives: 6.9311253293187809
+objectives: 6.9306611676762468
+objectives: 6.9399293286219068
+objectives: 6.9931576710582242
+objectives: 7
+objectives: 7
+objectives: 7
+objectives: 7
 model_updates {
   variable_updates {
     lower_bounds {
@@ -863,21 +660,33 @@ model_updates {
     row_ids: 1
     row_ids: 1
     row_ids: 1
+    row_ids: 1
+    row_ids: 1
+    row_ids: 1
+    row_ids: 1
     column_ids: 0
     column_ids: 1
-    column_ids: 3
-    column_ids: 9
-    column_ids: 28
-    column_ids: 30
-    column_ids: 37
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 29
+    column_ids: 46
     column_ids: 47
-    column_ids: 48
-    column_ids: 72
-    column_ids: 77
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -922,17 +731,26 @@ model_updates {
     row_ids: 2
     row_ids: 2
     row_ids: 2
+    row_ids: 2
+    row_ids: 2
+    row_ids: 2
     column_ids: 0
-    column_ids: 2
-    column_ids: 10
+    column_ids: 1
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 23
     column_ids: 29
-    column_ids: 38
-    column_ids: 47
-    column_ids: 49
-    column_ids: 62
-    column_ids: 73
-    column_ids: 78
-    column_ids: 83
+    column_ids: 32
+    column_ids: 42
+    column_ids: 46
+    column_ids: 48
+    column_ids: 59
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -961,7 +779,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 3
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -981,22 +799,25 @@ model_updates {
     row_ids: 3
     row_ids: 3
     row_ids: 3
+    row_ids: 3
     column_ids: 0
-    column_ids: 4
-    column_ids: 11
-    column_ids: 31
-    column_ids: 39
+    column_ids: 1
+    column_ids: 12
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 24
+    column_ids: 30
     column_ids: 47
-    column_ids: 50
+    column_ids: 58
+    column_ids: 61
     column_ids: 63
-    column_ids: 74
-    column_ids: 79
-    column_ids: 84
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1006,6 +827,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 3
   variable_updates {
     lower_bounds {
     }
@@ -1040,17 +862,20 @@ model_updates {
     row_ids: 4
     row_ids: 4
     row_ids: 4
+    row_ids: 4
     column_ids: 0
-    column_ids: 5
+    column_ids: 2
     column_ids: 12
-    column_ids: 32
-    column_ids: 40
+    column_ids: 16
+    column_ids: 24
+    column_ids: 29
+    column_ids: 46
     column_ids: 47
-    column_ids: 51
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
     column_ids: 64
-    column_ids: 75
-    column_ids: 80
-    column_ids: 85
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1065,6 +890,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 4
   variable_updates {
     lower_bounds {
     }
@@ -1079,7 +905,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 5
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1099,22 +925,31 @@ model_updates {
     row_ids: 5
     row_ids: 5
     row_ids: 5
+    row_ids: 5
+    row_ids: 5
+    row_ids: 5
     column_ids: 0
-    column_ids: 6
+    column_ids: 2
+    column_ids: 11
     column_ids: 13
-    column_ids: 33
-    column_ids: 41
-    column_ids: 47
-    column_ids: 52
-    column_ids: 65
-    column_ids: 76
-    column_ids: 81
-    column_ids: 86
+    column_ids: 14
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 24
+    column_ids: 30
+    column_ids: 32
+    column_ids: 42
+    column_ids: 48
+    column_ids: 58
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1158,17 +993,20 @@ model_updates {
     row_ids: 6
     row_ids: 6
     row_ids: 6
+    row_ids: 6
     column_ids: 0
-    column_ids: 7
-    column_ids: 14
-    column_ids: 34
-    column_ids: 42
+    column_ids: 1
+    column_ids: 12
+    column_ids: 16
+    column_ids: 24
+    column_ids: 30
+    column_ids: 46
     column_ids: 47
-    column_ids: 53
-    column_ids: 66
-    column_ids: 72
-    column_ids: 82
-    column_ids: 87
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
+    column_ids: 64
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1197,7 +1035,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 7
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1217,22 +1055,25 @@ model_updates {
     row_ids: 7
     row_ids: 7
     row_ids: 7
+    row_ids: 7
     column_ids: 0
-    column_ids: 8
+    column_ids: 2
+    column_ids: 12
     column_ids: 15
-    column_ids: 35
-    column_ids: 43
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 29
     column_ids: 47
-    column_ids: 54
-    column_ids: 67
-    column_ids: 72
-    column_ids: 77
-    column_ids: 88
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1242,6 +1083,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 6
   variable_updates {
     lower_bounds {
     }
@@ -1256,7 +1098,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 8
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1276,17 +1118,26 @@ model_updates {
     row_ids: 8
     row_ids: 8
     row_ids: 8
+    row_ids: 8
+    row_ids: 8
+    row_ids: 8
     column_ids: 0
-    column_ids: 4
-    column_ids: 16
-    column_ids: 36
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 29
+    column_ids: 35
     column_ids: 44
     column_ids: 47
-    column_ids: 55
-    column_ids: 68
-    column_ids: 72
-    column_ids: 77
-    column_ids: 89
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1335,17 +1186,20 @@ model_updates {
     row_ids: 9
     row_ids: 9
     row_ids: 9
+    row_ids: 9
     column_ids: 0
-    column_ids: 5
-    column_ids: 17
-    column_ids: 29
+    column_ids: 1
+    column_ids: 12
+    column_ids: 16
+    column_ids: 24
     column_ids: 30
-    column_ids: 45
+    column_ids: 46
     column_ids: 47
-    column_ids: 56
-    column_ids: 72
-    column_ids: 77
-    column_ids: 84
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
+    column_ids: 64
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1360,6 +1214,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 8
   variable_updates {
     lower_bounds {
     }
@@ -1374,7 +1229,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 10
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1393,19 +1248,25 @@ model_updates {
     row_ids: 10
     row_ids: 10
     row_ids: 10
+    row_ids: 10
+    row_ids: 10
     column_ids: 0
     column_ids: 2
-    column_ids: 3
     column_ids: 12
-    column_ids: 36
+    column_ids: 16
+    column_ids: 23
+    column_ids: 29
+    column_ids: 31
+    column_ids: 32
+    column_ids: 41
+    column_ids: 42
     column_ids: 47
-    column_ids: 56
-    column_ids: 69
-    column_ids: 72
-    column_ids: 79
+    column_ids: 58
     coefficients: 1
     coefficients: 1
-    coefficients: 2
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1430,7 +1291,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 11
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1450,17 +1311,23 @@ model_updates {
     row_ids: 11
     row_ids: 11
     row_ids: 11
+    row_ids: 11
+    row_ids: 11
     column_ids: 0
-    column_ids: 1
-    column_ids: 10
-    column_ids: 28
-    column_ids: 45
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 29
     column_ids: 47
-    column_ids: 57
-    column_ids: 69
-    column_ids: 72
-    column_ids: 79
-    column_ids: 85
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1475,6 +1342,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 11
   variable_updates {
     lower_bounds {
     }
@@ -1489,7 +1357,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 12
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1509,17 +1377,26 @@ model_updates {
     row_ids: 12
     row_ids: 12
     row_ids: 12
+    row_ids: 12
+    row_ids: 12
+    row_ids: 12
     column_ids: 0
-    column_ids: 6
-    column_ids: 9
-    column_ids: 32
-    column_ids: 38
+    column_ids: 1
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 24
+    column_ids: 29
+    column_ids: 35
+    column_ids: 44
     column_ids: 47
-    column_ids: 58
-    column_ids: 69
-    column_ids: 72
-    column_ids: 80
-    column_ids: 89
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1534,6 +1411,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 12
   variable_updates {
     lower_bounds {
     }
@@ -1569,16 +1447,16 @@ model_updates {
     row_ids: 13
     row_ids: 13
     column_ids: 0
-    column_ids: 7
-    column_ids: 11
-    column_ids: 31
-    column_ids: 37
-    column_ids: 47
+    column_ids: 2
+    column_ids: 12
+    column_ids: 17
+    column_ids: 23
+    column_ids: 30
+    column_ids: 46
     column_ids: 48
-    column_ids: 49
-    column_ids: 70
-    column_ids: 77
-    column_ids: 90
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1588,8 +1466,8 @@ model_updates {
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
   }
 }
 model_updates {
@@ -1607,7 +1485,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 14
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1627,17 +1505,23 @@ model_updates {
     row_ids: 14
     row_ids: 14
     row_ids: 14
+    row_ids: 14
+    row_ids: 14
     column_ids: 0
-    column_ids: 8
+    column_ids: 2
+    column_ids: 11
     column_ids: 13
-    column_ids: 28
-    column_ids: 46
+    column_ids: 14
+    column_ids: 17
+    column_ids: 24
+    column_ids: 29
+    column_ids: 32
+    column_ids: 42
     column_ids: 47
-    column_ids: 51
-    column_ids: 62
-    column_ids: 73
-    column_ids: 77
-    column_ids: 90
+    column_ids: 59
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1666,7 +1550,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 15
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1685,16 +1569,22 @@ model_updates {
     row_ids: 15
     row_ids: 15
     row_ids: 15
+    row_ids: 15
+    row_ids: 15
+    row_ids: 15
     column_ids: 0
-    column_ids: 3
+    column_ids: 1
+    column_ids: 11
+    column_ids: 13
     column_ids: 14
-    column_ids: 33
-    column_ids: 40
-    column_ids: 47
-    column_ids: 63
-    column_ids: 72
-    column_ids: 78
-    column_ids: 83
+    column_ids: 17
+    column_ids: 23
+    column_ids: 29
+    column_ids: 35
+    column_ids: 44
+    column_ids: 48
+    column_ids: 58
+    column_ids: 62
     coefficients: 1
     coefficients: 1
     coefficients: 2
@@ -1705,9 +1595,13 @@ model_updates {
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 14
   variable_updates {
     lower_bounds {
     }
@@ -1722,7 +1616,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 16
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1744,15 +1638,15 @@ model_updates {
     row_ids: 16
     column_ids: 0
     column_ids: 1
-    column_ids: 15
-    column_ids: 34
+    column_ids: 16
+    column_ids: 24
+    column_ids: 29
+    column_ids: 31
+    column_ids: 41
     column_ids: 46
-    column_ids: 47
-    column_ids: 50
-    column_ids: 64
-    column_ids: 75
-    column_ids: 81
-    column_ids: 83
+    column_ids: 48
+    column_ids: 59
+    column_ids: 62
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1781,7 +1675,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 17
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1801,17 +1695,23 @@ model_updates {
     row_ids: 17
     row_ids: 17
     row_ids: 17
+    row_ids: 17
+    row_ids: 17
     column_ids: 0
     column_ids: 2
-    column_ids: 16
-    column_ids: 28
-    column_ids: 39
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 24
+    column_ids: 29
+    column_ids: 32
+    column_ids: 42
     column_ids: 47
-    column_ids: 57
-    column_ids: 65
-    column_ids: 74
-    column_ids: 78
-    column_ids: 88
+    column_ids: 59
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1826,6 +1726,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 17
   variable_updates {
     lower_bounds {
     }
@@ -1840,7 +1741,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 18
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1860,17 +1761,20 @@ model_updates {
     row_ids: 18
     row_ids: 18
     row_ids: 18
+    row_ids: 18
     column_ids: 0
-    column_ids: 2
+    column_ids: 1
     column_ids: 12
-    column_ids: 35
+    column_ids: 17
+    column_ids: 23
+    column_ids: 30
+    column_ids: 31
+    column_ids: 32
+    column_ids: 41
     column_ids: 42
-    column_ids: 44
     column_ids: 47
-    column_ids: 52
-    column_ids: 63
-    column_ids: 73
-    column_ids: 77
+    column_ids: 59
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1885,6 +1789,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 18
   variable_updates {
     lower_bounds {
     }
@@ -1919,17 +1824,26 @@ model_updates {
     row_ids: 19
     row_ids: 19
     row_ids: 19
+    row_ids: 19
+    row_ids: 19
+    row_ids: 19
     column_ids: 0
-    column_ids: 3
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
     column_ids: 17
-    column_ids: 30
-    column_ids: 41
+    column_ids: 24
+    column_ids: 29
+    column_ids: 46
     column_ids: 47
-    column_ids: 53
-    column_ids: 70
-    column_ids: 74
-    column_ids: 77
-    column_ids: 91
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -1958,7 +1872,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 20
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -1979,21 +1893,21 @@ model_updates {
     row_ids: 20
     column_ids: 0
     column_ids: 1
-    column_ids: 18
-    column_ids: 29
-    column_ids: 40
+    column_ids: 12
+    column_ids: 17
+    column_ids: 24
+    column_ids: 30
     column_ids: 47
-    column_ids: 48
-    column_ids: 66
-    column_ids: 82
-    column_ids: 91
+    column_ids: 59
+    column_ids: 62
+    column_ids: 64
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 2
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2014,7 +1928,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 21
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2035,16 +1949,16 @@ model_updates {
     row_ids: 21
     row_ids: 21
     column_ids: 0
-    column_ids: 5
-    column_ids: 18
-    column_ids: 28
-    column_ids: 37
-    column_ids: 47
-    column_ids: 55
-    column_ids: 71
-    column_ids: 76
-    column_ids: 77
-    column_ids: 87
+    column_ids: 1
+    column_ids: 12
+    column_ids: 17
+    column_ids: 25
+    column_ids: 31
+    column_ids: 41
+    column_ids: 48
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2054,11 +1968,12 @@ model_updates {
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 5
   variable_updates {
     lower_bounds {
     }
@@ -2073,7 +1988,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 22
-    lower_bounds: 10
+    lower_bounds: 8
     upper_bounds: inf
     names: ""
   }
@@ -2093,24 +2008,33 @@ model_updates {
     row_ids: 22
     row_ids: 22
     row_ids: 22
+    row_ids: 22
+    row_ids: 22
+    row_ids: 22
     column_ids: 0
-    column_ids: 7
-    column_ids: 10
-    column_ids: 30
-    column_ids: 39
-    column_ids: 47
-    column_ids: 56
-    column_ids: 64
-    column_ids: 72
-    column_ids: 77
-    column_ids: 86
+    column_ids: 1
+    column_ids: 13
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 29
+    column_ids: 34
+    column_ids: 35
+    column_ids: 43
+    column_ids: 44
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2118,6 +2042,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 22
   variable_updates {
     lower_bounds {
     }
@@ -2132,7 +2057,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 23
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2152,22 +2077,31 @@ model_updates {
     row_ids: 23
     row_ids: 23
     row_ids: 23
+    row_ids: 23
+    row_ids: 23
+    row_ids: 23
     column_ids: 0
-    column_ids: 1
-    column_ids: 19
-    column_ids: 33
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 24
+    column_ids: 30
+    column_ids: 32
     column_ids: 42
-    column_ids: 47
-    column_ids: 50
-    column_ids: 68
-    column_ids: 75
-    column_ids: 82
-    column_ids: 91
+    column_ids: 48
+    column_ids: 58
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2177,6 +2111,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 23
   variable_updates {
     lower_bounds {
     }
@@ -2191,7 +2126,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 24
-    lower_bounds: 10
+    lower_bounds: 8
     upper_bounds: inf
     names: ""
   }
@@ -2211,24 +2146,33 @@ model_updates {
     row_ids: 24
     row_ids: 24
     row_ids: 24
+    row_ids: 24
+    row_ids: 24
+    row_ids: 24
     column_ids: 0
-    column_ids: 3
-    column_ids: 19
-    column_ids: 36
+    column_ids: 1
+    column_ids: 13
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 29
+    column_ids: 34
+    column_ids: 35
     column_ids: 43
-    column_ids: 47
-    column_ids: 49
+    column_ids: 44
+    column_ids: 61
     column_ids: 63
-    column_ids: 72
-    column_ids: 78
-    column_ids: 86
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2250,7 +2194,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 25
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2270,22 +2214,31 @@ model_updates {
     row_ids: 25
     row_ids: 25
     row_ids: 25
+    row_ids: 25
+    row_ids: 25
+    row_ids: 25
     column_ids: 0
-    column_ids: 4
-    column_ids: 19
-    column_ids: 36
-    column_ids: 46
-    column_ids: 47
-    column_ids: 52
-    column_ids: 62
-    column_ids: 72
-    column_ids: 77
-    column_ids: 92
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 24
+    column_ids: 30
+    column_ids: 32
+    column_ids: 42
+    column_ids: 48
+    column_ids: 58
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2309,7 +2262,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 26
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2329,22 +2282,31 @@ model_updates {
     row_ids: 26
     row_ids: 26
     row_ids: 26
+    row_ids: 26
+    row_ids: 26
+    row_ids: 26
     column_ids: 0
-    column_ids: 1
+    column_ids: 3
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 15
     column_ids: 20
-    column_ids: 34
-    column_ids: 44
+    column_ids: 21
+    column_ids: 23
+    column_ids: 29
     column_ids: 47
-    column_ids: 51
-    column_ids: 66
-    column_ids: 73
-    column_ids: 79
-    column_ids: 83
+    column_ids: 60
+    column_ids: 61
+    column_ids: 63
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2354,6 +2316,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 26
   variable_updates {
     lower_bounds {
     }
@@ -2388,17 +2351,26 @@ model_updates {
     row_ids: 27
     row_ids: 27
     row_ids: 27
+    row_ids: 27
+    row_ids: 27
+    row_ids: 27
     column_ids: 0
     column_ids: 2
-    column_ids: 10
-    column_ids: 34
-    column_ids: 40
-    column_ids: 47
-    column_ids: 53
-    column_ids: 68
-    column_ids: 72
-    column_ids: 81
-    column_ids: 92
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 25
+    column_ids: 30
+    column_ids: 46
+    column_ids: 49
+    column_ids: 57
+    column_ids: 58
+    column_ids: 62
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2413,6 +2385,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 27
   variable_updates {
     lower_bounds {
     }
@@ -2427,7 +2400,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 28
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2447,22 +2420,31 @@ model_updates {
     row_ids: 28
     row_ids: 28
     row_ids: 28
+    row_ids: 28
+    row_ids: 28
+    row_ids: 28
     column_ids: 0
     column_ids: 3
+    column_ids: 11
     column_ids: 13
+    column_ids: 14
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
     column_ids: 29
-    column_ids: 44
     column_ids: 47
-    column_ids: 49
-    column_ids: 71
-    column_ids: 72
-    column_ids: 77
-    column_ids: 92
+    column_ids: 60
+    column_ids: 61
+    column_ids: 63
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2506,17 +2488,29 @@ model_updates {
     row_ids: 29
     row_ids: 29
     row_ids: 29
+    row_ids: 29
+    row_ids: 29
+    row_ids: 29
+    row_ids: 29
     column_ids: 0
-    column_ids: 1
-    column_ids: 12
-    column_ids: 36
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 23
+    column_ids: 31
     column_ids: 41
-    column_ids: 47
-    column_ids: 48
-    column_ids: 54
-    column_ids: 71
-    column_ids: 81
-    column_ids: 90
+    column_ids: 46
+    column_ids: 49
+    column_ids: 57
+    column_ids: 58
+    column_ids: 62
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2565,21 +2559,27 @@ model_updates {
     row_ids: 30
     row_ids: 30
     row_ids: 30
+    row_ids: 30
+    row_ids: 30
     column_ids: 0
-    column_ids: 1
-    column_ids: 11
-    column_ids: 28
-    column_ids: 43
+    column_ids: 3
+    column_ids: 12
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 25
+    column_ids: 29
+    column_ids: 32
+    column_ids: 42
+    column_ids: 46
     column_ids: 47
     column_ids: 58
-    column_ids: 62
-    column_ids: 73
-    column_ids: 82
-    column_ids: 86
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2590,6 +2590,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 25
   variable_updates {
     lower_bounds {
     }
@@ -2624,17 +2625,20 @@ model_updates {
     row_ids: 31
     row_ids: 31
     row_ids: 31
+    row_ids: 31
     column_ids: 0
-    column_ids: 1
-    column_ids: 9
-    column_ids: 31
+    column_ids: 2
+    column_ids: 12
+    column_ids: 16
+    column_ids: 25
+    column_ids: 29
+    column_ids: 32
+    column_ids: 42
     column_ids: 46
-    column_ids: 47
-    column_ids: 56
-    column_ids: 67
-    column_ids: 72
-    column_ids: 81
-    column_ids: 85
+    column_ids: 48
+    column_ids: 60
+    column_ids: 64
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2649,6 +2653,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 7
   variable_updates {
     lower_bounds {
     }
@@ -2663,7 +2668,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 32
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2683,17 +2688,26 @@ model_updates {
     row_ids: 32
     row_ids: 32
     row_ids: 32
+    row_ids: 32
+    row_ids: 32
+    row_ids: 32
     column_ids: 0
-    column_ids: 1
-    column_ids: 12
-    column_ids: 35
-    column_ids: 45
-    column_ids: 47
-    column_ids: 57
-    column_ids: 64
-    column_ids: 76
-    column_ids: 77
-    column_ids: 84
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 24
+    column_ids: 30
+    column_ids: 31
+    column_ids: 32
+    column_ids: 41
+    column_ids: 42
+    column_ids: 48
+    column_ids: 59
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2708,6 +2722,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 32
   variable_updates {
     lower_bounds {
     }
@@ -2722,7 +2737,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 33
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2742,17 +2757,21 @@ model_updates {
     row_ids: 33
     row_ids: 33
     row_ids: 33
+    row_ids: 33
+    row_ids: 33
     column_ids: 0
-    column_ids: 8
-    column_ids: 12
-    column_ids: 28
-    column_ids: 38
-    column_ids: 47
-    column_ids: 58
-    column_ids: 66
-    column_ids: 72
-    column_ids: 77
-    column_ids: 92
+    column_ids: 1
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 24
+    column_ids: 29
+    column_ids: 32
+    column_ids: 42
+    column_ids: 49
+    column_ids: 57
+    column_ids: 60
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2763,10 +2782,13 @@ model_updates {
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 1
   variable_updates {
     lower_bounds {
     }
@@ -2781,7 +2803,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 34
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2801,17 +2823,26 @@ model_updates {
     row_ids: 34
     row_ids: 34
     row_ids: 34
+    row_ids: 34
+    row_ids: 34
+    row_ids: 34
     column_ids: 0
-    column_ids: 1
-    column_ids: 9
-    column_ids: 28
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 24
+    column_ids: 30
+    column_ids: 31
+    column_ids: 32
+    column_ids: 41
     column_ids: 42
     column_ids: 47
-    column_ids: 48
-    column_ids: 54
-    column_ids: 70
-    column_ids: 77
-    column_ids: 84
+    column_ids: 59
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2840,7 +2871,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 35
-    lower_bounds: 10
+    lower_bounds: 8
     upper_bounds: inf
     names: ""
   }
@@ -2862,20 +2893,20 @@ model_updates {
     row_ids: 35
     column_ids: 0
     column_ids: 1
-    column_ids: 9
-    column_ids: 29
-    column_ids: 45
-    column_ids: 47
-    column_ids: 59
-    column_ids: 64
-    column_ids: 72
-    column_ids: 77
-    column_ids: 93
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 30
+    column_ids: 32
+    column_ids: 42
+    column_ids: 48
+    column_ids: 60
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2885,6 +2916,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 19
   variable_updates {
     lower_bounds {
     }
@@ -2899,7 +2931,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 36
-    lower_bounds: 10
+    lower_bounds: 8
     upper_bounds: inf
     names: ""
   }
@@ -2920,16 +2952,16 @@ model_updates {
     row_ids: 36
     row_ids: 36
     column_ids: 0
-    column_ids: 1
-    column_ids: 13
-    column_ids: 35
+    column_ids: 3
+    column_ids: 16
+    column_ids: 23
+    column_ids: 30
+    column_ids: 31
+    column_ids: 32
+    column_ids: 41
     column_ids: 42
-    column_ids: 47
     column_ids: 48
-    column_ids: 59
-    column_ids: 67
-    column_ids: 80
-    column_ids: 89
+    column_ids: 60
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -2944,6 +2976,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 13
   variable_updates {
     lower_bounds {
     }
@@ -2958,7 +2991,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 37
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -2978,17 +3011,20 @@ model_updates {
     row_ids: 37
     row_ids: 37
     row_ids: 37
+    row_ids: 37
     column_ids: 0
-    column_ids: 1
-    column_ids: 15
-    column_ids: 32
-    column_ids: 44
-    column_ids: 47
+    column_ids: 3
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 18
+    column_ids: 24
+    column_ids: 30
     column_ids: 48
-    column_ids: 56
-    column_ids: 63
-    column_ids: 77
-    column_ids: 90
+    column_ids: 58
+    column_ids: 62
+    column_ids: 66
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3003,6 +3039,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 37
   variable_updates {
     lower_bounds {
     }
@@ -3017,7 +3054,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 38
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -3037,17 +3074,26 @@ model_updates {
     row_ids: 38
     row_ids: 38
     row_ids: 38
+    row_ids: 38
+    row_ids: 38
+    row_ids: 38
     column_ids: 0
     column_ids: 2
-    column_ids: 16
+    column_ids: 11
+    column_ids: 17
+    column_ids: 23
+    column_ids: 30
     column_ids: 35
+    column_ids: 44
     column_ids: 46
-    column_ids: 47
     column_ids: 49
-    column_ids: 69
-    column_ids: 72
-    column_ids: 77
-    column_ids: 93
+    column_ids: 57
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3062,6 +3108,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 38
   variable_updates {
     lower_bounds {
     }
@@ -3096,17 +3143,26 @@ model_updates {
     row_ids: 39
     row_ids: 39
     row_ids: 39
+    row_ids: 39
+    row_ids: 39
+    row_ids: 39
     column_ids: 0
-    column_ids: 7
-    column_ids: 15
-    column_ids: 31
-    column_ids: 40
-    column_ids: 47
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 24
+    column_ids: 30
+    column_ids: 46
+    column_ids: 48
+    column_ids: 49
     column_ids: 57
-    column_ids: 71
-    column_ids: 73
-    column_ids: 77
-    column_ids: 93
+    column_ids: 58
+    column_ids: 62
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3155,17 +3211,32 @@ model_updates {
     row_ids: 40
     row_ids: 40
     row_ids: 40
+    row_ids: 40
+    row_ids: 40
+    row_ids: 40
+    row_ids: 40
+    row_ids: 40
     column_ids: 0
-    column_ids: 3
-    column_ids: 18
-    column_ids: 34
-    column_ids: 43
-    column_ids: 47
-    column_ids: 50
-    column_ids: 65
-    column_ids: 75
-    column_ids: 77
-    column_ids: 93
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 30
+    column_ids: 35
+    column_ids: 44
+    column_ids: 46
+    column_ids: 49
+    column_ids: 57
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3194,7 +3265,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 41
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -3215,16 +3286,16 @@ model_updates {
     row_ids: 41
     row_ids: 41
     column_ids: 0
-    column_ids: 6
-    column_ids: 17
-    column_ids: 28
-    column_ids: 39
-    column_ids: 47
-    column_ids: 54
-    column_ids: 68
-    column_ids: 72
-    column_ids: 82
-    column_ids: 85
+    column_ids: 2
+    column_ids: 18
+    column_ids: 23
+    column_ids: 29
+    column_ids: 46
+    column_ids: 49
+    column_ids: 57
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3234,11 +3305,12 @@ model_updates {
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 29
   variable_updates {
     lower_bounds {
     }
@@ -3273,17 +3345,23 @@ model_updates {
     row_ids: 42
     row_ids: 42
     row_ids: 42
+    row_ids: 42
+    row_ids: 42
+    row_ids: 42
     column_ids: 0
-    column_ids: 1
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
     column_ids: 14
-    column_ids: 28
-    column_ids: 38
-    column_ids: 47
-    column_ids: 52
-    column_ids: 68
-    column_ids: 75
-    column_ids: 81
-    column_ids: 84
+    column_ids: 18
+    column_ids: 24
+    column_ids: 31
+    column_ids: 32
+    column_ids: 41
+    column_ids: 42
+    column_ids: 46
+    column_ids: 48
+    column_ids: 59
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3291,6 +3369,9 @@ model_updates {
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 1
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3298,6 +3379,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 42
   variable_updates {
     lower_bounds {
     }
@@ -3332,17 +3414,29 @@ model_updates {
     row_ids: 43
     row_ids: 43
     row_ids: 43
+    row_ids: 43
+    row_ids: 43
+    row_ids: 43
+    row_ids: 43
     column_ids: 0
-    column_ids: 6
-    column_ids: 18
-    column_ids: 36
-    column_ids: 38
-    column_ids: 47
-    column_ids: 56
-    column_ids: 70
-    column_ids: 72
-    column_ids: 78
-    column_ids: 84
+    column_ids: 1
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 23
+    column_ids: 31
+    column_ids: 41
+    column_ids: 46
+    column_ids: 49
+    column_ids: 57
+    column_ids: 58
+    column_ids: 62
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3357,6 +3451,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 43
   variable_updates {
     lower_bounds {
     }
@@ -3371,7 +3466,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 44
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -3391,17 +3486,23 @@ model_updates {
     row_ids: 44
     row_ids: 44
     row_ids: 44
+    row_ids: 44
+    row_ids: 44
     column_ids: 0
-    column_ids: 7
-    column_ids: 9
-    column_ids: 29
-    column_ids: 38
-    column_ids: 47
-    column_ids: 49
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 31
+    column_ids: 41
+    column_ids: 48
+    column_ids: 59
     column_ids: 62
-    column_ids: 72
-    column_ids: 78
-    column_ids: 94
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3430,7 +3531,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 45
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -3450,22 +3551,31 @@ model_updates {
     row_ids: 45
     row_ids: 45
     row_ids: 45
+    row_ids: 45
+    row_ids: 45
+    row_ids: 45
     column_ids: 0
     column_ids: 1
-    column_ids: 10
-    column_ids: 31
-    column_ids: 46
-    column_ids: 47
-    column_ids: 58
-    column_ids: 65
-    column_ids: 72
-    column_ids: 77
-    column_ids: 94
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 25
+    column_ids: 30
+    column_ids: 49
+    column_ids: 57
+    column_ids: 60
+    column_ids: 62
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3489,7 +3599,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 46
-    lower_bounds: 10
+    lower_bounds: 8
     upper_bounds: inf
     names: ""
   }
@@ -3508,25 +3618,22 @@ model_updates {
     row_ids: 46
     row_ids: 46
     row_ids: 46
-    row_ids: 46
     column_ids: 0
-    column_ids: 8
-    column_ids: 20
-    column_ids: 32
-    column_ids: 40
-    column_ids: 47
-    column_ids: 55
+    column_ids: 3
+    column_ids: 16
+    column_ids: 24
+    column_ids: 31
+    column_ids: 41
+    column_ids: 49
+    column_ids: 57
+    column_ids: 58
     column_ids: 62
-    column_ids: 72
-    column_ids: 77
-    column_ids: 83
     coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 1
-    coefficients: 1
-    coefficients: 1
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3534,6 +3641,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 44
   variable_updates {
     lower_bounds {
     }
@@ -3548,7 +3656,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 47
-    lower_bounds: 10
+    lower_bounds: 9
     upper_bounds: inf
     names: ""
   }
@@ -3568,17 +3676,29 @@ model_updates {
     row_ids: 47
     row_ids: 47
     row_ids: 47
+    row_ids: 47
+    row_ids: 47
+    row_ids: 47
+    row_ids: 47
     column_ids: 0
-    column_ids: 8
-    column_ids: 20
-    column_ids: 31
-    column_ids: 37
+    column_ids: 1
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 23
+    column_ids: 32
+    column_ids: 33
+    column_ids: 34
+    column_ids: 35
+    column_ids: 42
+    column_ids: 44
     column_ids: 47
-    column_ids: 60
-    column_ids: 69
-    column_ids: 73
-    column_ids: 77
-    column_ids: 87
+    column_ids: 66
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3593,6 +3713,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 47
   variable_updates {
     lower_bounds {
     }
@@ -3626,20 +3747,32 @@ model_updates {
     row_ids: 48
     row_ids: 48
     row_ids: 48
+    row_ids: 48
+    row_ids: 48
+    row_ids: 48
+    row_ids: 48
     column_ids: 0
     column_ids: 2
-    column_ids: 20
-    column_ids: 30
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 31
+    column_ids: 41
     column_ids: 46
-    column_ids: 47
-    column_ids: 60
-    column_ids: 76
-    column_ids: 77
-    column_ids: 85
+    column_ids: 48
+    column_ids: 59
+    column_ids: 62
+    column_ids: 64
     coefficients: 1
     coefficients: 1
     coefficients: 1
-    coefficients: 2
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3649,6 +3782,7 @@ model_updates {
   }
 }
 model_updates {
+  deleted_linear_constraint_ids: 48
   variable_updates {
     lower_bounds {
     }
@@ -3663,7 +3797,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 49
-    lower_bounds: 10
+    lower_bounds: 8
     upper_bounds: inf
     names: ""
   }
@@ -3683,17 +3817,26 @@ model_updates {
     row_ids: 49
     row_ids: 49
     row_ids: 49
+    row_ids: 49
+    row_ids: 49
+    row_ids: 49
     column_ids: 0
-    column_ids: 2
-    column_ids: 21
+    column_ids: 1
+    column_ids: 13
+    column_ids: 16
+    column_ids: 23
+    column_ids: 31
     column_ids: 32
-    column_ids: 37
+    column_ids: 33
+    column_ids: 34
+    column_ids: 35
+    column_ids: 42
+    column_ids: 44
+    column_ids: 45
     column_ids: 47
-    column_ids: 55
-    column_ids: 69
-    column_ids: 72
-    column_ids: 77
-    column_ids: 94
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3742,17 +3885,26 @@ model_updates {
     row_ids: 50
     row_ids: 50
     row_ids: 50
+    row_ids: 50
+    row_ids: 50
+    row_ids: 50
     column_ids: 0
-    column_ids: 1
-    column_ids: 16
-    column_ids: 32
-    column_ids: 45
-    column_ids: 47
-    column_ids: 60
-    column_ids: 66
-    column_ids: 76
-    column_ids: 77
-    column_ids: 86
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 18
+    column_ids: 23
+    column_ids: 31
+    column_ids: 41
+    column_ids: 46
+    column_ids: 48
+    column_ids: 59
+    column_ids: 62
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3781,7 +3933,7 @@ model_updates {
   }
   new_linear_constraints {
     ids: 51
-    lower_bounds: 10
+    lower_bounds: 8
     upper_bounds: inf
     names: ""
   }
@@ -3803,15 +3955,78 @@ model_updates {
     row_ids: 51
     column_ids: 0
     column_ids: 1
-    column_ids: 9
-    column_ids: 28
-    column_ids: 45
-    column_ids: 47
-    column_ids: 49
+    column_ids: 16
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 33
+    column_ids: 58
+    column_ids: 61
     column_ids: 63
-    column_ids: 76
-    column_ids: 81
-    column_ids: 92
+    column_ids: 66
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  deleted_linear_constraint_ids: 50
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 52
+    lower_bounds: 9
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    row_ids: 52
+    column_ids: 0
+    column_ids: 3
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 16
+    column_ids: 25
+    column_ids: 33
+    column_ids: 47
+    column_ids: 58
+    column_ids: 62
+    column_ids: 66
+    coefficients: 1
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3839,7 +4054,7 @@ model_updates {
     }
   }
   new_linear_constraints {
-    ids: 52
+    ids: 53
     lower_bounds: 10
     upper_bounds: inf
     names: ""
@@ -3849,28 +4064,422 @@ model_updates {
     }
   }
   linear_constraint_matrix_updates {
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
-    row_ids: 52
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    row_ids: 53
+    column_ids: 0
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 31
+    column_ids: 32
+    column_ids: 35
+    column_ids: 41
+    column_ids: 42
+    column_ids: 43
+    column_ids: 46
+    column_ids: 58
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  deleted_linear_constraint_ids: 53
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 54
+    lower_bounds: 9
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    row_ids: 54
+    column_ids: 0
+    column_ids: 2
+    column_ids: 18
+    column_ids: 25
+    column_ids: 31
+    column_ids: 41
+    column_ids: 46
+    column_ids: 48
+    column_ids: 58
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  deleted_linear_constraint_ids: 54
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 55
+    lower_bounds: 9
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    row_ids: 55
+    column_ids: 0
+    column_ids: 3
+    column_ids: 12
+    column_ids: 13
+    column_ids: 17
+    column_ids: 23
+    column_ids: 32
+    column_ids: 35
+    column_ids: 42
+    column_ids: 43
+    column_ids: 58
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 1
+    coefficients: 2
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 56
+    lower_bounds: 10
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    row_ids: 56
+    column_ids: 0
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 31
+    column_ids: 39
+    column_ids: 41
+    column_ids: 46
+    column_ids: 50
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 57
+    lower_bounds: 9
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
+    row_ids: 57
     column_ids: 0
     column_ids: 1
-    column_ids: 9
-    column_ids: 28
+    column_ids: 12
+    column_ids: 18
+    column_ids: 23
+    column_ids: 29
+    column_ids: 31
+    column_ids: 41
+    column_ids: 48
+    column_ids: 58
+    column_ids: 62
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  deleted_linear_constraint_ids: 56
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 58
+    lower_bounds: 8
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    row_ids: 58
+    column_ids: 0
+    column_ids: 2
+    column_ids: 18
+    column_ids: 24
+    column_ids: 31
+    column_ids: 33
+    column_ids: 45
+    column_ids: 48
+    column_ids: 60
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 59
+    lower_bounds: 10
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    row_ids: 59
+    column_ids: 0
+    column_ids: 2
+    column_ids: 12
+    column_ids: 17
+    column_ids: 23
     column_ids: 30
-    column_ids: 37
-    column_ids: 47
+    column_ids: 32
+    column_ids: 42
+    column_ids: 46
     column_ids: 49
-    column_ids: 72
-    column_ids: 77
-    column_ids: 88
+    column_ids: 57
+    column_ids: 58
+    column_ids: 64
     coefficients: 1
     coefficients: 1
     coefficients: 1
@@ -3878,6 +4487,374 @@ model_updates {
     coefficients: 1
     coefficients: 1
     coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  deleted_linear_constraint_ids: 59
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 60
+    lower_bounds: 10
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    row_ids: 60
+    column_ids: 0
+    column_ids: 3
+    column_ids: 12
+    column_ids: 17
+    column_ids: 25
+    column_ids: 30
+    column_ids: 31
+    column_ids: 41
+    column_ids: 46
+    column_ids: 49
+    column_ids: 57
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  deleted_linear_constraint_ids: 60
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 61
+    lower_bounds: 10
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    row_ids: 61
+    column_ids: 0
+    column_ids: 2
+    column_ids: 11
+    column_ids: 13
+    column_ids: 14
+    column_ids: 17
+    column_ids: 23
+    column_ids: 33
+    column_ids: 39
+    column_ids: 46
+    column_ids: 50
+    column_ids: 59
+    column_ids: 62
+    column_ids: 64
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 62
+    lower_bounds: 9
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    row_ids: 62
+    column_ids: 0
+    column_ids: 3
+    column_ids: 12
+    column_ids: 17
+    column_ids: 25
+    column_ids: 30
+    column_ids: 31
+    column_ids: 41
+    column_ids: 49
+    column_ids: 57
+    column_ids: 59
+    column_ids: 61
+    column_ids: 63
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 63
+    lower_bounds: 8
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    row_ids: 63
+    column_ids: 0
+    column_ids: 3
+    column_ids: 18
+    column_ids: 23
+    column_ids: 30
+    column_ids: 32
+    column_ids: 42
+    column_ids: 49
+    column_ids: 57
+    column_ids: 59
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 1
+  }
+}
+model_updates {
+  deleted_linear_constraint_ids: 49
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 64
+    lower_bounds: 7
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 64
+    row_ids: 64
+    row_ids: 64
+    row_ids: 64
+    row_ids: 64
+    row_ids: 64
+    row_ids: 64
+    row_ids: 64
+    row_ids: 64
+    column_ids: 0
+    column_ids: 1
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 29
+    column_ids: 47
+    column_ids: 58
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+    coefficients: 1
+  }
+}
+model_updates {
+  variable_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  linear_constraint_updates {
+    lower_bounds {
+    }
+    upper_bounds {
+    }
+  }
+  new_linear_constraints {
+    ids: 65
+    lower_bounds: 7
+    upper_bounds: inf
+    names: ""
+  }
+  objective_updates {
+    linear_coefficients {
+    }
+  }
+  linear_constraint_matrix_updates {
+    row_ids: 65
+    row_ids: 65
+    row_ids: 65
+    row_ids: 65
+    row_ids: 65
+    row_ids: 65
+    row_ids: 65
+    row_ids: 65
+    row_ids: 65
+    column_ids: 0
+    column_ids: 1
+    column_ids: 15
+    column_ids: 20
+    column_ids: 21
+    column_ids: 23
+    column_ids: 29
+    column_ids: 47
+    column_ids: 58
+    coefficients: 1
+    coefficients: 1
+    coefficients: 2
+    coefficients: 2
+    coefficients: 2
     coefficients: 1
     coefficients: 1
     coefficients: 1

@@ -14,3 +14,5 @@ init.sh
 *pb.*
 *pb2.*
 gurobi.log
+tools/retail
+math_opt_benchmark/retail

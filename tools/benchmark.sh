@@ -1,9 +1,9 @@
 MST_OUTDIR="./protos/mst/"
 UFL_OUTDIR="./math_opt_benchmark/facility/protos/"
-SUB_OUTDIR="./protos/subs/"
+# SUB_OUTDIR="./protos/subs/"
 
-outdirs=($MST_OUTDIR $UFL_OUTDIR $SUB_OUTDIR)
-requires_mip=(1 1 1)
+outdirs=($MST_OUTDIR $UFL_OUTDIR)
+requires_mip=(1 1)
 
 for i in "${!outdirs[@]}"
 do

@@ -28,56 +28,50 @@ ABSL_FLAG(bool, is_single_file, false, "Whether instance_dir points to a directo
 namespace math_opt = operations_research::math_opt;
 
 const std::vector<math_opt::SolverType> lp_solvers{
-    math_opt::SOLVER_TYPE_GLOP,
-    math_opt::SOLVER_TYPE_GUROBI,
+  math_opt::SolverType::kGlop,
+  math_opt::SolverType::kGlpk,
+  math_opt::SolverType::kGurobi,
 };
 const std::vector<math_opt::SolverType> mip_solvers{
-    math_opt::SOLVER_TYPE_GSCIP,
-    math_opt::SOLVER_TYPE_GUROBI,
+    math_opt::SolverType::kGscip,
+    math_opt::SolverType::kGurobi,
 };
 
 
 namespace math_opt_benchmark {
 
-absl::Duration RunModel(const std::string& filename, math_opt::SolverType solver_type, OUT double *objective=nullptr) {
+std::unique_ptr<BenchmarkInstance> LoadInstance(const std::string& filename) {
   std::ifstream file(filename);
   std::stringstream buffer;
   buffer << file.rdbuf();
   std::string proto_str = buffer.str();
-  BenchmarkInstance new_model;
-  CHECK(google::protobuf::TextFormat::ParseFromString(proto_str, &new_model));
-  const math_opt::ModelProto& initial_model = new_model.initial_model();
-  const absl::StatusOr<std::unique_ptr<math_opt::Solver>> new_solver = math_opt::Solver::New(
-      solver_type, initial_model, math_opt::SolverInitializerProto{});
-  std::cout << new_solver.status() << std::endl;
+  BenchmarkInstance new_instance;
+  CHECK(google::protobuf::TextFormat::ParseFromString(proto_str, &new_instance));
+  return std::make_unique<BenchmarkInstance>(new_instance);
+}
 
+absl::Duration SolveModel(std::unique_ptr<BenchmarkInstance> instance, math_opt::Model model, math_opt::SolverType solver_type) {
   absl::Time start_t = absl::Now();
+  std::unique_ptr<math_opt::IncrementalSolver> solver = math_opt::IncrementalSolver::New(model, solver_type).value();
 
-  math_opt::SolveParametersProto solve_parameters;
-  // Disable presolve for GLOP
-  if (solver_type == math_opt::SOLVER_TYPE_GLOP || solver_type == math_opt::SOLVER_TYPE_GSCIP) {
-    solve_parameters.mutable_common_parameters()->set_presolve(math_opt::EMPHASIS_LOW);
-  }
+  absl::StatusOr<math_opt::SolveResult> result = solver->Solve();
+  CHECK_EQ(result.value().termination.reason, math_opt::TerminationReason::kOptimal) << result.value().termination.detail;
 
-  solve_parameters.mutable_common_parameters()->set_enable_output(false);
-  absl::StatusOr<math_opt::SolveResultProto> new_solution = (*new_solver)->Solve(solve_parameters);
-  CHECK_EQ(new_solution->termination_reason(), math_opt::SolveResultProto::OPTIMAL);
-  double obj = new_solution.value().primal_solutions(0).objective_value();
-  CHECK_NEAR(obj, new_model.objectives(0), 0.0001);
+  // TODO store solve_stats?
 
-  for (int i = 0; i < new_model.model_updates_size(); i++) {
-    CHECK_OK((*new_solver)->Update(new_model.model_updates(i)));
-    new_solution = (*new_solver)->Solve(math_opt::SolveParametersProto{});
-    CHECK_EQ(new_solution->termination_reason(), math_opt::SolveResultProto::OPTIMAL);
-    absl::Duration t = util_time::DecodeGoogleApiProto(new_solution->solve_stats().solve_time()).value();
-    obj = (*new_solution).primal_solutions(0).objective_value();
-    CHECK_NEAR(obj, new_model.objectives(i+1), 0.0001);
+  double obj = result.value().objective_value();
+  CHECK_NEAR(obj, instance->objectives(0), 0.0001);
+
+  for (int i = 0; i < instance->model_updates_size(); i++) {
+    CHECK_OK(model.ApplyUpdateProto(instance->model_updates(i)));
+    absl::StatusOr<math_opt::SolveResult> solution = solver->Solve();
+    CHECK_EQ(solution.value().termination.reason, math_opt::TerminationReason::kOptimal) << solution.value().termination.detail;
+    absl::Duration t = solution.value().solve_stats.solve_time;
+    obj = solution.value().objective_value();
+    CHECK_NEAR(obj, instance->objectives(i+1), 0.0001);
   }
 
   absl::Duration elapsed = absl::Now() - start_t;
-  if (objective) {
-    *objective = (*new_solution).primal_solutions(0).objective_value();
-  }
 
   return elapsed;
 
@@ -105,17 +99,23 @@ absl::Duration average_t(const std::vector<absl::Duration>& v) {
 
 void BenchmarkMain(const std::vector<std::string>& proto_filenames, const std::vector<math_opt::SolverType>& solvers) {
   std::vector<std::vector<absl::Duration>> solve_times(solvers.size(), std::vector<absl::Duration>(proto_filenames.size()));
-  for (int i = 0; i < lp_solvers.size(); i++) {
-    math_opt::SolverType solver_type = mip_solvers[i];
-    for (const std::string& filename : proto_filenames) {
-      absl::Duration solve_time = RunModel(filename, solver_type);
-      solve_times[i].push_back(solve_time);
+  for (const std::string& filename : proto_filenames) {
+    std::unique_ptr<BenchmarkInstance> instance = LoadInstance(filename);
+    const math_opt::ModelProto& initial_model = instance.initial_model();
+    absl::StatusOr<std::unique_ptr<math_opt::Model>> new_model = math_opt::Model::FromModelProto(initial_model).value();
+
+    std::cout << new_model.status() << std::endl;
+
+    for (int i = 0; i < solvers.size(); i++) {
+    math_opt::SolverType solver_type = solvers[i];
+    absl::Duration solve_time = SolveModel(instance, new_model.value(), solver_type);
+    solve_times[i].push_back(solve_time);
     }
   }
 
+  // TODO figure out what to print
   for (int i = 0; i < solvers.size(); i++) {
-    std::string print = std::to_string(solvers[i]) + ": " + absl::FormatDuration(max_t(solve_times[i]));
-    std::cout << std::left << std::setw(20) << print;
+    std::cout << std::left << std::setw(20) << solvers[i] << ": " + absl::FormatDuration(max_t(solve_times[i]));
   }
   std::cout << std::endl;
 
@@ -141,12 +141,3 @@ int main(int argc, char *argv[]) {
 
   math_opt_benchmark::BenchmarkMain(proto_filenames, solvers);
 }
-
-
-
-// how many simplex pivots per solve
-// common parameters
-// glop disable presolve
-// gurobi glpk glop clp
-// save solve stats proto
-// what did presolve optimize out

@@ -12,11 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "math_opt_benchmark/matrix/matrix.h"
-
-#include <vector>
-
-constexpr double kTolerance = 1e-5;
+#include "math_opt_benchmark/facility/knapsack.h"
 
 namespace math_opt_benchmark {
 

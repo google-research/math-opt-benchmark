@@ -27,22 +27,23 @@ namespace math_opt_benchmark {
  */
 MSTSolver::MSTSolver(const math_opt::SolverType problem_type,
                      const MSTProblem &problem)
-    : optimizer_(problem_type, "MST_solver") {
-  optimizer_.objective().set_minimize();
+    : model_("MST_solver") {
+  model_.set_minimize();
+  update_tracker_ = model_.NewUpdateTracker();
   x_vars_.init(problem.n);
-  math_opt::LinearConstraint c_eq = optimizer_.AddLinearConstraint(problem.n - 1, problem.n - 1);
+  math_opt::LinearConstraint c_eq = model_.AddLinearConstraint(problem.n - 1, problem.n - 1);
   for (int i = 0; i < problem.n; i++) {
     for (int j = 0; j < i; j++) {
       if (problem.edges.is_set(i, j) && problem.edges.get(i, j)) {
-        math_opt::Variable var = optimizer_.AddVariable(0.0, 1.0, problem.integer, absl::StrCat("x", i, ",", j));
+        math_opt::Variable var = model_.AddVariable(0.0, 1.0, problem.integer, absl::StrCat("x", i, ",", j));
         x_vars_.set(i, j, var);
         UpdateObjective(i, j, problem.weights.get(i, j));
-        c_eq.set_coefficient(var, 1);
+        model_.set_coefficient(c_eq, var, 1);
       }
     }
   }
 
-  *(model_.mutable_initial_model()) = optimizer_.ExportModel();
+  *(instance_.mutable_initial_model()) = model_.ExportModel();
 }
 
 void debug_solve(const MSTSolution &result) {
@@ -60,10 +61,9 @@ void debug_solve(const MSTSolution &result) {
  * @return Solution containing objective value and variable values
  */
 MSTSolution MSTSolver::Solve() {
-  math_opt::SolveParametersProto solve_parameters;
-  solve_parameters.mutable_common_parameters()->set_enable_output(false);
-  absl::StatusOr<math_opt::Result> result = optimizer_.Solve(solve_parameters);
-  CHECK_EQ(result.value().termination_reason, math_opt::SolveResultProto::OPTIMAL) << result.value().termination_detail;
+  math_opt::SolveArguments solve_args;
+  absl::StatusOr<math_opt::SolveResult> result = solver_->Solve(solve_args);
+  CHECK_EQ(result.value().termination.reason, math_opt::TerminationReason::kOptimal) << result.value().termination.detail;
 
   MSTSolution solution;
   solution.objective_value = result.value().objective_value();
@@ -76,7 +76,7 @@ MSTSolution MSTSolver::Solve() {
     }
   }
 
-  model_.add_objectives(solution.objective_value);
+  instance_.add_objectives(solution.objective_value);
 
   return solution;
 }
@@ -92,7 +92,7 @@ void MSTSolver::UpdateObjective(int v1, int v2, double value) {
   CHECK_GE(v2, 0);
   CHECK_LT(v1, x_vars_.size());
   CHECK_LT(v2, x_vars_.size());
-  optimizer_.objective().set_linear_coefficient(x_vars_.get(v1, v2), value);
+  model_.set_objective_coefficient(x_vars_.get(v1, v2), value);
 }
 
 int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
@@ -106,19 +106,20 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
  */
 void MSTSolver::AddConstraints(const MSTProblem &problem,
                                std::vector<std::vector<int>> invalid) {
+  update_tracker_->Checkpoint();
   constexpr int kMaxConstraintVars = 100;
   std::sort(invalid.begin(), invalid.end(), sort_by_size);
   for (int i = 0; i < invalid.size() && i < kMaxConstraintVars; ++i) {
-    math_opt::LinearConstraint c = optimizer_.AddLinearConstraint(-kInf, ((double) invalid[i].size()) - 1);
+    math_opt::LinearConstraint c = model_.AddLinearConstraint(-kInf, ((double) invalid[i].size()) - 1);
     for (int j = 0; j < invalid[i].size(); j++) {
       for (int k = 0; k < invalid[i].size(); k++) {
         int v1 = invalid[i][j], v2 = invalid[i][k];
         if (x_vars_.is_set(v1, v2)) {
-          c.set_coefficient(x_vars_.get(v1, v2), 1);
+          model_.set_coefficient(c, x_vars_.get(v1, v2), 1);
         }
       }
     }
-    *(model_.add_model_updates()) = optimizer_.ExportModelUpdate();
+    *(instance_.add_model_updates()) = *update_tracker_->ExportModelUpdate();
   }
 }
 
@@ -126,14 +127,14 @@ void MSTSolver::EnforceInteger() {
   for (int i = 0; i < x_vars_.size(); i++) {
     for (int j = 0; j < i; j++) {
       if (x_vars_.is_set(i, j)) {
-        x_vars_.get(i, j).set_is_integer(true);
+        model_.set_is_integer(x_vars_.get(i, j), true);
       }
     }
   }
 }
 
 BenchmarkInstance MSTSolver::GetModel() {
-  return model_;
+  return instance_;
 }
 
 }  // namespace math_opt_benchmark

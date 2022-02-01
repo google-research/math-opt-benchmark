@@ -58,9 +58,11 @@ public:
   BenchmarkInstance GetModel();
 
 private:
-  math_opt::MathOpt optimizer_;
+  math_opt::Model model_;
+  std::unique_ptr<math_opt::IncrementalSolver> solver_;
+  std::unique_ptr<math_opt::UpdateTracker> update_tracker_;
   Matrix<math_opt::Variable> x_vars_;
-  BenchmarkInstance model_;
+  BenchmarkInstance instance_;
 };
 
 }  // namespace math_opt_benchmark
