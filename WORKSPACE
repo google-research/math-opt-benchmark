@@ -62,12 +62,6 @@ git_repository(
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 protobuf_deps()
 
-git_repository(
-    name = "com_google_absl",
-    commit = "2151058", # release 20211102.0
-    remote = "https://github.com/abseil/abseil-cpp.git",
-)
-
 # Bazel platform rules.
 http_archive(
     name = "platforms",
