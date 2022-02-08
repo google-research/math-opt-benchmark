@@ -1,38 +1,25 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
 
 git_repository(
     name = "com_google_absl",
-    commit = "c51510d",  # release 20200225.2
+    commit = "278e0a0", # release 20210324.2
     remote = "https://github.com/abseil/abseil-cpp.git",
 )
 
-http_archive(
+git_repository(
     name = "com_google_googletest",
-    sha256 = "774f5499dee0f9d2b583ce7fff62e575acce432b67a8396e86f3a87c90d2987e",
-    strip_prefix = "googletest-604ba376c3a407c6a40e39fbd0d5055c545f9898",
-    urls = [
-        "https://mirror.bazel.build/github.com/google/googletest/archive/604ba376c3a407c6a40e39fbd0d5055c545f9898.tar.gz",
-        "https://github.com/google/googletest/archive/604ba376c3a407c6a40e39fbd0d5055c545f9898.tar.gz",
-    ],
+    commit = "703bd9c", # release-1.10.0
+    remote = "https://github.com/google/googletest.git",
 )
 
-http_archive(
-    name = "com_github_glog_glog",
-    sha256 = "62efeb57ff70db9ea2129a16d0f908941e355d09d6d83c9f7b18557c0a7ab59e",
-    strip_prefix = "glog-d516278b1cd33cd148e8989aec488b6049a4ca0b",
-    urls = ["https://github.com/google/glog/archive/d516278b1cd33cd148e8989aec488b6049a4ca0b.zip"],
-)
-
-# August 2020
+# Math Opt
 http_archive(
     name = "com_google_ortools",  # Apache 2.0
-    sha256 = "d93a9502b18af51902abd130ff5f23768fcf47e266e6d1f34b3586387aa2de68",
-    strip_prefix = "or-tools-7.8",
+    sha256 = "827dcb70d48ed2b1c940d305e3954f14c22b77bbe4d7d22ab10d2416ad3730e7",
+    strip_prefix = "or-tools-master",
     urls = [
-        "https://mirror.bazel.build/github.com/google/or-tools/archive/v7.8.tar.gz",
-        "https://github.com/google/or-tools/archive/v7.8.tar.gz",
-        "https://github.com/google/or-tools/archive/53189020e3f995715a935aab7355357ce658fb76.tar.gz",
+        "https://github.com/google/or-tools/archive/refs/heads/master.zip",
     ],
 )
 
@@ -49,14 +36,6 @@ http_archive(
         "https://mirror.bazel.build/zlib.net/zlib-1.2.11.tar.gz",
         "https://zlib.net/zlib-1.2.11.tar.gz",
     ],
-)
-
-# This is used by or-tools, but really or-tools should use absl flags.
-http_archive(
-    name = "com_github_gflags_gflags",
-    sha256 = "34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf",
-    strip_prefix = "gflags-2.2.2",
-    urls = ["https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"],
 )
 
 git_repository(
@@ -76,27 +55,85 @@ http_archive(
 # Protobuf
 git_repository(
     name = "com_google_protobuf",
-    commit = "c9d2bd2",  # release v3.12.4
+    commit = "7c40b2d",  # release v3.19.1
     remote = "https://github.com/protocolbuffers/protobuf.git",
 )
-
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
-
 # Load common dependencies.
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 protobuf_deps()
+
+# Bazel platform rules.
+http_archive(
+    name = "platforms",
+    sha256 = "b601beaf841244de5c5a50d2b2eddd34839788000fa1be4260ce6603ca0d8eb7",
+    strip_prefix = "platforms-98939346da932eef0b54cf808622f5bb0928f00b",
+    urls = ["https://github.com/bazelbuild/platforms/archive/98939346da932eef0b54cf808622f5bb0928f00b.zip"],
+)
+
+git_repository(
+    name = "com_google_re2",
+    patches = ["@com_google_ortools//bazel:re2.patch"],
+    commit = "0dade9f", # release 2021-11-01
+    remote = "https://github.com/google/re2.git",
+)
+
+git_repository(
+    name = "com_google_googletest",
+    commit = "e2239ee", # release-1.11.0
+    remote = "https://github.com/google/googletest.git",
+)
+
+http_archive(
+    name = "glpk",
+    build_file = "@com_google_ortools//bazel:glpk.BUILD",
+    sha256 = "4a1013eebb50f728fc601bdd833b0b2870333c3b3e5a816eeba921d95bec6f15",
+    url = "http://ftp.gnu.org/gnu/glpk/glpk-5.0.tar.gz",
+)
 
 http_archive(
     name = "bliss",
     build_file = "@com_google_ortools//bazel:bliss.BUILD",
     patches = ["@com_google_ortools//bazel:bliss-0.73.patch"],
     sha256 = "f57bf32804140cad58b1240b804e0dbd68f7e6bf67eba8e0c0fa3a62fd7f0f84",
-    url = "http://www.tcs.hut.fi/Software/bliss/bliss-0.73.zip",
+    url = "https://github.com/google/or-tools/releases/download/v9.0/bliss-0.73.zip",
+    #url = "http://www.tcs.hut.fi/Software/bliss/bliss-0.73.zip",
 )
 
-http_archive(
+new_git_repository(
     name = "scip",
     build_file = "@com_google_ortools//bazel:scip.BUILD",
     patches = ["@com_google_ortools//bazel:scip.patch"],
-    sha256 = "033bf240298d3a1c92e8ddb7b452190e0af15df2dad7d24d0572f10ae8eec5aa",
-    url = "https://github.com/google/or-tools/releases/download/v7.7/scip-7.0.1.tgz",
+    commit = "6acb7222e1b871041445bee75fc05bd1bcaed089", # master from Jul 19, 2021
+    remote = "https://github.com/scipopt/scip.git",
 )
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# rules_cc defines rules for generating C++ code from Protocol Buffers.
+http_archive(
+    name = "rules_cc",
+    sha256 = "35f2fb4ea0b3e61ad64a369de284e4fbbdcdba71836a5555abb5e194cf119509",
+    strip_prefix = "rules_cc-624b5d59dfb45672d4239422fa1e3de1822ee110",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_cc/archive/624b5d59dfb45672d4239422fa1e3de1822ee110.tar.gz",
+        "https://github.com/bazelbuild/rules_cc/archive/624b5d59dfb45672d4239422fa1e3de1822ee110.tar.gz",
+    ],
+)
+
+# rules_proto defines abstract rules for building Protocol Buffers.
+http_archive(
+    name = "rules_proto",
+    sha256 = "2490dca4f249b8a9a3ab07bd1ba6eca085aaf8e45a734af92aad0c42d9dc7aaf",
+    strip_prefix = "rules_proto-218ffa7dfa5408492dc86c01ee637614f8695c45",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/218ffa7dfa5408492dc86c01ee637614f8695c45.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/218ffa7dfa5408492dc86c01ee637614f8695c45.tar.gz",
+    ],
+)
+
+load("@rules_cc//cc:repositories.bzl", "rules_cc_dependencies")
+rules_cc_dependencies()
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+rules_proto_dependencies()
+rules_proto_toolchains()
