@@ -1,0 +1,15 @@
+ORLIB/ORLIB-uncap/70/cap71.txt
+ORLIB/ORLIB-uncap/70/cap72.txt
+ORLIB/ORLIB-uncap/70/cap73.txt
+ORLIB/ORLIB-uncap/70/cap74.txt
+ORLIB/ORLIB-uncap/130/cap131.txt
+ORLIB/ORLIB-uncap/130/cap132.txt
+ORLIB/ORLIB-uncap/130/cap133.txt
+ORLIB/ORLIB-uncap/130/cap134.txt
+ORLIB/ORLIB-uncap/100/cap101.txt
+ORLIB/ORLIB-uncap/100/cap102.txt
+ORLIB/ORLIB-uncap/100/cap103.txt
+ORLIB/ORLIB-uncap/100/cap104.txt
+ORLIB/ORLIB-uncap/a-c/capa.txt
+ORLIB/ORLIB-uncap/a-c/capb.txt
+ORLIB/ORLIB-uncap/a-c/capc.txt
