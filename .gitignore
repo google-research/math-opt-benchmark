@@ -1,2 +1,18 @@
 # Ignore all temporary directories created by Bazel.
 bazel-*
+# Ignore local configs
+.idea
+.DS_Store
+.clwb
+*.json
+*.csv
+instacart-market-basket-analysis/
+__pycache__
+math_opt
+logs/
+init.sh
+*pb.*
+*pb2.*
+gurobi.log
+tools/retail
+math_opt_benchmark/retail

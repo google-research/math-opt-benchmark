@@ -21,8 +21,8 @@
 
 #include <fstream>
 
-ABSL_FLAG(std::string, filename, "", "Path to ORLIB problem specification.");
-ABSL_FLAG(std::string, out_dir, "./", "Directory to save protos.");
+ABSL_FLAG(std::string, filename, "", "Path to ORLIB problem specification");
+ABSL_FLAG(std::string, out_dir, "./", "Directory to save protos");
 ABSL_FLAG(bool, iterative, true, "Solve iteratively");
 
 namespace math_opt_benchmark {
