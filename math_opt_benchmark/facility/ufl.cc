@@ -1,4 +1,4 @@
-// Copyright 2020 The MathOpt Benchmark Authors.
+// Copyright 2022 The MathOpt Benchmark Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ufl.h"
+#include "math_opt_benchmark/facility/ufl.h"
 
 #include "absl/strings/str_cat.h"
+#include "util/task/status.h"
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
 
@@ -29,7 +30,9 @@ namespace math_opt = operations_research::math_opt;
 UFLSolver::UFLSolver(math_opt::SolverType problem_type, const UFLProblem &problem, bool iterative=true)
     : model_("UFL Solver"),
       bender_var_(model_.AddContinuousVariable(0.0, kInf, "w")) {
-  solver_ = math_opt::IncrementalSolver::New(model_, problem_type).value();
+  solver_ = math_opt::IncrementalSolver::New(
+      model_,
+      problem_type).value();
   update_tracker_ = model_.NewUpdateTracker();
   model_.set_minimize();
   supply_vars_.reserve(problem.num_customers);
@@ -114,13 +117,17 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
 void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficients) {
   // bender_var_ >= sum - \sum(y * y_coefficients)
 
-  update_tracker_->Checkpoint();
+  CHECK_OK(update_tracker_->Checkpoint());
   math_opt::LinearConstraint cut = model_.AddLinearConstraint(sum, kInf);
   model_.set_coefficient(cut, bender_var_, 1);
   for (int i = 0; i < open_vars_.size(); i++) {
     model_.set_coefficient(cut, open_vars_[i], y_coefficients[i]);
   }
-  *(instance_.add_model_updates()) = *update_tracker_->ExportModelUpdate();
+  std::optional<math_opt::ModelUpdateProto> update;
+    update = update_tracker_->ExportModelUpdate();
+  if(update.has_value()){
+    *(instance_.add_model_updates()) = *update;
+  }
 }
 
 void UFLSolver::EnforceInteger() {

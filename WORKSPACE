@@ -7,13 +7,6 @@ git_repository(
     remote = "https://github.com/abseil/abseil-cpp.git",
 )
 
-git_repository(
-    name = "com_google_googletest",
-    commit = "703bd9c", # release-1.10.0
-    remote = "https://github.com/google/googletest.git",
-)
-
-# Math Opt
 http_archive(
     name = "com_google_ortools",  # Apache 2.0
     sha256 = "827dcb70d48ed2b1c940d305e3954f14c22b77bbe4d7d22ab10d2416ad3730e7",
@@ -106,8 +99,6 @@ new_git_repository(
     commit = "6acb7222e1b871041445bee75fc05bd1bcaed089", # master from Jul 19, 2021
     remote = "https://github.com/scipopt/scip.git",
 )
-
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # rules_cc defines rules for generating C++ code from Protocol Buffers.
 http_archive(

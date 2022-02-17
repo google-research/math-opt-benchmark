@@ -1,0 +1,11 @@
+syntax = "proto3";
+package math_opt_benchmark;
+
+import "ortools/math_opt/model.proto";
+import "ortools/math_opt/model_update.proto";
+
+message BenchmarkInstance {
+  operations_research.math_opt.ModelProto initial_model = 1;
+  repeated double objectives =  2;
+  repeated operations_research.math_opt.ModelUpdateProto model_updates = 3;
+}

@@ -1,4 +1,4 @@
-// Copyright 2020 The MathOpt Benchmark Authors.
+// Copyright 2022 The MathOpt Benchmark Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_
-#define MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_
+#ifndef MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_
+#define MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_
 
 #include <vector>
 
 std::vector<double> knapsack(const std::vector<double>& costs, const std::vector<double>& ys);
 
-#endif //MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_
+#endif //MATH_OPT_BENCHMARK_FACILITY_KNAPSACK_H_

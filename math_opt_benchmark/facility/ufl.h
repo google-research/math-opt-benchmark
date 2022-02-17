@@ -1,4 +1,4 @@
-// Copyright 2020 The MathOpt Benchmark Authors.
+// Copyright 2022 The MathOpt Benchmark Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_UFL_H_
-#define MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_UFL_H_
+#ifndef MATH_OPT_BENCHMARK_FACILITY_UFL_H_
+#define MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 
 #include "ortools/math_opt/cpp/math_opt.h"
 #include "math_opt_benchmark/proto/model.pb.h"
@@ -56,4 +56,4 @@ private:
 
 } // namespace math_opt_benchmark
 
-#endif //MATH_OPT_BENCHMARK_MATH_OPT_BENCHMARK_FACILITY_UFL_H_
+#endif //MATH_OPT_BENCHMARK_FACILITY_UFL_H_

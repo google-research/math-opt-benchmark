@@ -11,7 +11,7 @@ cc_library(
     srcs = ["example.cc"],
     hdrs = ["example.h"],
     deps = [
-        "@com_github_glog_glog//:glog",
+        "//base",
         "@com_google_absl//absl/strings",
         "@com_google_ortools//ortools/linear_solver",
     ],
@@ -33,8 +33,8 @@ cc_binary(
     srcs = ["example_main.cc"],
     deps = [
         ":example",
-        "@com_github_gflags_gflags//:gflags",
-        "@com_github_glog_glog//:glog",
+        "//base",
+        "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/random",
         "@com_google_ortools//ortools/linear_solver",
     ],
