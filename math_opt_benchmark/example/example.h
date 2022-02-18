@@ -15,9 +15,10 @@
 #ifndef MATH_OPT_BENCHMARK_EXAMPLE_EXAMPLE_H_
 #define MATH_OPT_BENCHMARK_EXAMPLE_EXAMPLE_H_
 
+#include <memory>
 #include <vector>
 
-#include "ortools/linear_solver/linear_solver.h"
+#include "ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {
 
@@ -41,15 +42,15 @@ struct ExampleSolution {
 
 class ExampleSolver {
  public:
-  ExampleSolver(
-      operations_research::MPSolver::OptimizationProblemType problem_type,
-      const ExampleProblem& problem);
+  ExampleSolver(operations_research::math_opt::SolverType solver_type,
+                const ExampleProblem& problem);
   ExampleSolution Solve();
   void UpdateObjective(int index, double value);
 
  private:
-  operations_research::MPSolver solver_;
-  std::vector<operations_research::MPVariable*> x_vars_;
+  operations_research::math_opt::Model model_;
+  std::vector<operations_research::math_opt::Variable> x_vars_;
+  std::unique_ptr<operations_research::math_opt::IncrementalSolver> solver_;
 };
 
 }  // namespace math_opt_benchmark

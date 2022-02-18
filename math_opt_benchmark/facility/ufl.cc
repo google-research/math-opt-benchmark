@@ -14,8 +14,9 @@
 
 #include "math_opt_benchmark/facility/ufl.h"
 
+#include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
-#include "util/task/status.h"
+#include "ortools/base/logging.h"
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
 
@@ -116,8 +117,8 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
 
 void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficients) {
   // bender_var_ >= sum - \sum(y * y_coefficients)
+  update_tracker_->Checkpoint();
 
-  CHECK_OK(update_tracker_->Checkpoint());
   math_opt::LinearConstraint cut = model_.AddLinearConstraint(sum, kInf);
   model_.set_coefficient(cut, bender_var_, 1);
   for (int i = 0; i < open_vars_.size(); i++) {

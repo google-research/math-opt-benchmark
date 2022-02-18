@@ -14,6 +14,7 @@
 
 #include "math_opt_benchmark/facility/ufl.h"
 
+#include "ortools/base/init_google.h"
 #include "absl/random/random.h"
 #include "absl/flags/flag.h"
 #include "absl/strings/str_join.h"
@@ -159,8 +160,7 @@ void UFLMain(const std::string& filename, const std::string& out_dir, bool itera
 } // namespace math_opt_benchmark
 
 int main(int argc, char *argv[]) {
-  google::InitGoogleLogging(argv[0]);
-  absl::ParseCommandLine(argc, argv);
+  InitGoogle(argv[0], &argc, &argv, true);
   std::string filename = absl::GetFlag(FLAGS_filename);
   std::string out_dir = absl::GetFlag(FLAGS_out_dir);
   std::cerr << filename << std::endl;

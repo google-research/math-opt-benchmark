@@ -14,27 +14,27 @@
 
 #include "math_opt_benchmark/example/example.h"
 
+#include <vector>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "ortools/linear_solver/linear_solver.h"
+#include "ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {
 namespace {
 
-constexpr auto kGlop = ::operations_research::MPSolver::GLOP_LINEAR_PROGRAMMING;
-constexpr auto kScip =
-    ::operations_research::MPSolver::SCIP_MIXED_INTEGER_PROGRAMMING;
-constexpr double kTolerance = 1e-5;
-
+namespace math_opt = ::operations_research::math_opt;
 using ::testing::DoubleNear;
 using ::testing::Pointwise;
+
+constexpr double kTolerance = 1e-5;
 
 TEST(ExampleSolverTest, OneVariable) {
   ExampleProblem problem;
   problem.rhs = 1.0;
   problem.objective = {3.5};
   problem.integer = false;
-  ExampleSolver solver(kGlop, problem);
+  ExampleSolver solver(math_opt::SolverType::kGlop, problem);
   const ExampleSolution solution = solver.Solve();
   EXPECT_NEAR(solution.objective_value, 3.5, kTolerance);
   const std::vector<double> expected_var_values = {1.0};
@@ -47,7 +47,7 @@ TEST(ExampleSolverTest, TwoOfThreeInteger) {
   problem.rhs = 2.1;
   problem.objective = {4.0, 2.0, 6.0};
   problem.integer = true;
-  ExampleSolver solver(kScip, problem);
+  ExampleSolver solver(math_opt::SolverType::kGscip, problem);
   const ExampleSolution solution = solver.Solve();
   EXPECT_NEAR(solution.objective_value, 10.0, kTolerance);
   const std::vector<double> expected_var_values = {1.0, 0.0, 1.0};
@@ -60,7 +60,7 @@ TEST(ExampleSolverTest, FractionalRhsContinuousVariables) {
   problem.rhs = 2.5;
   problem.objective = {4.0, 2.0, 6.0};
   problem.integer = false;
-  ExampleSolver solver(kGlop, problem);
+  ExampleSolver solver(math_opt::SolverType::kGlop, problem);
   const ExampleSolution solution = solver.Solve();
   EXPECT_NEAR(solution.objective_value, 11.0, kTolerance);
   const std::vector<double> expected_var_values = {1.0, 0.5, 1.0};
@@ -73,7 +73,7 @@ TEST(ExampleSolverTest, Update) {
   problem.rhs = 2.0;
   problem.objective = {4.0, 2.0, 6.0};
   problem.integer = false;
-  ExampleSolver solver(kGlop, problem);
+  ExampleSolver solver(math_opt::SolverType::kGlop, problem);
   EXPECT_NEAR(10.0, solver.Solve().objective_value, kTolerance);
   solver.UpdateObjective(1, 5.0);
   const ExampleSolution solution = solver.Solve();

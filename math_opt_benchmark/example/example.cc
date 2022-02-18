@@ -18,44 +18,44 @@
 
 #include "ortools/base/logging.h"
 #include "absl/strings/str_cat.h"
+#include "ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {
-
-using ::operations_research::MPConstraint;
-using ::operations_research::MPSolver;
-using ::operations_research::MPVariable;
-
+namespace {
+namespace math_opt = ::operations_research::math_opt;
 constexpr double kInf = std::numeric_limits<double>::infinity();
+}  // namespace
 
-ExampleSolver::ExampleSolver(
-    const MPSolver::OptimizationProblemType problem_type,
-    const ExampleProblem& problem)
-    : solver_("example_solver", problem_type) {
-  solver_.MutableObjective()->SetMaximization();
-  MPConstraint* c = solver_.MakeRowConstraint(-kInf, problem.rhs);
+ExampleSolver::ExampleSolver(const math_opt::SolverType solver_type,
+                             const ExampleProblem& problem)
+    : model_("example_model") {
   for (int i = 0; i < problem.objective.size(); ++i) {
-    MPVariable* var =
-        solver_.MakeVar(0.0, 1.0, problem.integer, absl::StrCat("x", i));
-    x_vars_.push_back(var);
-    solver_.MutableObjective()->SetCoefficient(var, problem.objective[i]);
-    c->SetCoefficient(var, 1.0);
+    x_vars_.push_back(
+        model_.AddVariable(0.0, 1.0, problem.integer, absl::StrCat("x", i)));
   }
+  model_.AddLinearConstraint(math_opt::Sum(x_vars_) <= problem.rhs);
+  model_.Maximize(math_opt::InnerProduct(x_vars_, problem.objective));
+  solver_ =
+      math_opt::IncrementalSolver::New(
+          model_,
+          solver_type)
+          .value();
 }
 
 ExampleSolution ExampleSolver::Solve() {
-  MPSolver::ResultStatus status = solver_.Solve();
-  CHECK_EQ(status, MPSolver::OPTIMAL);
+  const math_opt::SolveResult solve_result = solver_->Solve().value();
+  CHECK_EQ(solve_result.termination.reason,
+           math_opt::TerminationReason::kOptimal)
+      << solve_result.termination;
   ExampleSolution result;
-  result.objective_value = solver_.Objective().Value();
-  for (MPVariable* v : x_vars_) {
-    result.x_values.push_back(v->solution_value());
+  result.objective_value = solve_result.objective_value();
+  for (const math_opt::Variable x : x_vars_) {
+    result.x_values.push_back(solve_result.variable_values().at(x));
   }
   return result;
 }
 void ExampleSolver::UpdateObjective(int index, double value) {
-  CHECK_GE(index, 0);
-  CHECK_LT(index, x_vars_.size());
-  solver_.MutableObjective()->SetCoefficient(x_vars_[index], value);
+  model_.set_objective_coefficient(x_vars_.at(index), value);
 }
 
 }  // namespace math_opt_benchmark

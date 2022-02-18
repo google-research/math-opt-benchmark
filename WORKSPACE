@@ -3,17 +3,14 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_r
 
 git_repository(
     name = "com_google_absl",
-    commit = "278e0a0", # release 20210324.2
+    commit = "278e0a0",  # release 20210324.2
     remote = "https://github.com/abseil/abseil-cpp.git",
 )
 
-http_archive(
-    name = "com_google_ortools",  # Apache 2.0
-    sha256 = "827dcb70d48ed2b1c940d305e3954f14c22b77bbe4d7d22ab10d2416ad3730e7",
-    strip_prefix = "or-tools-master",
-    urls = [
-        "https://github.com/google/or-tools/archive/refs/heads/master.zip",
-    ],
+git_repository(
+    name = "com_google_ortools",
+    commit = "c6dc2c2",  # from head of master on 2022-02-17
+    remote = "https://github.com/google/or-tools.git",
 )
 
 ################################################################################
@@ -51,8 +48,10 @@ git_repository(
     commit = "7c40b2d",  # release v3.19.1
     remote = "https://github.com/protocolbuffers/protobuf.git",
 )
+
 # Load common dependencies.
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
 protobuf_deps()
 
 # Bazel platform rules.
@@ -65,14 +64,14 @@ http_archive(
 
 git_repository(
     name = "com_google_re2",
+    commit = "0dade9f",  # release 2021-11-01
     patches = ["@com_google_ortools//bazel:re2.patch"],
-    commit = "0dade9f", # release 2021-11-01
     remote = "https://github.com/google/re2.git",
 )
 
 git_repository(
     name = "com_google_googletest",
-    commit = "e2239ee", # release-1.11.0
+    commit = "e2239ee",  # release-1.11.0
     remote = "https://github.com/google/googletest.git",
 )
 
@@ -95,9 +94,10 @@ http_archive(
 new_git_repository(
     name = "scip",
     build_file = "@com_google_ortools//bazel:scip.BUILD",
+    patch_args = ["-p1"],
     patches = ["@com_google_ortools//bazel:scip.patch"],
-    commit = "6acb7222e1b871041445bee75fc05bd1bcaed089", # master from Jul 19, 2021
     remote = "https://github.com/scipopt/scip.git",
+    tag = "v800",
 )
 
 # rules_cc defines rules for generating C++ code from Protocol Buffers.
@@ -123,8 +123,11 @@ http_archive(
 )
 
 load("@rules_cc//cc:repositories.bzl", "rules_cc_dependencies")
+
 rules_cc_dependencies()
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
 rules_proto_dependencies()
+
 rules_proto_toolchains()
