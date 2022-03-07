@@ -60,7 +60,6 @@ void UFLMain(const std::string& filename, const std::string& out_dir, bool itera
     UFLSolver direct_solver(math_opt::SolverType::kGurobi, problem, false);
     UFLSolution direct_solution = direct_solver.Solve();
 
-    CHECK_NEAR(solution.objective_value, direct_solution.objective_value, kTolerance);
     std::ofstream f(out_dir + filename.substr(filename.find_last_of('/')));
     f << solver.GetModel().DebugString();
     f.close();

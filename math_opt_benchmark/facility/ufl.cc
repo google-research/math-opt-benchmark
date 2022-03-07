@@ -160,16 +160,16 @@ BenchmarkInstance UFLSolver::GetModel() {
 // UFLBenders
 //
 
-UFLBenders::UFLBenders(const UFLProblem &problem)
+UFLBenders::UFLBenders(const UFLProblem &problem, math_opt::SolverType solver_type)
     : problem_(problem),
-    solver_(math_opt::SolverType::kGurobi, problem, true),
+    solver_(solver_type, problem, true),
     cost_indices_(problem.num_customers, std::vector<int>(problem.num_facilities)) {
   for (int i = 0; i < problem_.num_customers; i++) {
     std::vector<double>& costs = problem_.supply_costs[i];
     std::vector<int>& indices = cost_indices_[i];
     std::iota(indices.begin(), indices.end(), 0);
     std::sort(indices.begin(), indices.end(), [&, costs](int i, int j) { return costs[i] < costs[j]; });
-    std::sort(costs.begin(), costs.end(), [](double i, double j) { return i < j; });
+    std::sort(costs.begin(), costs.end());
   }
 }
 
@@ -192,7 +192,7 @@ UFLSolution UFLBenders::benders() {
         y_solution[j] = solution.open_values[indices[j]];
       }
       // Don't actually need the knapsack solution, just need the length
-      int k = knapsack(y_solution).size();
+      int k = Knapsack(y_solution).size();
       sum += costs[k - 1];
       for (int j = 0; j < k - 1; j++) {
         y_coefficients[indices[j]] += costs[k - 1] - costs[j];
@@ -259,7 +259,7 @@ UFLProblem ParseProblem(const std::string& contents) {
 }
 
 
-std::vector<double> knapsack(const std::vector<double>& ys) {
+std::vector<double> Knapsack(const std::vector<double>& ys) {
   std::vector<double> solution;
   double sum = 0;
   int k;

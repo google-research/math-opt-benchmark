@@ -66,7 +66,8 @@ private:
 
 class UFLBenders {
 public:
-  explicit UFLBenders(const UFLProblem &problem);
+  explicit UFLBenders(const UFLProblem &problem,
+      operations_research::math_opt::SolverType solver_type = operations_research::math_opt::SolverType::kGurobi);
   UFLSolution Solve();
   BenchmarkInstance GetModel() { return solver_.GetModel(); };
 
@@ -85,13 +86,17 @@ private:
 // https://resources.mpi-inf.mpg.de/departments/d1/projects/benchmarks/UflLib/data-format.html
 UFLProblem ParseProblem(const std::string& contents);
 
-// Solves the worker problem for given j:
+// Solves the worker problem for a fixed j:
 // min_x sum_{ij} c_{ij}*x_{ij}
 //  s.t. sum_i x_{ij} = 1
-//             x_{ij} <= y*
+//             x_{ij} <= y*_i   for all i
 //
-// Assume costs and ys are sorted together so costs[i] < costs[i+1]
-std::vector<double> knapsack(const std::vector<double>& ys);
+// Given a solution to the master problem y* (which facilities are open) and fixing a customer j,
+// determine the optimal x_{ij} indicating the fraction of demand facility i fulfills for j
+//
+// When we call this from UFLBenders, We assume the ys are sorted according to costs c_{ij} (costs[i] <= costs[i+1]),
+// so greedily choosing ys[i] before ys[i+1] will minimize the cost
+std::vector<double> Knapsack(const std::vector<double>& ys);
 
 } // namespace math_opt_benchmark
 

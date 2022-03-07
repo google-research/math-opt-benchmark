@@ -42,6 +42,7 @@ cc_test(
         "@com_google_googletest//:gtest",
         "@com_google_googletest//:gtest_main",
         "@com_google_ortools//ortools/math_opt/cpp:math_opt",
-        "@com_google_ortools//ortools/math_opt/solvers:gurobi_solver",
+        "@com_google_ortools//ortools/math_opt/solvers:glop_solver",
+        "@com_google_ortools//ortools/math_opt/solvers:gscip_solver",
     ],
 )

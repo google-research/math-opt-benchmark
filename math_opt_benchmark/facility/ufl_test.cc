@@ -28,11 +28,12 @@ namespace math_opt = ::operations_research::math_opt;
 using ::testing::DoubleNear;
 using ::testing::Pointwise;
 using ::testing::Eq;
+using ::testing::ElementsAreArray;
 
 constexpr double kTolerance = 1e-5;
 
 TEST(ParseTest, SmallInstance) {
-  std::string str("4 3\n"
+  const std::string str("4 3\n"
                            "cap 10\n"
                            "is 20\n"
                            "ignored 300\n"
@@ -44,33 +45,33 @@ TEST(ParseTest, SmallInstance) {
                            "ignored\n"
                            "1.1 11.1 111. 1111\n"
                            );
-  UFLProblem problem = ParseProblem(str);
-  int expect_num_customers = 3;
-  int expect_num_facilities = 4;
-  std::vector<double> expect_open_costs = {10, 20, 300, 200};
-  std::vector<std::vector<double>> expect_supply_costs = {{0, 1, 2, 3},
+  const UFLProblem problem = ParseProblem(str);
+  const int expect_num_customers = 3;
+  const int expect_num_facilities = 4;
+  const std::vector<double> expect_open_costs = {10, 20, 300, 200};
+  const std::vector<std::vector<double>> expect_supply_costs = {{0, 1, 2, 3},
                                                        {40, 50, 60, 70},
                                                        {1.1, 11.1, 111.0, 1111.0}};
   EXPECT_THAT(problem.num_facilities, Eq(expect_num_facilities));
   EXPECT_THAT(problem.num_customers, Eq(expect_num_customers));
-  EXPECT_THAT(problem.open_costs, Pointwise(DoubleNear(kTolerance), expect_open_costs));
+  EXPECT_THAT(problem.open_costs, ElementsAreArray(expect_open_costs));
   for (int i = 0; i < problem.num_customers; i++) {
-    EXPECT_THAT(problem.supply_costs[i], Pointwise(DoubleNear(kTolerance), expect_supply_costs[i]));
+    EXPECT_THAT(problem.supply_costs[i], ElementsAreArray(expect_supply_costs[i]));
   }
 
 }
 
 TEST(KnapsackTest, EasyInstance) {
-  std::vector<double> open_facilities({0.5, 0.4, 0.3, 0.2, 0.1, 0.0});
-  std::vector<double> result = knapsack(open_facilities);
-  std::vector<double> expect({0.5, 0.4, 0.1});
+  const std::vector<double> open_facilities({0.5, 0.4, 0.3, 0.2, 0.1, 0.0});
+  const std::vector<double> result = Knapsack(open_facilities);
+  const std::vector<double> expect({0.5, 0.4, 0.1});
   EXPECT_THAT(result, Pointwise(DoubleNear(kTolerance), expect));
 }
 
 TEST(KnapsackTest, CorrectBounds) {
-  std::vector<double> open_facilities({0.0, 0.0, 0.0});
-  std::vector<double> result = knapsack(open_facilities);
-  std::vector<double> expect({0.0, 0.0, 1.0});
+  const std::vector<double> open_facilities({0.0, 0.0, 0.0});
+  const std::vector<double> result = Knapsack(open_facilities);
+  const std::vector<double> expect({0.0, 0.0, 1.0});
   EXPECT_THAT(result, Pointwise(DoubleNear(kTolerance), expect));
 }
 
@@ -81,11 +82,11 @@ TEST(UFLSolverTest, TwoFacilities) {
   problem.open_costs = {1.0, 0.5};
   problem.supply_costs = {{1.0, 0.5},
                           {0.5, 1.0}};
-  UFLBenders solver(problem);
+  UFLBenders solver(problem, math_opt::SolverType::kGscip);
   UFLSolution solution = solver.Solve();
-  std::vector<double> expect_open({0.0, 1.0});
-  std::vector<int> expect_supply({1, 1});
-  double expect_obj = 0.5 + 0.5 + 1.0;
+  const std::vector<double> expect_open({0.0, 1.0});
+  const std::vector<int> expect_supply({1, 1});
+  const double expect_obj = 0.5 + 0.5 + 1.0;
   EXPECT_NEAR(solution.objective_value, expect_obj, kTolerance);
   EXPECT_THAT(solution.open_values, Pointwise(DoubleNear(kTolerance), expect_open));
   EXPECT_THAT(solution.supply_values, Pointwise(Eq(), expect_supply));
@@ -101,9 +102,9 @@ TEST(UFLSolverTest, OnlySupply) {
                           {2, 3},
                           {3, 4}};
   UFLBenders solver(problem);
-  UFLSolution solution = solver.Solve();
-  std::vector<double> expect_open({1.0, 1.0});
-  std::vector<int> expect_supply({0, 1, 0, 0});
+  const UFLSolution solution = solver.Solve();
+  const std::vector<double> expect_open({1.0, 1.0});
+  const std::vector<int> expect_supply({0, 1, 0, 0});
   double expect_obj = 1 + 1 + 2 + 3;
   EXPECT_NEAR(solution.objective_value, expect_obj, kTolerance);
   EXPECT_THAT(solution.open_values, Pointwise(DoubleNear(kTolerance), expect_open));
@@ -117,9 +118,9 @@ TEST(UFLSolverTest, OnlyOpen) {
   problem.open_costs = {0.5, 0.5, 0.4};
   problem.supply_costs = {{0, 0, 0}};
   UFLBenders solver(problem);
-  UFLSolution solution = solver.Solve();
-  std::vector<double> expect_open({0.0, 0.0, 1.0});
-  double expect_obj = 0.4;
+  const UFLSolution solution = solver.Solve();
+  const std::vector<double> expect_open({0.0, 0.0, 1.0});
+  const double expect_obj = 0.4;
   EXPECT_NEAR(solution.objective_value, expect_obj, kTolerance);
   EXPECT_THAT(solution.open_values, Pointwise(DoubleNear(kTolerance), expect_open));
 }
