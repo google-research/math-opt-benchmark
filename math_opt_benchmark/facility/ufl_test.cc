@@ -89,7 +89,7 @@ TEST(UFLSolverTest, TwoFacilities) {
   const double expect_obj = 0.5 + 0.5 + 1.0;
   EXPECT_NEAR(solution.objective_value, expect_obj, kTolerance);
   EXPECT_THAT(solution.open_values, Pointwise(DoubleNear(kTolerance), expect_open));
-  EXPECT_THAT(solution.supply_values, Pointwise(Eq(), expect_supply));
+  EXPECT_THAT(solution.supply_values, ElementsAreArray(expect_supply));
 }
 
 TEST(UFLSolverTest, OnlySupply) {
@@ -101,14 +101,14 @@ TEST(UFLSolverTest, OnlySupply) {
                           {2, 1},
                           {2, 3},
                           {3, 4}};
-  UFLBenders solver(problem);
+  UFLBenders solver(problem, math_opt::SolverType::kGscip);
   const UFLSolution solution = solver.Solve();
   const std::vector<double> expect_open({1.0, 1.0});
   const std::vector<int> expect_supply({0, 1, 0, 0});
   double expect_obj = 1 + 1 + 2 + 3;
   EXPECT_NEAR(solution.objective_value, expect_obj, kTolerance);
   EXPECT_THAT(solution.open_values, Pointwise(DoubleNear(kTolerance), expect_open));
-  EXPECT_THAT(solution.supply_values, Pointwise(Eq(), expect_supply));
+  EXPECT_THAT(solution.supply_values, ElementsAreArray(expect_supply));
 }
 
 TEST(UFLSolverTest, OnlyOpen) {
@@ -117,7 +117,7 @@ TEST(UFLSolverTest, OnlyOpen) {
   problem.num_customers = 1;
   problem.open_costs = {0.5, 0.5, 0.4};
   problem.supply_costs = {{0, 0, 0}};
-  UFLBenders solver(problem);
+  UFLBenders solver(problem, math_opt::SolverType::kGscip);
   const UFLSolution solution = solver.Solve();
   const std::vector<double> expect_open({0.0, 0.0, 1.0});
   const double expect_obj = 0.4;
