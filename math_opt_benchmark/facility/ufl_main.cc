@@ -26,7 +26,6 @@ ABSL_FLAG(std::string, out_dir, "./", "Directory to save protos.");
 ABSL_FLAG(bool, iterative, true, "Solve iteratively");
 
 namespace math_opt = operations_research::math_opt;
-constexpr double kTolerance = 1e-5;
 
 namespace math_opt_benchmark {
 
@@ -50,8 +49,7 @@ void PrintORLIB(const UFLSolution& solution) {
 
 void UFLMain(const std::string& filename, const std::string& out_dir, bool iterative) {
   std::string contents;
-  absl::Status status = file::GetContents(filename, &contents, file::Defaults());
-  CHECK(status.ok());
+  CHECK(file::GetContents(filename, &contents, file::Defaults()).ok());
   UFLProblem problem = ParseProblem(contents);
   if (iterative) {
     UFLBenders solver(problem);
@@ -72,6 +70,7 @@ void UFLMain(const std::string& filename, const std::string& out_dir, bool itera
 
 } // namespace math_opt_benchmark
 
+using namespace math_opt_benchmark;
 int main(int argc, char *argv[]) {
   InitGoogle(argv[0], &argc, &argv, true);
   std::string filename = absl::GetFlag(FLAGS_filename);

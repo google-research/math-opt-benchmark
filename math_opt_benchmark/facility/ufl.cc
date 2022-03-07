@@ -21,6 +21,8 @@
 constexpr double kInf = std::numeric_limits<double>::infinity();
 namespace math_opt = operations_research::math_opt;
 
+constexpr double kTolerance = 1e-5;
+
 namespace math_opt_benchmark {
 
 //
@@ -126,10 +128,6 @@ UFLSolution UFLSolver::Solve() {
   return solution;
 }
 
-int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
-  return a.size() < b.size();
-}
-
 void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficients) {
   // bender_var_ >= sum - \sum_i y_coefficients[i] * y_i
   update_tracker_->Checkpoint();
@@ -174,32 +172,37 @@ UFLBenders::UFLBenders(const UFLProblem &problem, math_opt::SolverType solver_ty
 }
 
 UFLSolution UFLBenders::benders() {
-  int num_customers = problem_.num_customers;
-  int num_facilities = problem_.num_facilities;
+  const int num_customers = problem_.num_customers;
+  const int num_facilities = problem_.num_facilities;
   std::vector<std::vector<double>>& supply_costs = problem_.supply_costs;
   UFLSolution solution = solver_.Solve();
-  double prev_objective = -1.0;
-  // This seems to work even though it's not ub >= lb
-  while (solution.objective_value != prev_objective) {
-    prev_objective = solution.objective_value;
+  double best_objective = solution.objective_value;
+  double ub = kInf;
+  while (ub - best_objective >= kTolerance) {
     std::vector<double> y_coefficients(num_facilities, 0.0);
     double sum = 0.0;
     for (int i = 0; i < num_customers; i++) {
-      std::vector<int> &indices = cost_indices_[i];
-      std::vector<double> &costs = supply_costs[i];
+      const std::vector<int> &indices = cost_indices_[i];
+      const std::vector<double> &costs = supply_costs[i];
       std::vector<double> y_solution(num_facilities);
       for (int j = 0; j < num_facilities; j++) {
         y_solution[j] = solution.open_values[indices[j]];
       }
       // Don't actually need the knapsack solution, just need the length
-      int k = Knapsack(y_solution).size();
+      const int k = Knapsack(y_solution).size();
       sum += costs[k - 1];
       for (int j = 0; j < k - 1; j++) {
         y_coefficients[indices[j]] += costs[k - 1] - costs[j];
       }
     }
+    double worker_obj = sum;
+    for (int i = 0; i < num_facilities; i++) {
+      worker_obj -= y_coefficients[i] * solution.open_values[i];
+    }
+    ub = std::min(ub, worker_obj);
     solver_.AddBenderCut(sum, y_coefficients);
     solution = solver_.Solve();
+    best_objective = std::max(best_objective, solution.objective_value);
   }
   return solution;
 }
