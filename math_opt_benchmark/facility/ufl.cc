@@ -12,17 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "math_opt_benchmark/facility/ufl.h"
 
+#include "math_opt_benchmark/facility/ufl.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "ortools/base/logging.h"
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
+namespace math_opt = operations_research::math_opt;
 
 namespace math_opt_benchmark {
 
-namespace math_opt = operations_research::math_opt;
+//
+// UFLSolver
+//
 
 /**
  * @param problem_type MPSolver constant specifying which solver to use
@@ -30,7 +33,8 @@ namespace math_opt = operations_research::math_opt;
  */
 UFLSolver::UFLSolver(math_opt::SolverType problem_type, const UFLProblem &problem, bool iterative=true)
     : model_("UFL Solver"),
-      bender_var_(model_.AddContinuousVariable(0.0, kInf, "w")) {
+      bender_var_(model_.AddContinuousVariable(0.0, kInf, "w")),
+      iterative_(iterative) {
   solver_ = math_opt::IncrementalSolver::New(
       model_,
       problem_type).value();
@@ -107,6 +111,17 @@ UFLSolution UFLSolver::Solve() {
     solution.open_values.push_back(result.value().variable_values().at(v));
   }
 
+  if (!iterative_) {
+    for (int i = 0; i < supply_vars_.size(); i++) {
+      for (int j = 0; j < supply_vars_[0].size(); j++) {
+        if (result.value().variable_values().at(supply_vars_[i][j]) > 0.5) {
+          solution.supply_values.push_back(j);
+          break;
+        }
+      }
+    }
+  }
+
   instance_.add_objectives(solution.objective_value);
   return solution;
 }
@@ -116,7 +131,7 @@ int sort_by_size(const std::vector<int> &a, const std::vector<int> &b) {
 }
 
 void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficients) {
-  // bender_var_ >= sum - \sum(y * y_coefficients)
+  // bender_var_ >= sum - \sum_i y_coefficients[i] * y_i
   update_tracker_->Checkpoint();
 
   math_opt::LinearConstraint cut = model_.AddLinearConstraint(sum, kInf);
@@ -141,4 +156,122 @@ BenchmarkInstance UFLSolver::GetModel() {
   return instance_;
 }
 
+//
+// UFLBenders
+//
+
+UFLBenders::UFLBenders(const UFLProblem &problem)
+    : problem_(problem),
+    solver_(math_opt::SolverType::kGurobi, problem, true),
+    cost_indices_(problem.num_customers, std::vector<int>(problem.num_facilities)) {
+  for (int i = 0; i < problem_.num_customers; i++) {
+    std::vector<double>& costs = problem_.supply_costs[i];
+    std::vector<int>& indices = cost_indices_[i];
+    std::iota(indices.begin(), indices.end(), 0);
+    std::sort(indices.begin(), indices.end(), [&, costs](int i, int j) { return costs[i] < costs[j]; });
+    std::sort(costs.begin(), costs.end(), [](double i, double j) { return i < j; });
+  }
+}
+
+UFLSolution UFLBenders::benders() {
+  int num_customers = problem_.num_customers;
+  int num_facilities = problem_.num_facilities;
+  std::vector<std::vector<double>>& supply_costs = problem_.supply_costs;
+  UFLSolution solution = solver_.Solve();
+  double prev_objective = -1.0;
+  // This seems to work even though it's not ub >= lb
+  while (solution.objective_value != prev_objective) {
+    prev_objective = solution.objective_value;
+    std::vector<double> y_coefficients(num_facilities, 0.0);
+    double sum = 0.0;
+    for (int i = 0; i < num_customers; i++) {
+      std::vector<int> &indices = cost_indices_[i];
+      std::vector<double> &costs = supply_costs[i];
+      std::vector<double> y_solution(num_facilities);
+      for (int j = 0; j < num_facilities; j++) {
+        y_solution[j] = solution.open_values[indices[j]];
+      }
+      // Don't actually need the knapsack solution, just need the length
+      int k = knapsack(y_solution).size();
+      sum += costs[k - 1];
+      for (int j = 0; j < k - 1; j++) {
+        y_coefficients[indices[j]] += costs[k - 1] - costs[j];
+      }
+    }
+    solver_.AddBenderCut(sum, y_coefficients);
+    solution = solver_.Solve();
+  }
+  return solution;
+}
+
+UFLSolution UFLBenders::Solve() {
+  UFLSolution solution = benders();
+  solver_.EnforceInteger();
+  solution = benders();
+  solution.supply_values.reserve(problem_.num_customers);
+  for (int i = 0; i < problem_.num_customers; i++) {
+    int j;
+    for (j = 0; j < problem_.num_facilities && !solution.open_values[cost_indices_[i][j]]; j++);
+    solution.supply_values.push_back(cost_indices_[i][j]);
+  }
+  return solution;
+}
+
+//
+// HELPER FUNCTIONS
+//
+
+UFLProblem ParseProblem(const std::string& contents) {
+  UFLProblem problem;
+  std::istringstream all_lines(contents);
+  std::string line;
+  std::getline(all_lines, line);
+  std::istringstream lineTokens(line);
+  lineTokens >> problem.num_facilities;
+  lineTokens >> problem.num_customers;
+
+  problem.open_costs = std::vector<double>(problem.num_facilities);
+  std::string tmp;
+  for (int i = 0; i < problem.num_facilities; i++) {
+    std::getline(all_lines, line);
+    lineTokens = std::istringstream(line);
+    lineTokens >> tmp; // Ignore the capacity
+    lineTokens >> problem.open_costs[i];
+  }
+
+  problem.supply_costs = std::vector<std::vector<double>>(problem.num_customers, std::vector<double>(problem.num_facilities));
+  double cost = 0.0;
+  for (int i = 0; i < problem.num_customers; i++) {
+    // Skip demand
+    std::getline(all_lines, line);
+    int parsed = 0;
+    while (parsed < problem.num_facilities) {
+      std::getline(all_lines, line);
+      lineTokens = std::istringstream(line);
+      while (lineTokens >> cost) {
+        problem.supply_costs[i][parsed] = cost;
+        parsed++;
+      }
+    }
+  }
+
+  return problem;
+}
+
+
+std::vector<double> knapsack(const std::vector<double>& ys) {
+  std::vector<double> solution;
+  double sum = 0;
+  int k;
+  for (k = 0; k < ys.size() && sum < 1; k++) {
+    sum += ys[k];
+  }
+  solution.reserve(k);
+  for (int i = 0; i < k-1; i++) {
+    solution.push_back(ys[i]);
+  }
+  solution.push_back(1 - sum + ys[k-1]);
+
+  return solution;
+}
 } // namespace math_opt_benchmark

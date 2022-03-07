@@ -18,6 +18,7 @@
 #include "ortools/base/init_google.h"
 #include "absl/flags/flag.h"
 #include "absl/random/random.h"
+#include "absl/strings/str_join.h"
 #include "math_opt_benchmark/example/example.h"
 #include "ortools/math_opt/cpp/math_opt.h"
 

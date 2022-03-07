@@ -33,3 +33,15 @@ cc_binary(
         "@com_google_ortools//ortools/base",
     ],
 )
+
+cc_test(
+    name = "ufl_test",
+    srcs = ["ufl_test.cc"],
+    deps = [
+        ":ufl",
+        "@com_google_googletest//:gtest",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_ortools//ortools/math_opt/cpp:math_opt",
+        "@com_google_ortools//ortools/math_opt/solvers:gurobi_solver",
+    ],
+)
