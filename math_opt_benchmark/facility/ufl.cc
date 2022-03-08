@@ -16,7 +16,7 @@
 
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
-#include "ortools/base/logging.h"
+#include "ortools/base/logging.h"  // status.h
 
 constexpr double kInf = std::numeric_limits<double>::infinity();
 
