@@ -30,16 +30,16 @@ namespace math_opt_benchmark {
 //
 
 /**
- * @param problem_type MPSolver constant specifying which solver to use
+ * @param solver_type Which solver to use
  * @param problem Facility location specification with costs and sizes
  */
-UFLSolver::UFLSolver(math_opt::SolverType problem_type, const UFLProblem &problem, bool iterative=true)
+UFLSolver::UFLSolver(math_opt::SolverType solver_type, const UFLProblem &problem, bool iterative=true)
     : model_("UFL Solver"),
       bender_var_(model_.AddContinuousVariable(0.0, kInf, "w")),
       iterative_(iterative) {
   solver_ = math_opt::IncrementalSolver::New(
       model_,
-      problem_type).value();
+      solver_type).value();
   update_tracker_ = model_.NewUpdateTracker();
   model_.set_minimize();
   supply_vars_.reserve(problem.num_customers);

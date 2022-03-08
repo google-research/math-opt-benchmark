@@ -46,7 +46,7 @@ struct UFLSolution {
 
 class UFLSolver {
 public:
-  UFLSolver(operations_research::math_opt::SolverType problem_type,
+  UFLSolver(operations_research::math_opt::SolverType solver_type,
             const UFLProblem &problem, bool iterative);
   UFLSolution Solve();
   void AddBenderCut(double sum, const std::vector<double> &y_coefficients);
