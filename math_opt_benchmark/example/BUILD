@@ -37,6 +37,7 @@ cc_binary(
         ":example",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/random",
+        "@com_google_absl//absl/strings",
         "@com_google_ortools//ortools/base",
         "@com_google_ortools//ortools/math_opt/cpp:math_opt",
         "@com_google_ortools//ortools/math_opt/solvers:glop_solver",
