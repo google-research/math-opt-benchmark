@@ -213,9 +213,12 @@ UFLSolution UFLBenders::Solve() {
   solution = benders();
   solution.supply_values.reserve(problem_.num_customers);
   for (int i = 0; i < problem_.num_customers; i++) {
-    int j;
-    for (j = 0; j < problem_.num_facilities && !solution.open_values[cost_indices_[i][j]]; j++);
-    solution.supply_values.push_back(cost_indices_[i][j]);
+    for (int j = 0; j < problem_.num_facilities; j++) {
+      if (solution.open_values[cost_indices_[i][j]] > kTolerance) {
+        solution.supply_values.push_back(cost_indices_[i][j]);
+        break;
+      }
+    }
   }
   return solution;
 }
