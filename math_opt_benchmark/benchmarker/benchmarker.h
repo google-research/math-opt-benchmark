@@ -35,11 +35,14 @@ const std::vector<operations_research::math_opt::SolverType> mip_solvers{
 class Benchmarker {
 public:
   Benchmarker(std::vector<std::string> proto_contents, bool is_mip);
+  // list of instance/solvers, generates all protos + writes to disk
+  // CLI for solvers
   void SolveAll();
-  absl::Duration SolveModel(std::unique_ptr<BenchmarkInstance> &instance, std::unique_ptr<operations_research::math_opt::Model> &model,
+  // return proto to store
+  absl::Duration SolveModel(const BenchmarkInstance &instance, std::unique_ptr<operations_research::math_opt::Model> &model,
                             operations_research::math_opt::SolverType solver_type);
   std::vector<std::vector<absl::Duration>> GetDurations();
-  const std::vector<operations_research::math_opt::SolverType> GetSolvers();
+  std::vector<operations_research::math_opt::SolverType> GetSolvers();
 
 private:
   std::vector<std::vector<absl::Duration>> solver_times_;

@@ -19,7 +19,7 @@
 #include <fstream>
 
 ABSL_FLAG(std::string, instance_dir, "", "Path to directory containing model protos");
-ABSL_FLAG(bool, is_mip, true, "Path to directory containing model protos");
+ABSL_FLAG(bool, is_mip, true, "Whether");
 ABSL_FLAG(bool, is_single_file, false, "Whether instance_dir points to a directory or a single file");
 
 namespace math_opt = operations_research::math_opt;
@@ -30,6 +30,7 @@ void BenchmarkMain(const std::vector<std::string>& proto_filenames, bool is_mip)
   std::vector<std::string> proto_contents(proto_filenames.size());
   for (int i = 0; i < proto_filenames.size(); i++) {
     const std::string &filename = proto_filenames[i];
+    // New get text proto
     CHECK(file::GetContents(filename, &proto_contents[i], file::Defaults()).ok());
   }
 
@@ -38,7 +39,7 @@ void BenchmarkMain(const std::vector<std::string>& proto_filenames, bool is_mip)
   std::vector<std::vector<absl::Duration>> raw_times = benchmarker.GetDurations();
   const std::vector<math_opt::SolverType> &solvers = benchmarker.GetSolvers();
 
-  // TODO figure out what to print
+  // TODO figure out what to print - nothing
   for (int i = 0; i < solvers.size(); i++) {
     std::cout << std::left << std::setw(20) << solvers[i] << absl::FormatDuration(average_t(raw_times[i])) << std::endl;
   }

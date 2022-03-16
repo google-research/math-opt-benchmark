@@ -39,17 +39,15 @@ void Benchmarker::SolveAll() {
         operations_research::math_opt::Model::FromModelProto(initial_model).value();
 
     for (int j = 0; j < solvers_.size(); j++) {
+      std::unique_ptr<operations_research::math_opt::Model> tmp_model = new_model.value()->Clone();
       operations_research::math_opt::SolverType solver_type = solvers_[j];
-      absl::Duration solve_time = SolveModel(instance, new_model.value(), solver_type);
+      absl::Duration solve_time = SolveModel(*instance, new_model.value(), solver_type);
       solver_times_[j][i] = solve_time;
-      // Remove the added cuts - don't want to call each solver between cuts in case it harms caching
-      // There might be a better way to do this
-      new_model = operations_research::math_opt::Model::FromModelProto(initial_model).value();
     }
   }
 }
 
-absl::Duration Benchmarker::SolveModel(std::unique_ptr<BenchmarkInstance> &instance,
+absl::Duration Benchmarker::SolveModel(const BenchmarkInstance& instance,
                                        std::unique_ptr<operations_research::math_opt::Model> &model,
                                        operations_research::math_opt::SolverType solver_type) {
   absl::Time start_t = absl::Now();
@@ -59,20 +57,21 @@ absl::Duration Benchmarker::SolveModel(std::unique_ptr<BenchmarkInstance> &insta
   CHECK_EQ(result.value().termination.reason, operations_research::math_opt::TerminationReason::kOptimal)
     << result.value().termination.detail;
 
-  // TODO which solve_stats do we want?
+  // TODO which solve_stats do we want? make solve_stats class
+  // time, pivots
 
   double obj = result.value().objective_value();
-  CHECK_NEAR(obj, instance->objectives(0), 0.0001);
+  CHECK_NEAR(obj, instance.objectives(0), 0.0001);
 
   absl::Duration elapsed = absl::ZeroDuration();
-  for (int i = 0; i < instance->model_updates_size(); i++) {
-    CHECK_OK(model->ApplyUpdateProto(instance->model_updates(i)));
+  for (int i = 0; i < instance.model_updates_size(); i++) {
+    CHECK_OK(model->ApplyUpdateProto(instance.model_updates(i)));
     absl::StatusOr<operations_research::math_opt::SolveResult> solution = solver->Solve();
     CHECK_EQ(solution.value().termination.reason, operations_research::math_opt::TerminationReason::kOptimal)
       << solution.value().termination.detail;
     elapsed += solution.value().solve_stats.solve_time;
     obj = solution.value().objective_value();
-    CHECK_NEAR(obj, instance->objectives(i + 1), 0.0001);
+    CHECK_NEAR(obj, instance.objectives(i + 1), 0.0001);
   }
 
   absl::Duration wall_time = absl::Now() - start_t;
@@ -83,7 +82,7 @@ absl::Duration Benchmarker::SolveModel(std::unique_ptr<BenchmarkInstance> &insta
 std::vector<std::vector<absl::Duration>> Benchmarker::GetDurations() {
   return solver_times_;
 }
-const std::vector<operations_research::math_opt::SolverType> Benchmarker::GetSolvers() {
+std::vector<operations_research::math_opt::SolverType> Benchmarker::GetSolvers() {
   return solvers_;
 }
 

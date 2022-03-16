@@ -33,6 +33,7 @@ cc_binary(
     srcs = ["test_example.cc"],
     deps = [
         "//math_opt_benchmark/proto:model_cc_proto",
-        "//math_opt_benchmark/facility:ufl",
+        "@com_google_ortools//ortools/base",
+        "@com_google_ortools//ortools/math_opt/cpp:math_opt",
     ],
 )
