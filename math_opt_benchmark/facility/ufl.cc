@@ -14,6 +14,7 @@
 
 
 #include "math_opt_benchmark/facility/ufl.h"
+
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "ortools/base/logging.h"  // status.h
@@ -33,13 +34,16 @@ namespace math_opt_benchmark {
  * @param solver_type Which solver to use
  * @param problem Facility location specification with costs and sizes
  */
-UFLSolver::UFLSolver(math_opt::SolverType solver_type, const UFLProblem &problem, bool iterative=true)
+UFLSolver::UFLSolver(math_opt::SolverType solver_type,
+                     const UFLProblem& problem, bool iterative = true)
     : model_("UFL Solver"),
       bender_var_(model_.AddContinuousVariable(0.0, kInf, "w")),
       iterative_(iterative) {
-  solver_ = math_opt::IncrementalSolver::New(
-      model_,
-      solver_type).value();
+  solver_ =
+      math_opt::IncrementalSolver::New(
+          model_,
+          solver_type)
+          .value();
   update_tracker_ = model_.NewUpdateTracker();
   model_.set_minimize();
   supply_vars_.reserve(problem.num_customers);
@@ -93,9 +97,8 @@ UFLSolver::UFLSolver(math_opt::SolverType solver_type, const UFLProblem &problem
       }
     }
   }
-   *(instance_.mutable_initial_model()) = model_.ExportModel();
+  *(instance_.mutable_initial_model()) = model_.ExportModel();
 }
-
 
 /**
  * Calls the MPSolver solve routine and stores the result in a solution object
@@ -138,7 +141,8 @@ void UFLSolver::AddBenderCut(double sum, const std::vector<double> &y_coefficien
     model_.set_coefficient(cut, open_vars_[i], y_coefficients[i]);
   }
   std::optional<math_opt::ModelUpdateProto> update;
-    update = update_tracker_->ExportModelUpdate();
+  update = update_tracker_
+               ->ExportModelUpdate() ;
   if(update.has_value()){
     *(instance_.add_model_updates()) = *update;
   }
@@ -158,15 +162,18 @@ BenchmarkInstance UFLSolver::GetModel() {
 // UFLBenders
 //
 
-UFLBenders::UFLBenders(const UFLProblem &problem, math_opt::SolverType solver_type)
+UFLBenders::UFLBenders(const UFLProblem& problem,
+                       math_opt::SolverType solver_type)
     : problem_(problem),
-    solver_(solver_type, problem, true),
-    cost_indices_(problem.num_customers, std::vector<int>(problem.num_facilities)) {
+      solver_(solver_type, problem, true),
+      cost_indices_(problem.num_customers,
+                    std::vector<int>(problem.num_facilities)) {
   for (int i = 0; i < problem_.num_customers; i++) {
     std::vector<double>& costs = problem_.supply_costs[i];
     std::vector<int>& indices = cost_indices_[i];
     std::iota(indices.begin(), indices.end(), 0);
-    std::sort(indices.begin(), indices.end(), [&, costs](int i, int j) { return costs[i] < costs[j]; });
+    std::sort(indices.begin(), indices.end(),
+              [&, costs](int i, int j) { return costs[i] < costs[j]; });
     std::sort(costs.begin(), costs.end());
   }
 }
@@ -182,8 +189,8 @@ UFLSolution UFLBenders::benders() {
     std::vector<double> y_coefficients(num_facilities, 0.0);
     double sum = 0.0;
     for (int i = 0; i < num_customers; i++) {
-      const std::vector<int> &indices = cost_indices_[i];
-      const std::vector<double> &costs = supply_costs[i];
+      const std::vector<int>& indices = cost_indices_[i];
+      const std::vector<double>& costs = supply_costs[i];
       std::vector<double> y_solution(num_facilities);
       for (int j = 0; j < num_facilities; j++) {
         y_solution[j] = solution.open_values[indices[j]];
@@ -241,11 +248,12 @@ UFLProblem ParseProblem(const std::string& contents) {
   for (int i = 0; i < problem.num_facilities; i++) {
     std::getline(all_lines, line);
     lineTokens = std::istringstream(line);
-    lineTokens >> tmp; // Ignore the capacity
+    lineTokens >> tmp;  // Ignore the capacity
     lineTokens >> problem.open_costs[i];
   }
 
-  problem.supply_costs = std::vector<std::vector<double>>(problem.num_customers, std::vector<double>(problem.num_facilities));
+  problem.supply_costs = std::vector<std::vector<double>>(
+      problem.num_customers, std::vector<double>(problem.num_facilities));
   double cost = 0.0;
   for (int i = 0; i < problem.num_customers; i++) {
     // Skip demand
@@ -264,7 +272,6 @@ UFLProblem ParseProblem(const std::string& contents) {
   return problem;
 }
 
-
 std::vector<double> Knapsack(const std::vector<double>& ys) {
   std::vector<double> solution;
   double sum = 0;
@@ -273,10 +280,10 @@ std::vector<double> Knapsack(const std::vector<double>& ys) {
     sum += ys[k];
   }
   solution.reserve(k);
-  for (int i = 0; i < k-1; i++) {
+  for (int i = 0; i < k - 1; i++) {
     solution.push_back(ys[i]);
   }
-  solution.push_back(1 - sum + ys[k-1]);
+  solution.push_back(1 - sum + ys[k - 1]);
 
   return solution;
 }

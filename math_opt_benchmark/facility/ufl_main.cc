@@ -14,12 +14,12 @@
 
 #include <fstream>
 
-#include "math_opt_benchmark/facility/ufl.h"
 #include "ortools/base/init_google.h"
 #include "ortools/base/file.h"
-#include "absl/random/random.h"
 #include "absl/flags/flag.h"
+#include "absl/random/random.h"
 #include "absl/strings/str_join.h"
+#include "math_opt_benchmark/facility/ufl.h"
 
 ABSL_FLAG(std::string, filename, "", "Path to ORLIB problem specification.");
 ABSL_FLAG(std::string, out_dir, "./", "Directory to save protos.");
@@ -47,7 +47,8 @@ void PrintORLIB(const UFLSolution& solution) {
   printf("%.5f\n", solution.objective_value);
 }
 
-void UFLMain(const std::string& filename, const std::string& out_dir, bool iterative) {
+void UFLMain(const std::string& filename, const std::string& out_dir,
+             bool iterative) {
   std::string contents;
   CHECK(file::GetContents(filename, &contents, file::Defaults()).ok());
   UFLProblem problem = ParseProblem(contents);
@@ -70,7 +71,6 @@ void UFLMain(const std::string& filename, const std::string& out_dir, bool itera
 
 } // namespace math_opt_benchmark
 
-using namespace math_opt_benchmark;
 int main(int argc, char *argv[]) {
   InitGoogle(argv[0], &argc, &argv, true);
   std::string filename = absl::GetFlag(FLAGS_filename);
