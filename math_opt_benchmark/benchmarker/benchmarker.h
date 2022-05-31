@@ -22,35 +22,43 @@
 
 namespace math_opt_benchmark {
 
-const std::vector<operations_research::math_opt::SolverType> lp_solvers{
-    operations_research::math_opt::SolverType::kGurobi,
-    operations_research::math_opt::SolverType::kGlop,
-    operations_research::math_opt::SolverType::kGlpk,
-};
-const std::vector<operations_research::math_opt::SolverType> mip_solvers{
-    operations_research::math_opt::SolverType::kGurobi,
-    operations_research::math_opt::SolverType::kGscip,
+class SolveStatsData {
+public:
+  SolveStatsData(operations_research::math_opt::SolveStats solve_stats);
+  void Update(operations_research::math_opt::SolveStats solve_stats);
+  void Save(const std::vector<std::string> &filenames);
+  int Size();
+
+  absl::Duration duration;
+  int num_pivots;
+
+private:
+  std::vector<operations_research::math_opt::SolveStatsProto> solve_stats_;
 };
 
 class Benchmarker {
 public:
-  Benchmarker(std::vector<std::string> proto_contents, bool is_mip);
-  // list of instance/solvers, generates all protos + writes to disk
-  // CLI for solvers
+  Benchmarker(std::vector<BenchmarkInstance>& proto_contents, const std::vector<operations_research::math_opt::SolverType>& solvers, const std::string& dir);
   void SolveAll();
-  // return proto to store
-  absl::Duration SolveModel(const BenchmarkInstance &instance, std::unique_ptr<operations_research::math_opt::Model> &model,
+  // Returns proto to store
+  static SolveStatsData SolveModel(const BenchmarkInstance &instance, std::unique_ptr<operations_research::math_opt::Model> &model,
                             operations_research::math_opt::SolverType solver_type);
+  void SaveAll(const std::vector<std::string>& filenames);
+  void SaveProto(int idx);
   std::vector<std::vector<absl::Duration>> GetDurations();
   std::vector<operations_research::math_opt::SolverType> GetSolvers();
 
 private:
-  std::vector<std::vector<absl::Duration>> solver_times_;
-  std::vector<std::string> proto_contents_;
-  const std::vector<operations_research::math_opt::SolverType> &solvers_;
+  std::vector<std::vector<SolveStatsData>> solve_data_;
+  std::vector<BenchmarkInstance> proto_contents_;
+  const std::vector<operations_research::math_opt::SolverType> solvers_;
+  std::vector<std::string> solver_names_;
+  std::string dir_;
 };
 
 std::unique_ptr<BenchmarkInstance> LoadInstanceFromString(const std::string& contents);
+std::string solver_to_string(operations_research::math_opt::SolverType solver_type);
+
 
 absl::Duration max_t(const std::vector<absl::Duration>& v);
 absl::Duration average_t(const std::vector<absl::Duration>& v);

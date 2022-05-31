@@ -19,29 +19,47 @@
 #include <fstream>
 
 ABSL_FLAG(std::string, instance_dir, "", "Path to directory containing model protos");
-ABSL_FLAG(bool, is_mip, true, "Whether");
-ABSL_FLAG(bool, is_single_file, false, "Whether instance_dir points to a directory or a single file");
+ABSL_FLAG(std::string, save_dir, "", "Path to directory to store solve results");
+ABSL_FLAG(int, start_idx, 0, "Index in directory to start solves from (using filesystem::directory_iterator())");
+ABSL_FLAG(std::vector<std::string>, solvers, {}, "List of solvers to benchmark");
+ABSL_FLAG(bool, print_summary, false, "Print some summary statistics.");
+
 
 namespace math_opt = operations_research::math_opt;
 
+const std::vector<operations_research::math_opt::SolverType> lp_solvers{
+    operations_research::math_opt::SolverType::kGurobi,
+    operations_research::math_opt::SolverType::kGlop,
+    operations_research::math_opt::SolverType::kGlpk,
+};
+const std::vector<operations_research::math_opt::SolverType> mip_solvers{
+    operations_research::math_opt::SolverType::kGurobi,
+    operations_research::math_opt::SolverType::kGscip,
+};
+
 namespace math_opt_benchmark {
 
-void BenchmarkMain(const std::vector<std::string>& proto_filenames, bool is_mip) {
-  std::vector<std::string> proto_contents(proto_filenames.size());
+void BenchmarkMain(const std::vector<std::string>& proto_filenames, const std::string& save_dir,
+    std::vector<math_opt::SolverType> solvers, bool print_summary) {
+  std::vector<BenchmarkInstance> proto_contents(proto_filenames.size());
   for (int i = 0; i < proto_filenames.size(); i++) {
     const std::string &filename = proto_filenames[i];
-    // New get text proto
-    CHECK(file::GetContents(filename, &proto_contents[i], file::Defaults()).ok());
+    CHECK(file::GetTextProto(filename, &proto_contents[i], file::Defaults()).ok());
   }
 
-  Benchmarker benchmarker(proto_contents, is_mip);
+  Benchmarker benchmarker(proto_contents, solvers, save_dir);
   benchmarker.SolveAll();
   std::vector<std::vector<absl::Duration>> raw_times = benchmarker.GetDurations();
-  const std::vector<math_opt::SolverType> &solvers = benchmarker.GetSolvers();
 
-  // TODO figure out what to print - nothing
-  for (int i = 0; i < solvers.size(); i++) {
-    std::cout << std::left << std::setw(20) << solvers[i] << absl::FormatDuration(average_t(raw_times[i])) << std::endl;
+  if (!save_dir.empty()) {
+     benchmarker.SaveAll(proto_filenames);
+  }
+
+  if (print_summary) {
+    for (int i = 0; i < solvers.size(); i++) {
+      std::cout << std::left << std::setw(20) << solvers[i] << absl::FormatDuration(average_t(raw_times[i]))
+                << std::endl;
+    }
   }
 
 }
@@ -52,16 +70,30 @@ int main(int argc, char *argv[]) {
   google::InitGoogleLogging(argv[0]);
   absl::ParseCommandLine(argc, argv);
   std::string dir = absl::GetFlag(FLAGS_instance_dir);
+  std::string save_dir = absl::GetFlag(FLAGS_save_dir);
+
+  std::vector<math_opt::SolverType> solvers;
+  for (auto &solver : absl::GetFlag(FLAGS_solvers)) {
+    if (solver == "gurobi") {
+      solvers.push_back(math_opt::SolverType::kGurobi);
+    } else if (solver == "scip") {
+      solvers.push_back(math_opt::SolverType::kGscip);
+    }
+  }
   std::vector<std::string> proto_filenames;
-  if (absl::GetFlag(FLAGS_is_single_file)) {
+  if (!std::filesystem::is_directory(dir)) {
     proto_filenames.push_back(dir);
   } else {
     for (const auto &entry : std::filesystem::directory_iterator(dir)) {
+      if (!entry.is_directory())
       proto_filenames.push_back(entry.path());
     }
   }
 
-  bool is_mip = absl::GetFlag(FLAGS_is_mip);
+  int start_idx = absl::GetFlag(FLAGS_start_idx);
+  std::sort(proto_filenames.begin(), proto_filenames.end());
+  std::vector<std::string> proto_filenames_filtered{proto_filenames.begin() + start_idx, proto_filenames.end()};
+  bool print_summary = absl::GetFlag(FLAGS_print_summary);
 
-  math_opt_benchmark::BenchmarkMain(proto_filenames, is_mip);
+  math_opt_benchmark::BenchmarkMain(proto_filenames, save_dir, solvers, print_summary);
 }

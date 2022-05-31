@@ -12,14 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "gtest/gtest.h"
 #include "ortools/math_opt/cpp/math_opt.h"
 #include "math_opt_benchmark/proto/model.pb.h"
+#include "math_opt_benchmark/benchmarker/benchmarker.h"
 
-namespace math_opt = operations_research::math_opt;
 
 namespace math_opt_benchmark {
+namespace {
 
-void BenchmarkExampleMain() {
+namespace math_opt = ::operations_research::math_opt;
+
+TEST(PipelineTest, SmallExample) {
+  //    min x
+  // s.t.
   BenchmarkInstance instance;
   math_opt::Model model("Benchmark Example");
   std::unique_ptr<math_opt::UpdateTracker> update_tracker = model.NewUpdateTracker();
@@ -27,15 +33,16 @@ void BenchmarkExampleMain() {
   model.set_minimize();
 
   math_opt::Variable var = model.AddContinuousVariable(0.0, 2.0, "x");
-
   model.set_objective_coefficient(var, 1);
+  *(instance.mutable_initial_model()) = model.ExportModel();
+
   math_opt::SolveArguments solve_args;
   for (int i = 0; i < 2; i++) {
     instance.add_objectives(i);
     update_tracker->Checkpoint();
     const math_opt::LinearConstraint feasible = model.AddLinearConstraint(i + 1, 2.0);
     model.set_coefficient(feasible, var, 1);
-    std::optional<math_opt::ModelUpdateProto> update;
+    std::optional <math_opt::ModelUpdateProto> update;
     update = update_tracker->ExportModelUpdate();
     if (update.has_value()) {
       *(instance.add_model_updates()) = *update;
@@ -44,14 +51,12 @@ void BenchmarkExampleMain() {
 
   instance.add_objectives(2);
 
-  std::ofstream f();
-  f << instance.DebugString();
-  f.close();
-
+  std::vector<BenchmarkInstance> solve_protos({instance});
+  std::vector<math_opt::SolverType> solvers({math_opt::SolverType::kGscip});
+  Benchmarker benchmarker(solve_protos, solvers, "");
+  // Checks correctness at runtime
+  benchmarker.SolveAll();
 }
 
+} // namespace
 } // namespace math_opt_benchmark
-
-int main() {
-  math_opt_benchmark::BenchmarkExampleMain();
-}

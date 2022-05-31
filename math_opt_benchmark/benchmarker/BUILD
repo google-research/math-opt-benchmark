@@ -28,12 +28,16 @@ cc_binary(
     ],
 )
 
-cc_binary(
-    name = "test_example",
-    srcs = ["test_example.cc"],
+cc_test(
+    name = "benchmark_test",
+    srcs = ["benchmark_test.cc"],
     deps = [
+        ":benchmarker",
         "//math_opt_benchmark/proto:model_cc_proto",
+        "@com_google_googletest//:gtest",
+        "@com_google_googletest//:gtest_main",
         "@com_google_ortools//ortools/base",
         "@com_google_ortools//ortools/math_opt/cpp:math_opt",
+        "@com_google_ortools//ortools/math_opt/solvers:gscip_solver",
     ],
 )
