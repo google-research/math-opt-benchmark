@@ -116,9 +116,9 @@ SolveStatsData Benchmarker::SolveModel(const BenchmarkInstance& instance,
 // Renames the output files
 void Benchmarker::SaveAll(const std::vector<std::string>& filenames) {
   for (int i = 0; i < filenames.size(); i++) {
-    std::string old = dir_ + "/" + std::to_string(i);
+    const std::filesystem::path old = dir_ + "/" + std::to_string(i);
     int name_idx = filenames[i].find_last_of('/');
-    std::string fnew = dir_ + "/" + filenames[i].substr(name_idx + 1);
+    std::filesystem::path fnew = dir_ + "/" + filenames[i].substr(name_idx + 1);
     std::rename(old.c_str(), fnew.c_str());
   }
 }

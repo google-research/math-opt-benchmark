@@ -18,9 +18,9 @@
 #include "benchmarker.h"
 #include <fstream>
 
-ABSL_FLAG(std::string, instance_dir, "", "Path to directory containing model protos");
+ABSL_FLAG(std::string, instances, "", "Path to directory or file containing model protos");
 ABSL_FLAG(std::string, save_dir, "", "Path to directory to store solve results");
-ABSL_FLAG(int, start_idx, 0, "Index in directory to start solves from (using filesystem::directory_iterator())");
+ABSL_FLAG(int, start_idx, 0, "Index in sorted directory to start solves from (see numbering of saved protos if solving failed)");
 ABSL_FLAG(std::vector<std::string>, solvers, {}, "List of solvers to benchmark");
 ABSL_FLAG(bool, print_summary, false, "Print some summary statistics.");
 
@@ -69,7 +69,7 @@ void BenchmarkMain(const std::vector<std::string>& proto_filenames, const std::s
 int main(int argc, char *argv[]) {
   google::InitGoogleLogging(argv[0]);
   absl::ParseCommandLine(argc, argv);
-  std::string dir = absl::GetFlag(FLAGS_instance_dir);
+  std::string dir = absl::GetFlag(FLAGS_instances);
   std::string save_dir = absl::GetFlag(FLAGS_save_dir);
 
   std::vector<math_opt::SolverType> solvers;
