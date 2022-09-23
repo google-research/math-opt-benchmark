@@ -10,6 +10,7 @@ cc_library(
     name = "ufl",
     srcs = ["ufl.cc"],
     hdrs = ["ufl.h"],
+    tags = ["not_build:arm"],
     deps = [
         "//math_opt_benchmark/proto:model_cc_proto",
         "@com_google_absl//absl/status:statusor",
@@ -25,6 +26,7 @@ cc_library(
 cc_binary(
     name = "ufl_main",
     srcs = ["ufl_main.cc"],
+    tags = ["not_build:arm"],
     deps = [
         ":ufl",
         "@com_google_absl//absl/flags:flag",
@@ -37,6 +39,7 @@ cc_binary(
 cc_test(
     name = "ufl_test",
     srcs = ["ufl_test.cc"],
+    tags = ["not_build:arm"],
     deps = [
         ":ufl",
         "@com_google_googletest//:gtest",
