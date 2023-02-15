@@ -1,6 +1,7 @@
 licenses(["notice"])
 
 package(
+    default_applicable_licenses = ["//third_party/math_opt_benchmark:license"],
     default_visibility = [
         "//visibility:public",
     ],
