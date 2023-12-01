@@ -1,4 +1,4 @@
-// Copyright 2022 The MathOpt Benchmark Authors.
+// Copyright 2023 The MathOpt Benchmark Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 #include "ortools/base/file.h"
 #include "absl/flags/flag.h"
 #include "absl/random/random.h"
+#include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "math_opt_benchmark/facility/ufl.h"
 
@@ -60,7 +61,7 @@ void UFLMain(const std::string& filename, const std::string& out_dir,
     UFLSolution direct_solution = direct_solver.Solve();
 
     std::ofstream f(out_dir + filename.substr(filename.find_last_of('/')));
-    f << solver.GetModel().DebugString();
+    f << absl::StrCat(solver.GetModel());
     f.close();
   } else {
     UFLSolver direct_solver(math_opt::SolverType::kGurobi, problem, false);
