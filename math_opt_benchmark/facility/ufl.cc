@@ -1,4 +1,4 @@
-// Copyright 2023 The MathOpt Benchmark Authors.
+// Copyright 2024 The MathOpt Benchmark Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ UFLSolver::UFLSolver(math_opt::SolverType solver_type,
       bender_var_(model_.AddContinuousVariable(0.0, kInf, "w")),
       iterative_(iterative) {
   solver_ =
-      math_opt::IncrementalSolver::New(
+      math_opt::NewIncrementalSolver(
           model_,
           solver_type)
           .value();

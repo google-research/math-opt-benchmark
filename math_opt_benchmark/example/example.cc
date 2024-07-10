@@ -1,4 +1,4 @@
-// Copyright 2023 The MathOpt Benchmark Authors.
+// Copyright 2024 The MathOpt Benchmark Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ ExampleSolver::ExampleSolver(const math_opt::SolverType solver_type,
   model_.AddLinearConstraint(math_opt::Sum(x_vars_) <= problem.rhs);
   model_.Maximize(math_opt::InnerProduct(x_vars_, problem.objective));
   solver_ =
-      math_opt::IncrementalSolver::New(
+      math_opt::NewIncrementalSolver(
           model_,
           solver_type)
           .value();
