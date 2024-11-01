@@ -1,4 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
+load("//third_party/protobuf/bazel:proto_library.bzl", "proto_library")
 
 licenses(["notice"])
 
