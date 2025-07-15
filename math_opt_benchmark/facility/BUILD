@@ -4,12 +4,7 @@ load("//third_party/bazel_rules/rules_cc/cc:cc_test.bzl", "cc_test")
 
 licenses(["notice"])
 
-package(
-    default_applicable_licenses = ["//third_party/math_opt_benchmark:license"],
-    default_visibility = [
-        "//visibility:public",
-    ],
-)
+package(default_applicable_licenses = ["//third_party/math_opt_benchmark:license"])
 
 cc_library(
     name = "ufl",
