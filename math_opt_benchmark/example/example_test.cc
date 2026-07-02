@@ -1,4 +1,4 @@
-// Copyright 2025 The MathOpt Benchmark Authors.
+// Copyright 2026 The MathOpt Benchmark Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "ortools/math_opt/cpp/math_opt.h"
+#include "third_party/ortools/ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {
 namespace {
