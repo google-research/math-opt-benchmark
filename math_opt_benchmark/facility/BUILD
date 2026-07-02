@@ -13,6 +13,7 @@ cc_library(
     tags = ["not_build:arm"],
     deps = [
         "//math_opt_benchmark/proto:model_cc_proto",
+        "//third_party/ortools/ortools/math_opt/cpp:math_opt",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
         "@com_google_ortools//ortools/base",

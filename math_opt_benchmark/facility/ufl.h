@@ -26,8 +26,9 @@
 #ifndef MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 #define MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 
-#include "ortools/math_opt/cpp/math_opt.h"
 #include "math_opt_benchmark/proto/model.pb.h"
+#include "third_party/ortools/ortools/math_opt/cpp/math_opt.h"
+#include "ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {
 
