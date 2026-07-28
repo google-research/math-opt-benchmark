@@ -13,6 +13,7 @@ cc_library(
     tags = ["not_build:arm"],
     deps = [
         "//math_opt_benchmark/proto:model_cc_proto",
+        "//third_party/ortools/ortools/linear_solver:linear_solver_scip",
         "//third_party/ortools/ortools/math_opt/cpp:math_opt",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
@@ -30,6 +31,7 @@ cc_binary(
     tags = ["not_build:arm"],
     deps = [
         ":ufl",
+        "//third_party/ortools/ortools/linear_solver:linear_solver_scip",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/random",
         "@com_google_absl//absl/strings",
@@ -43,6 +45,7 @@ cc_test(
     tags = ["not_build:arm"],
     deps = [
         ":ufl",
+        "//third_party/ortools/ortools/linear_solver:linear_solver_scip",
         "@com_google_googletest//:gtest",
         "@com_google_googletest//:gtest_main",
         "@com_google_ortools//ortools/math_opt/cpp:math_opt",
