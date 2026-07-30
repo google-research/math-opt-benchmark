@@ -14,8 +14,8 @@ proto_library(
     name = "model_proto",
     srcs = ["model.proto"],
     deps = [
+        "//third_party/ortools/ortools/math_opt:model_proto",
         "//third_party/ortools/ortools/math_opt:model_update_proto",
-        "@com_google_ortools//ortools/math_opt:model_proto",
     ],
 )
 
