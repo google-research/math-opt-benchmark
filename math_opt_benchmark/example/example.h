@@ -18,7 +18,6 @@
 #include <memory>
 #include <vector>
 
-#include "third_party/ortools/ortools/math_opt/cpp/math_opt.h"
 #include "ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {

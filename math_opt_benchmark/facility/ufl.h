@@ -27,7 +27,6 @@
 #define MATH_OPT_BENCHMARK_FACILITY_UFL_H_
 
 #include "math_opt_benchmark/proto/model.pb.h"
-#include "third_party/ortools/ortools/math_opt/cpp/math_opt.h"
 #include "ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {
@@ -50,9 +49,9 @@ struct UFLSolution {
 class UFLSolver {
  public:
   UFLSolver(operations_research::math_opt::SolverType solver_type,
-            const UFLProblem &problem, bool iterative);
+            const UFLProblem& problem, bool iterative);
   UFLSolution Solve();
-  void AddBenderCut(double sum, const std::vector<double> &y_coefficients);
+  void AddBenderCut(double sum, const std::vector<double>& y_coefficients);
   void EnforceInteger();
   BenchmarkInstance GetModel();
 
@@ -70,7 +69,7 @@ class UFLSolver {
 
 class UFLBenders {
  public:
-  explicit UFLBenders(const UFLProblem &problem,
+  explicit UFLBenders(const UFLProblem& problem,
                       operations_research::math_opt::SolverType solver_type =
                           operations_research::math_opt::SolverType::kGurobi);
   UFLSolution Solve();
@@ -89,7 +88,7 @@ class UFLBenders {
 
 // Reads the UFL problem in ORLIB-cap format from a string
 // https://resources.mpi-inf.mpg.de/departments/d1/projects/benchmarks/UflLib/data-format.html
-UFLProblem ParseProblem(const std::string &contents);
+UFLProblem ParseProblem(const std::string& contents);
 
 // Solves the worker problem for a fixed j:
 // min_x sum_{ij} c_{ij}*x_{ij}
@@ -103,8 +102,8 @@ UFLProblem ParseProblem(const std::string &contents);
 // When we call this from UFLBenders, We assume the ys are sorted according to
 // costs c_{ij} (costs[i] <= costs[i+1]), so greedily choosing ys[i] before
 // ys[i+1] will minimize the cost
-std::vector<double> Knapsack(const std::vector<double> &ys);
+std::vector<double> Knapsack(const std::vector<double>& ys);
 
-} // namespace math_opt_benchmark
+}  // namespace math_opt_benchmark
 
-#endif //MATH_OPT_BENCHMARK_FACILITY_UFL_H_
+#endif  // MATH_OPT_BENCHMARK_FACILITY_UFL_H_

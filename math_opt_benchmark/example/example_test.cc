@@ -18,7 +18,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "third_party/ortools/ortools/math_opt/cpp/math_opt.h"
+#include "ortools/math_opt/cpp/math_opt.h"
 
 namespace math_opt_benchmark {
 namespace {
