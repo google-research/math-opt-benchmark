@@ -40,10 +40,10 @@ cc_binary(
     srcs = ["example_main.cc"],
     deps = [
         ":example",
+        "//third_party/gloop/base:init_google",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/random",
         "@com_google_absl//absl/strings",
-        "@com_google_ortools//ortools/base",
         "@com_google_ortools//ortools/math_opt/cpp:math_opt",
         "@com_google_ortools//ortools/math_opt/solvers:glop_solver",
         "@com_google_ortools//ortools/math_opt/solvers:gscip_solver",
