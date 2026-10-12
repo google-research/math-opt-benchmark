@@ -14,12 +14,12 @@
 
 #include <fstream>
 
-#include "ortools/base/init_google.h"
 #include "ortools/base/file.h"
 #include "absl/flags/flag.h"
 #include "absl/random/random.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
+#include "third_party/gloop/base/init_google.h"
 #include "math_opt_benchmark/facility/ufl.h"
 
 ABSL_FLAG(std::string, filename, "", "Path to ORLIB problem specification.");

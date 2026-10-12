@@ -29,10 +29,10 @@ cc_binary(
     tags = ["not_build:arm"],
     deps = [
         ":ufl",
+        "//third_party/gloop/base:init_google",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/random",
         "@com_google_absl//absl/strings",
-        "@com_google_ortools//ortools/base",
     ],
 )
 
